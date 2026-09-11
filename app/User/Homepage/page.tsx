@@ -1,21 +1,44 @@
 "use client";
 
 /**
- * ConcertGo — Landing Page Pengguna (Sebelum Login)
- * Single-file Next.js page (App Router: app/page.tsx)
- * Dilengkapi dengan tampilan visual dummy event yang kaya, poster konser,
- * modal detail konser interaktif, dan animasi Framer Motion.
+ * ConcertGo — Beranda Pengguna (Versi Akun Login)
+ * File: app/User/Homepage/page.tsx
+ *
+ * Data konser, poster visual, kategori, filter, modal detail, dan animasi
+ * disinkronkan sepenuhnya dengan Landing Page publik (app/page.tsx),
+ * namun diadaptasi khusus untuk akun yang sudah login:
+ *  - Header interaktif dengan User Account Dropdown (Raka Pratama)
+ *  - Strip sapaan personal "Halo, Raka Pratama! 👋"
+ *  - Widget "Tiket Saya Mendatang" dengan akses langsung ke e-tiket & pembayaran
+ *  - Alur Checkout / Pemesanan Tiket langsung (CheckoutModal) tanpa meminta login ulang
+ *  - Modal Detail Konser interaktif (Lineup, Rundown, Denah Panggung, Tier Tiket)
+ *  - Semua 12 data konser visual lengkap dengan foto poster Unsplash & kuota
  */
 
 import type { CSSProperties, JSX } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUserProfile, type UserProfile } from "@/lib/userProfile";
 import { EVENTS, type Category, type TicketTier, type EventItem } from "@/lib/eventsData";
 
 /* ------------------------------------------------------------------ */
-/*  Tipe Data & Dummy Data Konser (Sinkron dengan Homepage)           */
+/*  Tipe Data & Dummy Data Konser (Sinkron dengan Landing Page)        */
 /* ------------------------------------------------------------------ */
+
+type MyTicket = {
+  id: string;
+  eventId: string;
+  eventTitle: string;
+  venue: string;
+  date: string;
+  time: string;
+  tierName: string;
+  qty: number;
+  totalPrice: number;
+  status: "Aktif" | "Menunggu Pembayaran";
+  bookingCode: string;
+};
 
 const CATEGORIES: { label: Category; icon: JSX.Element }[] = [
   { label: "Festival Musik", icon: <IconSparkles /> },
@@ -74,21 +97,72 @@ const HERO_SLIDES = [
   },
 ];
 
+// Data Tiket Milik Akun Raka Pratama
+const INITIAL_MY_TICKETS: MyTicket[] = [
+  {
+    id: "t1",
+    eventId: "senja-orchestra",
+    eventTitle: "Senja Symphony Orchestra",
+    venue: "Istora Senayan, Jakarta",
+    date: "12 Sep 2026",
+    time: "19:00 WIB",
+    tierName: "VIP Numbered Seating",
+    qty: 2,
+    totalPrice: 900000,
+    status: "Aktif",
+    bookingCode: "CG-78291A",
+  },
+  {
+    id: "t2",
+    eventId: "ombak-festival",
+    eventTitle: "Ombak Nusantara Festival",
+    venue: "Pantai Karang, Bali",
+    date: "20 Sep 2026",
+    time: "16:00 WITA",
+    tierName: "3-Day Pass VIP",
+    qty: 1,
+    totalPrice: 550000,
+    status: "Aktif",
+    bookingCode: "CG-64910B",
+  },
+  {
+    id: "t3",
+    eventId: "kota-tua-jazz",
+    eventTitle: "Kota Tua Jazz & Soul Night",
+    venue: "Taman Fatahillah, Jakarta",
+    date: "27 Sep 2026",
+    time: "18:30 WIB",
+    tierName: "General Admission",
+    qty: 1,
+    totalPrice: 150000,
+    status: "Menunggu Pembayaran",
+    bookingCode: "CG-55201C",
+  },
+];
+
 const GENRES = Array.from(new Set(EVENTS.map((e) => e.genre)));
 const CITIES = Array.from(new Set(EVENTS.map((e) => e.city)));
 
 type CategoryMeta = {
   tag: string;
-  title: string;
+  title: (name: string) => string;
   subtitle: string;
   placeholder: string;
   unit: string;
 };
 
 const CATEGORY_META: Record<Category, CategoryMeta> = {
+  "Musik & Konser": {
+    tag: "Katalog Tiket Terlengkap & Resmi",
+    title: (name) => `Cari Konser Favoritmu, ${name}.`,
+    subtitle:
+      "Jelajahi konser artis favoritmu dan dapatkan tiket resmi dengan kemudahan pembayaran instan tanpa perlu antre tiket fisik.",
+    placeholder: "Cari artis, venue, atau kota (contoh: Jakarta, Tulus, Senayan)...",
+    unit: "konser",
+  },
   "Festival Musik": {
     tag: "Festival Musik Spektakuler & Multi-Stage",
-    title: "Cari Festival Musik Favoritmu.",
+    title: (name) => `Cari Festival Musik Favoritmu, ${name}.`,
     subtitle:
       "Rasakan gemuruh panggung akbar, line-up musisi legendaris, sunset stage, dan nuansa festival tak terlupakan dengan tiket resmi.",
     placeholder: "Cari nama festival, line-up artis, panggung, atau kota (contoh: Synchronize, Bali, Senayan)...",
@@ -96,7 +170,7 @@ const CATEGORY_META: Record<Category, CategoryMeta> = {
   },
   "Hiburan & Pertunjukan": {
     tag: "Hiburan Panggung & Pertunjukan Megah",
-    title: "Cari Hiburan & Pertunjukan Favoritmu.",
+    title: (name) => `Cari Hiburan & Pertunjukan Favoritmu, ${name}.`,
     subtitle:
       "Saksikan musikal berkelas, sirkus akrobatik cahaya internasional, dan pertunjukan ilusi spektakuler langsung dari kursi terbaik.",
     placeholder: "Cari judul musikal, atraksi sirkus, teater, gedung (contoh: Laskar Pelangi, ICE BSD, Teater Jakarta)...",
@@ -104,7 +178,7 @@ const CATEGORY_META: Record<Category, CategoryMeta> = {
   },
   "Wisata & Outdoor": {
     tag: "Petualangan Alam & Eksplorasi Outdoor",
-    title: "Cari Wisata & Outdoor Favoritmu.",
+    title: (name) => `Cari Wisata & Outdoor Favoritmu, ${name}.`,
     subtitle:
       "Temukan tiket open trip eksklusif, sunrise camp di pegunungan berkabut, festival alam bebas, dan eksplorasi alam nusantara.",
     placeholder: "Cari destinasi wisata, camping ground, gunung, atau kota (contoh: Bromo, Dieng, Rinjani)...",
@@ -112,7 +186,7 @@ const CATEGORY_META: Record<Category, CategoryMeta> = {
   },
   "Olahraga & E-Sport": {
     tag: "Laga Sengit Olahraga & Grand Final E-Sport",
-    title: "Cari Olahraga & E-Sport Favoritmu.",
+    title: (name) => `Cari Olahraga & E-Sport Favoritmu, ${name}.`,
     subtitle:
       "Beli tiket resmi pertandingan sepak bola liga teratas, badminton super series, dan grand final turnamen e-sport bergengsi.",
     placeholder: "Cari tim favorit, game e-sport, turnamen, stadion (contoh: MPL, Persija, GBK, Senayan)...",
@@ -120,7 +194,7 @@ const CATEGORY_META: Record<Category, CategoryMeta> = {
   },
   "Amal & Charity": {
     tag: "Konser & Pagelaran Amal Kebaikan",
-    title: "Cari Acara Amal & Charity.",
+    title: (name) => `Cari Acara Amal & Charity, ${name}.`,
     subtitle:
       "Menikmati pertunjukan seni sambil berdonasi untuk kemanusiaan, anak pesisir, dan kelestarian alam nusantara dengan laporan transparan.",
     placeholder: "Cari konser amal, nama gerakan, yayasan, atau kota (contoh: Harmoni Peduli, Mangrove, Jakarta)...",
@@ -128,7 +202,7 @@ const CATEGORY_META: Record<Category, CategoryMeta> = {
   },
   "Seni & Budaya": {
     tag: "Mahakarya Seni & Tradisi Luhur Nusantara",
-    title: "Cari Seni & Budaya Favoritmu.",
+    title: (name) => `Cari Seni & Budaya Favoritmu, ${name}.`,
     subtitle:
       "Apresiasi pameran instalasi seni kontemporer, wayang orang megah berbalut aransemen modern, dan tarian kolosal bersejarah.",
     placeholder: "Cari pameran seni rupa, wayang, sendratari, galeri (contoh: Galeri Nasional, TIM, Solo, Jogja)...",
@@ -136,7 +210,7 @@ const CATEGORY_META: Record<Category, CategoryMeta> = {
   },
   "Stand-up Comedy": {
     tag: "Tur Spesial & Panggung Stand-up Comedy",
-    title: "Cari Stand-up Comedy Favoritmu.",
+    title: (name) => `Cari Stand-up Comedy Favoritmu, ${name}.`,
     subtitle:
       "Tawa lepas bersama tur solo spesial dan pertunjukan materi baru para komika terlucu tanah air dalam teater eksklusif.",
     placeholder: "Cari nama komika, judul tur spesial, gedung teater (contoh: Raditya Dika, Usmar Ismail, TIM)...",
@@ -144,19 +218,11 @@ const CATEGORY_META: Record<Category, CategoryMeta> = {
   },
   "Atraksi & Wahana": {
     tag: "Tiket Masuk Wahana & Taman Rekreasi Resmi",
-    title: "Cari Atraksi & Wahana Favoritmu.",
+    title: (name) => `Cari Atraksi & Wahana Favoritmu, ${name}.`,
     subtitle:
       "Akses cepat tanpa antre loket untuk theme park terbesar, waterpark tropis, dan wahana petualangan seru untuk liburan tak terlupakan.",
     placeholder: "Cari nama wahana, waterpark, theme park (contoh: Dufan Ancol, Waterbom Bali, Trans Studio)...",
     unit: "wahana rekreasi",
-  },
-  "Musik & Konser": {
-    tag: "Katalog Tiket Terlengkap & Resmi",
-    title: "Cari Konser Favoritmu.",
-    subtitle:
-      "Jelajahi konser artis favoritmu dan dapatkan tiket resmi dengan kemudahan pembayaran instan tanpa perlu antre tiket fisik.",
-    placeholder: "Cari artis, venue, atau kota (contoh: Jakarta, Tulus, Senayan)...",
-    unit: "konser",
   },
 };
 
@@ -165,7 +231,7 @@ const TESTIMONIALS = [
     name: "Dinda Ayu",
     role: "Mahasiswi · Jakarta",
     quote:
-      "Beli tiket cuma butuh dua menit, e-tiket resmi langsung masuk email. Nggak perlu cemas kena calo tiket palsu lagi!",
+      "Beli tiket cuma butuh dua menit, e-tiket resmi langsung masuk email dan halaman Tiket Saya. Nggak perlu cemas kena calo tiket palsu lagi!",
     rating: 5,
   },
   {
@@ -283,21 +349,25 @@ function Highlighted({ text, query }: { text: string; query: string }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Main Landing Page Component                                        */
+/*  Halaman Utama Home User (ConcertGo Beranda)                       */
 /* ------------------------------------------------------------------ */
 
-export default function ConcertGoLandingPage() {
+export default function UserHomePage() {
+  const { profile } = useUserProfile();
   const [selectedCategory, setSelectedCategory] = useState<Category>("Festival Musik");
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState<string>("Semua Genre");
   const [city, setCity] = useState<string>("Semua Kota");
   const [sort, setSort] = useState<string>("Tanggal terdekat");
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(new Set(["senja-orchestra", "ombak-festival"]));
   const [promoIndex, setPromoIndex] = useState(0);
 
-  // States for modals
+  // Data Tiket User
+  const [myTickets, setMyTickets] = useState<MyTicket[]>(INITIAL_MY_TICKETS);
+
+  // States untuk modal interaktif
   const [selectedEventForDetail, setSelectedEventForDetail] = useState<EventItem | null>(null);
-  const [selectedEventForLogin, setSelectedEventForLogin] = useState<EventItem | null>(null);
+  const [selectedEventForCheckout, setSelectedEventForCheckout] = useState<EventItem | null>(null);
 
   // Filter pool berdasarkan kategori yang dipilih
   const totalInCategory = useMemo(() => {
@@ -378,12 +448,24 @@ export default function ConcertGoLandingPage() {
     document.getElementById("konser")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // Handler setelah berhasil beli tiket langsung dari modal
+  function handleOrderSuccess(newTicket: MyTicket) {
+    setMyTickets((prev) => [newTicket, ...prev]);
+  }
+
   return (
     <div id="top" className="min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white">
-      <SiteHeader />
+      {/* Header Versi Pengguna Login */}
+      <UserHeader profile={profile} />
 
       <main>
-        {/* Hero Banner Carousel dengan Foto Panggung Nyata */}
+        {/* Sapaan Personal & Ringkasan Status Akun dengan Background Kustom */}
+        <WelcomeStrip myTickets={myTickets} profile={profile} />
+
+        {/* Section Tiket Saya Mendatang (Khusus Akun Login) */}
+        <MyTicketsSection myTickets={myTickets} />
+
+        {/* Hero Carousel Visual Konser (Poster Panggung Unsplash) */}
         <HeroCarousel
           index={promoIndex}
           setIndex={setPromoIndex}
@@ -393,9 +475,10 @@ export default function ConcertGoLandingPage() {
         {/* Rail Kategori Interaktif */}
         <CategoryRail active={selectedCategory} onSelect={handleSelectCategory} />
 
-        {/* Bar Pencarian & Filter */}
+        {/* Search Hero & Live Autocomplete */}
         <SearchHero
           selectedCategory={selectedCategory}
+          profile={profile}
           query={query}
           setQuery={setQuery}
           genre={genre}
@@ -446,7 +529,7 @@ export default function ConcertGoLandingPage() {
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
                 onOpenDetail={(ev) => setSelectedEventForDetail(ev)}
-                onBuyTicket={(ev) => setSelectedEventForLogin(ev)}
+                onBuyTicket={(ev) => setSelectedEventForCheckout(ev)}
               />
 
               {/* Section 2: Paling Populer */}
@@ -459,7 +542,7 @@ export default function ConcertGoLandingPage() {
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
                 onOpenDetail={(ev) => setSelectedEventForDetail(ev)}
-                onBuyTicket={(ev) => setSelectedEventForLogin(ev)}
+                onBuyTicket={(ev) => setSelectedEventForCheckout(ev)}
               />
 
               {/* Section 3: Paling Banyak Difavoritkan */}
@@ -472,28 +555,25 @@ export default function ConcertGoLandingPage() {
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
                 onOpenDetail={(ev) => setSelectedEventForDetail(ev)}
-                onBuyTicket={(ev) => setSelectedEventForLogin(ev)}
+                onBuyTicket={(ev) => setSelectedEventForCheckout(ev)}
               />
             </>
           )}
         </div>
 
-        {/* Banner Promo & Voucher Diskon */}
+        {/* Banner Voucher Promo & Kode Kupon Diskon */}
         <AnnouncementBanner />
 
-        {/* Marquee Komentar & Ulasan Pengguna */}
+        {/* Marquee Ulasan Pengguna */}
         <TestimonialMarquee />
 
-        {/* Keunggulan Layanan ConcertGo */}
+        {/* Keunggulan ConcertGo */}
         <WhyConcertGo />
-
-        {/* Banner Ajakan Registrasi Khusus Tamu */}
-        <GuestRegistrationCTA />
       </main>
 
       <SiteFooter />
 
-      {/* Modal Detail Event Interaktif (Tampilan Event Lengkap) */}
+      {/* Modal Detail Konser Interaktif */}
       <AnimatePresence>
         {selectedEventForDetail && (
           <EventDetailModal
@@ -501,18 +581,20 @@ export default function ConcertGoLandingPage() {
             onClose={() => setSelectedEventForDetail(null)}
             onBuyClick={(ev) => {
               setSelectedEventForDetail(null);
-              setSelectedEventForLogin(ev);
+              setSelectedEventForCheckout(ev);
             }}
           />
         )}
       </AnimatePresence>
 
-      {/* Modal Prompt Login Ketika Pengguna Ingin Checkout */}
+      {/* Modal Checkout Langsung untuk Pengguna yang Sudah Login */}
       <AnimatePresence>
-        {selectedEventForLogin && (
-          <LoginPromptModal
-            event={selectedEventForLogin}
-            onClose={() => setSelectedEventForLogin(null)}
+        {selectedEventForCheckout && (
+          <CheckoutModal
+            event={selectedEventForCheckout}
+            userProfile={profile}
+            onClose={() => setSelectedEventForCheckout(null)}
+            onSuccess={handleOrderSuccess}
           />
         )}
       </AnimatePresence>
@@ -521,18 +603,19 @@ export default function ConcertGoLandingPage() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Header                                                             */
+/*  User Header (Versi Pengguna Login dengan Profil Dropdown)         */
 /* ------------------------------------------------------------------ */
 
 const NAV_LINKS = [
   { label: "Home", targetId: "top" },
+  { label: "Tiket Saya", targetId: "tiket-saya" },
   { label: "Konser", targetId: "konser" },
   { label: "Rekomendasi", targetId: "rekomendasi" },
   { label: "Komentar", targetId: "komentar" },
   { label: "Keunggulan", targetId: "keunggulan" },
 ];
 
-function SiteHeader() {
+function UserHeader({ profile }: { profile: UserProfile }) {
   const [active, setActive] = useState("Home");
 
   function handleNavClick(label: string, targetId: string) {
@@ -553,6 +636,7 @@ function SiteHeader() {
       className="sticky top-0 z-30 border-b border-[#e6d9bf] bg-[#f6efe1]/95 backdrop-blur shadow-xs"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        {/* Brand Logo */}
         <a
           href="#top"
           onClick={(e) => {
@@ -568,6 +652,7 @@ function SiteHeader() {
           </span>
         </a>
 
+        {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 text-sm font-medium text-[#4a3a26] md:flex">
           {NAV_LINKS.map(({ label, targetId }) => (
             <a
@@ -584,7 +669,7 @@ function SiteHeader() {
               {label}
               {active === label && (
                 <motion.span
-                  layoutId="activeNavIndicator"
+                  layoutId="activeNavIndicatorUser"
                   className="absolute -bottom-[17px] left-0 right-0 h-[2.5px] rounded-full bg-[#d9691f]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
@@ -593,28 +678,401 @@ function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href="/Sign-in"
-            className="rounded-full border border-[#d9691f]/40 px-4 py-1.5 text-xs font-semibold text-[#4a3a26] transition-all hover:border-[#d9691f] hover:bg-[#efe4cf]/50 sm:text-sm sm:px-5 sm:py-2"
-          >
-            Masuk
-          </Link>
-
-          <Link
-            href="/Sign-up"
-            className="rounded-full bg-[#241608] px-4 py-1.5 text-xs font-semibold text-[#f6efe1] shadow-xs transition-transform hover:scale-105 active:scale-95 sm:text-sm sm:px-5 sm:py-2"
-          >
-            Daftar Akun
-          </Link>
-        </div>
+        {/* User Account Avatar & Dropdown */}
+        <UserAccountMenu profile={profile} />
       </div>
     </motion.header>
   );
 }
 
+function UserAccountMenu({ profile }: { profile: UserProfile }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={menuRef} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-2.5 rounded-full border border-[#e6d9bf] bg-white/80 py-1.5 pl-1.5 pr-3.5 shadow-xs transition-all hover:border-[#d9691f] hover:bg-white focus:outline-hidden"
+      >
+        <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-sm font-bold text-white shadow-xs">
+          {profile.avatar ? (
+            <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" />
+          ) : (
+            profile.initial
+          )}
+        </span>
+        <div className="hidden text-left sm:block">
+          <p className="text-xs font-bold leading-none text-[#241608]">
+            {profile.name.split(" ")[0]}
+          </p>
+          <span className="text-[10px] font-semibold text-[#d9691f] leading-none">
+            {profile.badge || "VIP Member"}
+          </span>
+        </div>
+        <IconChevronDown className={`transition-transform duration-200 ${open ? "rotate-180 text-[#d9691f]" : "text-[#8a7a63]"}`} />
+      </button>
+
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, y: 8, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 8, scale: 0.96 }}
+          transition={{ duration: 0.18 }}
+          className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#f6efe1] p-2.5 shadow-2xl"
+        >
+          {/* User info card */}
+          <Link
+            href="/User/Profile"
+            onClick={() => setOpen(false)}
+            className="group block rounded-2xl bg-white p-3.5 border border-[#e6d9bf] transition-colors hover:border-[#d9691f]/40 hover:bg-orange-50/40"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-base font-bold text-white shadow-md transition-transform group-hover:scale-105">
+                {profile.avatar ? (
+                  <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" />
+                ) : (
+                  profile.initial
+                )}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-[#241608] group-hover:text-[#d9691f] transition-colors">
+                  {profile.name}
+                </p>
+                <p className="truncate text-xs text-[#8a7a63]">{profile.email}</p>
+                <span className="mt-1 inline-block rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-[#d9691f]">
+                  {profile.badge || "VIP Member"}
+                </span>
+              </div>
+            </div>
+          </Link>
+
+          {/* Section: Tiket & Acara */}
+          <div className="mt-2.5 px-2 py-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a7a63]">
+              Aktivitas Tiket & Acara
+            </span>
+          </div>
+          <nav className="space-y-0.5 text-xs font-semibold text-[#4a3a26]">
+            <Link
+              href="/User/tiket-saya"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+            >
+              <span className="flex items-center gap-2.5">
+                <IconTicket /> E-Tiket Saya
+              </span>
+              <span className="rounded-full bg-[#d9691f]/10 px-2 py-0.5 text-[10px] font-bold text-[#d9691f]">
+                Aktif
+              </span>
+            </Link>
+
+            <Link
+              href="/User/wishlist"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+            >
+              <span className="flex items-center gap-2.5">
+                <IconHeartSmall /> Wishlist Acara Favorit
+              </span>
+              <span className="text-[10px] font-bold text-rose-600">
+                ❤️ Tersimpan
+              </span>
+            </Link>
+
+            <a
+              href="#tiket-saya"
+              onClick={() => {
+                setOpen(false);
+                document.getElementById("tiket-saya")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+            >
+              <IconRefreshCwSmall /> Ringkasan Tiket Mendatang
+            </a>
+          </nav>
+
+          {/* Section: Pengaturan & Bantuan */}
+          <div className="mt-2.5 border-t border-[#e6d9bf]/70 pt-2 px-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a7a63]">
+              Pengaturan & Bantuan
+            </span>
+          </div>
+          <nav className="mt-1 space-y-0.5 text-xs font-semibold text-[#4a3a26]">
+            <Link
+              href="/User/Profile"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+            >
+              <IconUser /> Profil & Pengaturan Tema
+            </Link>
+
+            <Link
+              href="/User/settings"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+            >
+              <IconSettings /> Pengaturan & Keamanan
+            </Link>
+
+            <Link
+              href="/User/settings?tab=feedback"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+            >
+              <span className="flex items-center gap-2.5">
+                <IconMessageSquare /> Beri Masukan / Feedback
+              </span>
+              <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-800">
+                Saran
+              </span>
+            </Link>
+          </nav>
+
+          {/* Logout */}
+          <div className="mt-2.5 border-t border-[#e6d9bf] pt-2">
+            <Link
+              href="/Sign-in"
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-red-600 transition-colors hover:bg-red-50"
+            >
+              <IconLogout /> Keluar dari Akun
+            </Link>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
-/*  Hero Carousel (Visual Poster Panggung)                             */
+/*  Welcome Strip (Sapaan Personal Pengguna dengan Tema Kustom)       */
+/* ------------------------------------------------------------------ */
+
+function WelcomeStrip({
+  myTickets,
+  profile,
+}: {
+  myTickets: MyTicket[];
+  profile: UserProfile;
+}) {
+  const activeTicketsCount = myTickets.filter((t) => t.status === "Aktif").length;
+  const pendingCount = myTickets.filter((t) => t.status === "Menunggu Pembayaran").length;
+  const hasCustomBg = Boolean(profile.bgCover);
+
+  return (
+    <section className="mx-auto max-w-7xl px-6 pt-8">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+        className={`relative overflow-hidden rounded-3xl border shadow-sm transition-all duration-300 p-6 sm:p-7 ${
+          hasCustomBg
+            ? "border-[#d9691f]/40 text-white shadow-xl shadow-black/20"
+            : "border-[#e6d9bf] bg-gradient-to-r from-[#f1e6d0] via-[#efe3cc] to-[#ebdcc2] text-[#241608]"
+        }`}
+      >
+        {/* Background Image Layer jika pengguna memilih custom background */}
+        {hasCustomBg && (
+          <>
+            <img
+              src={profile.bgCover!}
+              alt="Tema Background Konser"
+              className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 hover:scale-102"
+              style={{ imageRendering: "auto" }}
+            />
+            {/* Gradasi elegan: gelap di sisi kiri tempat teks berada, dan lembut di sisi kanan agar foto HD tampil jernih */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/30" />
+          </>
+        )}
+
+        <div className="relative z-10 flex flex-col items-start justify-between gap-5 lg:flex-row lg:items-center">
+          {/* Sisi Kiri: Avatar + Sapaan Personal */}
+          <div className="flex items-center gap-4 sm:gap-5">
+            {/* Avatar Pengguna */}
+            <div className="relative shrink-0">
+              {profile.avatar ? (
+                <img
+                  src={profile.avatar}
+                  alt={profile.name}
+                  className={`h-16 w-16 sm:h-18 sm:w-18 rounded-full object-cover shadow-lg ${
+                    hasCustomBg
+                      ? "ring-3 ring-amber-400/90 shadow-black/60"
+                      : "ring-3 ring-[#d9691f] shadow-black/10"
+                  }`}
+                />
+              ) : (
+                <span
+                  className={`flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-2xl font-extrabold text-white shadow-lg ${
+                    hasCustomBg ? "ring-3 ring-amber-400/90" : "ring-3 ring-[#d9691f]"
+                  }`}
+                >
+                  {profile.initial}
+                </span>
+              )}
+              <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-emerald-500 shadow-xs" />
+            </div>
+
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-[#d9691f] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
+                  {profile.badge || "Akun Terverifikasi"}
+                </span>
+                {hasCustomBg ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/20 backdrop-blur px-2.5 py-0.5 text-[10px] font-semibold text-amber-200 border border-white/20">
+                    ✨ Tema Konser Khusus Aktif
+                  </span>
+                ) : (
+                  <span className="text-xs text-[#8a7a63] font-medium">ConcertGo VIP</span>
+                )}
+              </div>
+
+              <h1
+                className={`mt-1.5 font-[var(--font-display,serif)] text-2xl font-bold sm:text-3xl ${
+                  hasCustomBg ? "text-white drop-shadow-sm" : "text-[#241608]"
+                }`}
+              >
+                Halo, {profile.name}! 👋
+              </h1>
+
+              <p
+                className={`mt-1 max-w-2xl text-xs sm:text-sm leading-relaxed ${
+                  hasCustomBg ? "text-white/85" : "text-[#5a4a35]"
+                }`}
+              >
+                Kamu punya{" "}
+                <strong className={hasCustomBg ? "text-amber-300 font-bold" : "text-[#241608]"}>
+                  {activeTicketsCount} e-tiket aktif
+                </strong>{" "}
+                dan{" "}
+                <strong className={hasCustomBg ? "text-amber-300 font-bold" : "text-[#241608]"}>
+                  {pendingCount} pesanan
+                </strong>{" "}
+                menunggu pembayaran. Temukan 12 konser baru minggu ini!
+              </p>
+            </div>
+          </div>
+
+          {/* Sisi Kanan: Action Button */}
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
+            <a
+              href="#tiket-saya"
+              className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold shadow-md transition-all hover:scale-105 active:scale-95 ${
+                hasCustomBg
+                  ? "bg-[#d9691f] text-white hover:bg-[#c45c16] shadow-[#d9691f]/40"
+                  : "bg-[#241608] text-[#f6efe1] hover:bg-[#3a2010]"
+              }`}
+            >
+              <IconTicketSmall />
+              <span>Lihat Tiket Saya ({myTickets.length})</span>
+            </a>
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Section "Tiket Saya Mendatang" (Widget Khusus Pengguna Login)       */
+/* ------------------------------------------------------------------ */
+
+function MyTicketsSection({ myTickets }: { myTickets: MyTicket[] }) {
+  return (
+    <section id="tiket-saya" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-8">
+      <div className="mb-6 flex flex-col justify-between gap-1 sm:flex-row sm:items-end">
+        <div>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#d9691f]">
+            Koleksi E-Tiket Anda
+          </span>
+          <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-[#241608] md:text-3xl">
+            Tiket Saya Mendatang
+          </h2>
+        </div>
+        <Link
+          href="/User/tiket-saya"
+          className="inline-flex items-center gap-1 text-xs font-bold text-[#d9691f] hover:underline"
+        >
+          Buka Halaman Tiket Saya Lengkap →
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        {myTickets.slice(0, 3).map((ticket, idx) => (
+          <motion.div
+            key={ticket.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: idx * 0.08 }}
+            whileHover={{ y: -4 }}
+            className="flex flex-col justify-between overflow-hidden rounded-3xl border border-[#e6d9bf] bg-white p-5 shadow-xs transition-shadow hover:shadow-lg"
+          >
+            <div>
+              <div className="flex items-center justify-between border-b border-[#e6d9bf]/70 pb-3">
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                    ticket.status === "Aktif"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-amber-100 text-amber-800"
+                  }`}
+                >
+                  ● {ticket.status}
+                </span>
+                <span className="font-mono text-[11px] font-bold text-[#8a7a63]">
+                  {ticket.bookingCode}
+                </span>
+              </div>
+
+              <h3 className="mt-3 font-[var(--font-display,serif)] text-base font-bold text-[#241608] line-clamp-1">
+                {ticket.eventTitle}
+              </h3>
+              <p className="text-xs font-semibold text-[#d9691f] mt-0.5">
+                {ticket.tierName} × {ticket.qty} Tiket
+              </p>
+
+              <div className="mt-3 space-y-1 text-[11px] text-[#8a7a63]">
+                <p className="flex items-center gap-1.5 truncate">
+                  <IconPinSmall /> {ticket.venue}
+                </p>
+                <p className="flex items-center gap-1.5">
+                  <IconClock /> {ticket.date} · {ticket.time}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between border-t border-[#e6d9bf] pt-3">
+              <div>
+                <p className="text-[10px] text-[#8a7a63] uppercase">Total Biaya</p>
+                <p className="text-sm font-bold text-[#241608]">
+                  {formatIDR(ticket.totalPrice)}
+                </p>
+              </div>
+
+              <Link
+                href="/User/tiket-saya/detail-tiket-beli"
+                className="rounded-full bg-[#241608] px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-[#d9691f]"
+              >
+                {ticket.status === "Aktif" ? "Buka E-Tiket" : "Bayar Sekarang"}
+              </Link>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Hero Carousel (Sinkron Sama Persis dengan Landing Page)            */
 /* ------------------------------------------------------------------ */
 
 function HeroCarousel({
@@ -700,7 +1158,7 @@ function HeroCarousel({
             </AnimatePresence>
           </div>
 
-          {/* Bottom actions & indicators */}
+          {/* Bottom actions & indicators (Arrow kanan-kiri sama persis seperti landing page) */}
           <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/20">
             <div className="flex items-center gap-2">
               <button
@@ -743,11 +1201,10 @@ function HeroCarousel({
           </div>
         </div>
 
-        {/* Side Mosaic Cards (Dummy Live Highlights) */}
+        {/* Side Mosaic Highlights */}
         <div className="grid grid-rows-2 gap-4">
           <motion.div
             whileHover={{ y: -3 }}
-            transition={{ duration: 0.2 }}
             className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#241209] p-6 text-white shadow-md"
           >
             <img
@@ -762,18 +1219,18 @@ function HeroCarousel({
                 <span className="rounded-full bg-[#d9691f] px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
                   🔥 Trending Pekan Ini
                 </span>
-                <span className="text-xs font-bold text-[#f6efe1]">Rp 150.000</span>
+                <span className="text-xs font-bold text-[#f6efe1]">{formatIDR(EVENTS[2]?.priceFrom ?? 100000)}</span>
               </div>
               <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold">
-                {EVENTS[2].title}
+                {EVENTS[2]?.title ?? "Neon Dangdut Koplo Party"}
               </h3>
               <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">
-                Suasana syahdu gedung tua ditemani aransemen jazz romantis musisi ibukota.
+                {EVENTS[2]?.blurb ?? "Goyang sampai subuh dengan remix koplo modern dan tata laser canggih."}
               </p>
             </div>
 
             <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-white/20 text-xs text-[#c4b59d]">
-              <span>Taman Fatahillah · Jakarta</span>
+              <span>{EVENTS[2]?.venue ?? "Bandung"} · {EVENTS[2]?.city ?? "Bandung"}</span>
               <button
                 onClick={() => onOpenDetail(EVENTS[2])}
                 className="font-semibold text-white hover:text-[#d9a26a] hover:underline"
@@ -785,12 +1242,11 @@ function HeroCarousel({
 
           <motion.div
             whileHover={{ y: -3 }}
-            transition={{ duration: 0.2 }}
             className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#1a1208] p-6 text-white shadow-md"
           >
             <img
-              src={EVENTS[7].image}
-              alt={EVENTS[7].title}
+              src={EVENTS[7]?.image ?? EVENTS[0].image}
+              alt={EVENTS[7]?.title ?? "Musikal"}
               className="absolute inset-0 h-full w-full object-cover opacity-35 transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1a1208] via-[#1a1208]/80 to-transparent" />
@@ -803,15 +1259,15 @@ function HeroCarousel({
                 <span className="text-xs font-mono text-amber-300">Hemat 25%</span>
               </div>
               <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold">
-                {EVENTS[7].title}
+                {EVENTS[7]?.title ?? "Musikal Laskar Pelangi"}
               </h3>
               <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">
-                Konser akustik intim 200 penonton di Rooftop Kopi Manja dengan pemandangan lampu malam kota.
+                {EVENTS[7]?.blurb ?? "Kisah inspiratif anak-anak Belitong di panggung megah berbalut aransemen orkestra."}
               </p>
             </div>
 
             <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-white/20 text-xs text-[#c4b59d]">
-              <span>1 Nov 2026 · Jogja</span>
+              <span>{EVENTS[7]?.venue ?? "Jakarta"} · {EVENTS[7]?.city ?? "Jakarta"}</span>
               <button
                 onClick={() => onOpenDetail(EVENTS[7])}
                 className="font-semibold text-white hover:text-[#d9a26a] hover:underline"
@@ -827,7 +1283,7 @@ function HeroCarousel({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Category Rail                                                      */
+/*  Category Rail (Tanpa Geser Horizontal, Terbungkus Rapi & Bersih)  */
 /* ------------------------------------------------------------------ */
 
 function CategoryRail({
@@ -948,6 +1404,7 @@ function buildSuggestions(query: string, category: Category): Suggestion[] {
 
 function SearchHero(props: {
   selectedCategory: Category;
+  profile: UserProfile;
   query: string;
   setQuery: (v: string) => void;
   genre: string;
@@ -964,6 +1421,7 @@ function SearchHero(props: {
 }) {
   const {
     selectedCategory,
+    profile,
     query,
     setQuery,
     genre,
@@ -980,6 +1438,7 @@ function SearchHero(props: {
   } = props;
 
   const meta = CATEGORY_META[selectedCategory] ?? CATEGORY_META["Festival Musik"];
+  const firstName = profile?.name?.trim() ? profile.name.trim().split(" ")[0] : "Sobat";
 
   const [isOpen, setIsOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(0);
@@ -1064,7 +1523,7 @@ function SearchHero(props: {
       </span>
 
       <h2 className="mt-4 font-[var(--font-display,serif)] text-3xl font-bold leading-tight text-[#241608] md:text-5xl">
-        {meta.title}
+        {meta.title(firstName)}
       </h2>
       <p className="mx-auto mt-3 max-w-lg text-sm text-[#5a4a35] md:text-base">
         {meta.subtitle}
@@ -1144,7 +1603,7 @@ function SearchHero(props: {
                       {s.meta && <span className="block truncate text-xs text-[#8a7a63]">{s.meta}</span>}
                     </span>
                     <span className="shrink-0 rounded-full bg-[#f1e6d0] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#8a7a63]">
-                      {s.kind === "city" ? "Kota" : s.kind === "genre" ? "Kategori" : "Acara"}
+                      {s.kind === "city" ? "Kota" : s.kind === "genre" ? "Genre" : "Acara"}
                     </span>
                   </button>
                 </li>
@@ -1209,14 +1668,15 @@ function SearchHero(props: {
       </div>
 
       <p className="mt-3 text-xs text-[#8a7a63]">
-        Menampilkan <span className="font-semibold text-[#241608]">{resultCount}</span> dari {totalInCategory} {meta.unit} tersedia
+        Menampilkan <span className="font-semibold text-[#241608]">{resultCount}</span> dari{" "}
+        <span className="font-semibold text-[#241608]">{totalInCategory}</span> {meta.unit} tersedia
       </p>
     </motion.section>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Carousel Event Section & Interactive Cards                        */
+/*  Carousel Event Section with Modern Left/Right Navigation          */
 /* ------------------------------------------------------------------ */
 
 function CarouselEventSection({
@@ -1290,7 +1750,7 @@ function CarouselEventSection({
 
       {/* Grid Container with Floating Side Arrows for Tickets */}
       <div className="relative">
-        {/* Floating Side Arrow Left */}
+        {/* Floating Side Arrow Left (Untuk Tiket) */}
         {totalPages > 1 && (
           <button
             type="button"
@@ -1303,7 +1763,7 @@ function CarouselEventSection({
           </button>
         )}
 
-        {/* Floating Side Arrow Right */}
+        {/* Floating Side Arrow Right (Untuk Tiket) */}
         {totalPages > 1 && (
           <button
             type="button"
@@ -1403,7 +1863,7 @@ function EventCard({
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-108"
         />
 
-        {/* Gradient overlays for contrast */}
+        {/* Gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/50" />
 
         {/* Top Badges & Calendar Widget */}
@@ -1478,7 +1938,7 @@ function EventCard({
           </p>
         </div>
 
-        {/* Status Penjualan Bar */}
+        {/* Status Kuota Tiket */}
         <div className="space-y-1 pt-1">
           <div className="flex justify-between text-[10px] font-medium text-[#8a7a63]">
             <span>Kuota Tiket</span>
@@ -1527,7 +1987,7 @@ function EventCard({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Interactive Event Detail Modal (Tampilan Lengkap Dummy Event)      */
+/*  Interactive Event Detail Modal (Tampilan Event Lengkap)           */
 /* ------------------------------------------------------------------ */
 
 function EventDetailModal({
@@ -1633,7 +2093,7 @@ function EventDetailModal({
               {tab.label}
               {activeTab === tab.id && (
                 <motion.span
-                  layoutId="tabUnderline"
+                  layoutId="tabUnderlineUser"
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#d9691f]"
                 />
               )}
@@ -1646,7 +2106,7 @@ function EventDetailModal({
           {activeTab === "tiket" && (
             <div className="space-y-4">
               <p className="text-xs text-[#5a4a35]">
-                Pilih kategori tiket yang ingin kamu pesan. Setiap akun maksimal membeli 4 tiket resmi.
+                Pilih kategori tiket yang ingin kamu pesan. Akun terverifikasi dapat memesan hingga 4 tiket resmi.
               </p>
 
               <div className="space-y-3">
@@ -1698,13 +2158,13 @@ function EventDetailModal({
                 })}
               </div>
 
-              {/* Stage layout mockup graphic */}
+              {/* Stage layout graphic */}
               <div className="mt-6 rounded-2xl border border-[#e6d9bf] bg-[#efe4cf] p-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-wider text-[#8a7a63]">
-                  Denah Panggung & Area Penonton (Ilustrasi)
+                  Denah Panggung & Tata Kursi (Ilustrasi)
                 </p>
                 <div className="mx-auto mt-3 max-w-sm rounded-xl border border-dashed border-[#bfae8f] bg-white/80 p-4">
-                  <div className="rounded-lg bg-[#241608] py-2 text-xs font-bold text-white tracking-widest uppercase">
+                  <div className="rounded-lg bg-[#241209] py-2 text-xs font-bold text-white tracking-widest uppercase">
                     [ PANGGUNG UTAMA / STAGE ]
                   </div>
                   <div className="mt-2 rounded-lg bg-amber-100 py-1.5 text-[11px] font-semibold text-amber-900">
@@ -1739,7 +2199,7 @@ function EventDetailModal({
                 ))}
               </div>
               <p className="mt-3 text-xs text-[#5a4a35] leading-relaxed">
-                *Lineup dapat bertambah seiring pengumuman fase lanjutan dari promotor resmi.
+                *Lineup terkonfirmasi oleh promotor dan dapat bertambah sesuai pengumuman jadwal fase lanjutan.
               </p>
             </div>
           )}
@@ -1757,7 +2217,7 @@ function EventDetailModal({
                 ))}
               </div>
               <p className="text-[11px] text-[#8a7a63] mt-2">
-                *Waktu dapat disesuaikan dengan kondisi di lapangan oleh pihak penyelenggara.
+                *Waktu dapat disesuaikan dengan kondisi di lokasi oleh pihak penyelenggara acara.
               </p>
             </div>
           )}
@@ -1785,16 +2245,16 @@ function EventDetailModal({
                 <h4 className="font-bold text-sm text-[#241608]">Aturan & Ketentuan Penonton</h4>
                 <ul className="mt-2 space-y-1.5 text-xs text-[#5a4a35]">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#d9691f]">•</span> E-tiket resmi wajib ditunjukkan untuk penukaran gelang wristband.
+                    <span className="text-[#d9691f]">•</span> E-tiket resmi di akunmu wajib ditunjukkan saat penukaran gelang wristband.
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[#d9691f]">•</span> Dilarang membawa kamera profesional (DSLR/Mirrorless) tanpa ID pers resmi.
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#d9691f]">•</span> Dilarang membawa makanan dan minuman kemasan dari luar arena konser.
+                    <span className="text-[#d9691f]">•</span> Dilarang membawa makanan dan minuman botol dari luar area konser.
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#d9691f]">•</span> Anak di bawah usia 12 tahun wajib didampingi oleh orang tua/wali dewasa.
+                    <span className="text-[#d9691f]">•</span> Anak di bawah usia 12 tahun wajib didampingi orang tua/wali dewasa.
                   </li>
                 </ul>
               </div>
@@ -1820,6 +2280,356 @@ function EventDetailModal({
             Lanjutkan Pemesanan Tiket
           </motion.button>
         </div>
+      </motion.div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Interactive Checkout Modal (Khusus Pengguna yang Sudah Login)      */
+/* ------------------------------------------------------------------ */
+
+function CheckoutModal({
+  event,
+  userProfile,
+  onClose,
+  onSuccess,
+}: {
+  event: EventItem;
+  userProfile: UserProfile;
+  onClose: () => void;
+  onSuccess: (newTicket: MyTicket) => void;
+}) {
+  const [selectedTier, setSelectedTier] = useState<TicketTier>(
+    event.ticketTiers.find((t) => t.status !== "Habis") ?? event.ticketTiers[0]
+  );
+  const [qty, setQty] = useState(1);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<"QRIS" | "BCA" | "Mandiri" | "GoPay">("QRIS");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isDone, setIsDone] = useState(false);
+  const [createdTicket, setCreatedTicket] = useState<MyTicket | null>(null);
+
+  const subtotal = selectedTier.price * qty;
+  const adminFee = promoApplied ? 0 : 5000;
+  const grandTotal = Math.max(0, subtotal - promoDiscount + adminFee);
+
+  function applyVoucher() {
+    const code = promoCode.trim().toUpperCase();
+    if (code === "CONCERTGO20") {
+      const discount = Math.round(subtotal * 0.2);
+      setPromoDiscount(discount);
+      setPromoApplied(true);
+    } else if (code === "BEBASADMIN") {
+      setPromoDiscount(0);
+      setPromoApplied(true);
+    } else {
+      alert("Kode promo tidak valid. Coba gunakan CONCERTGO20 atau BEBASADMIN!");
+    }
+  }
+
+  function handleProcessPayment() {
+    setIsProcessing(true);
+    setTimeout(() => {
+      const newTicket: MyTicket = {
+        id: `t-${Date.now()}`,
+        eventId: event.id,
+        eventTitle: event.title,
+        venue: `${event.venue}, ${event.city}`,
+        date: event.date,
+        time: event.time,
+        tierName: selectedTier.name,
+        qty: qty,
+        totalPrice: grandTotal,
+        status: "Aktif",
+        bookingCode: `CG-${Math.floor(10000 + Math.random() * 90000)}R`,
+      };
+      setCreatedTicket(newTicket);
+      onSuccess(newTicket);
+      setIsProcessing(false);
+      setIsDone(true);
+    }, 1200);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 bg-black/75 backdrop-blur-xs"
+      />
+
+      {/* Modal Dialog */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.94, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 350 }}
+        className="relative z-10 w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-3xl border border-[#e6d9bf] bg-[#f6efe1] p-6 shadow-2xl text-[#241608]"
+      >
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-[#4a3a26] hover:bg-white transition-colors"
+        >
+          ✕
+        </button>
+
+        {!isDone ? (
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#d9691f] text-white text-xs font-bold">
+                ✓
+              </span>
+              <p className="text-xs font-bold uppercase tracking-wider text-[#d9691f]">
+                Checkout Tiket Resmi
+              </p>
+            </div>
+            <h3 className="mt-1 font-[var(--font-display,serif)] text-2xl font-bold">
+              Konfirmasi Pemesanan Tiket
+            </h3>
+            <p className="mt-1 text-xs text-[#5a4a35]">
+              Data pemesan otomatis terisi sesuai profil aktif akun Anda.
+            </p>
+
+            {/* Event Summary */}
+            <div className="mt-4 flex items-center gap-3 rounded-2xl border border-[#e6d9bf] bg-white p-3 shadow-xs">
+              <img
+                src={event.image}
+                alt={event.title}
+                className="h-16 w-20 rounded-xl object-cover"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="font-bold text-sm text-[#241608] line-clamp-1">{event.title}</p>
+                <p className="text-xs font-semibold text-[#d9691f]">{event.artist}</p>
+                <p className="text-[11px] text-[#8a7a63] mt-0.5">
+                  {event.venue} · {event.date}, {event.time}
+                </p>
+              </div>
+            </div>
+
+            {/* Buyer Info Form (Auto-filled) */}
+            <div className="rounded-2xl border border-[#e6d9bf] bg-[#efe4cf]/70 p-4 text-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-[#241608]">Data Pemesan Tiket (Terverifikasi)</span>
+                <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">
+                  Akun Aktif
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-[11px]">
+                <div>
+                  <span className="text-[#8a7a63]">Nama Lengkap:</span>
+                  <p className="font-semibold text-[#241608]">{userProfile.name}</p>
+                </div>
+                <div>
+                  <span className="text-[#8a7a63]">Email Penerima:</span>
+                  <p className="font-semibold text-[#241608] truncate">{userProfile.email}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Tier & Quantity Selector */}
+            <div className="mt-4 space-y-3">
+              <label className="block text-xs font-bold text-[#241608]">Pilih Kategori Tiket</label>
+              <div className="space-y-2">
+                {event.ticketTiers.map((tier) => {
+                  const isSelected = selectedTier.name === tier.name;
+                  const isSoldOut = tier.status === "Habis";
+                  return (
+                    <div
+                      key={tier.name}
+                      onClick={() => !isSoldOut && setSelectedTier(tier)}
+                      className={`flex items-center justify-between rounded-xl border p-3 text-xs transition-all ${
+                        isSoldOut
+                          ? "opacity-40 cursor-not-allowed bg-neutral-100"
+                          : isSelected
+                          ? "border-[#d9691f] bg-white ring-1 ring-[#d9691f] shadow-xs cursor-pointer"
+                          : "border-[#e6d9bf] bg-white/70 hover:bg-white cursor-pointer"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          checked={isSelected}
+                          onChange={() => setSelectedTier(tier)}
+                          disabled={isSoldOut}
+                          className="accent-[#d9691f]"
+                        />
+                        <span className="font-bold text-[#241608]">{tier.name}</span>
+                      </div>
+                      <span className="font-bold text-[#d9691f]">{formatIDR(tier.price)}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Quantity */}
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-xs font-bold text-[#241608]">Jumlah Tiket</span>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#e6d9bf] bg-white font-bold text-sm hover:bg-[#efe4cf]"
+                  >
+                    -
+                  </button>
+                  <span className="font-bold text-sm text-[#241608]">{qty}</span>
+                  <button
+                    type="button"
+                    onClick={() => setQty((q) => Math.min(4, q + 1))}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#e6d9bf] bg-white font-bold text-sm hover:bg-[#efe4cf]"
+                  >
+                    +
+                  </button>
+                  <span className="text-[10px] text-[#8a7a63]">(Maks. 4)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Promo Voucher Code */}
+            <div className="mt-4 rounded-2xl border border-[#e6d9bf] bg-white p-3.5">
+              <label className="block text-xs font-bold text-[#241608]">Kode Kupon Diskon</label>
+              <div className="mt-2 flex gap-2">
+                <input
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="Gunakan CONCERTGO20 atau BEBASADMIN"
+                  className="flex-1 rounded-xl border border-[#e6d9bf] px-3 py-1.5 text-xs font-mono text-[#241608] focus:border-[#d9691f] focus:outline-hidden"
+                />
+                <button
+                  type="button"
+                  onClick={applyVoucher}
+                  className="rounded-xl bg-[#241608] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#3a2010]"
+                >
+                  Terapkan
+                </button>
+              </div>
+              {promoApplied && (
+                <p className="mt-2 text-[11px] font-bold text-emerald-700">
+                  ✓ Voucher berhasil dipasang!
+                </p>
+              )}
+            </div>
+
+            {/* Payment Method Selector */}
+            <div className="mt-4 space-y-2">
+              <label className="block text-xs font-bold text-[#241608]">Metode Pembayaran</label>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {(["QRIS", "BCA", "Mandiri", "GoPay"] as const).map((method) => (
+                  <button
+                    key={method}
+                    type="button"
+                    onClick={() => setPaymentMethod(method)}
+                    className={`flex items-center justify-between rounded-xl border p-2.5 font-semibold transition-all ${
+                      paymentMethod === method
+                        ? "border-[#d9691f] bg-white ring-1 ring-[#d9691f] text-[#d9691f] shadow-xs"
+                        : "border-[#e6d9bf] bg-white/70 text-[#4a3a26] hover:bg-white"
+                    }`}
+                  >
+                    <span>{method}</span>
+                    <span className="text-[10px] text-[#8a7a63]">Instant</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Price Breakdown */}
+            <div className="mt-5 space-y-1.5 border-t border-[#e6d9bf] pt-3 text-xs text-[#5a4a35]">
+              <div className="flex justify-between">
+                <span>Harga Tiket ({qty}x)</span>
+                <span className="font-semibold text-[#241608]">{formatIDR(subtotal)}</span>
+              </div>
+              {promoDiscount > 0 && (
+                <div className="flex justify-between text-emerald-700 font-semibold">
+                  <span>Potongan Promo Voucher</span>
+                  <span>- {formatIDR(promoDiscount)}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span>Biaya Layanan & Pajak</span>
+                <span className="font-semibold text-[#241608]">{formatIDR(adminFee)}</span>
+              </div>
+              <div className="flex justify-between border-t border-[#e6d9bf] pt-2 text-sm font-bold text-[#241608]">
+                <span>Total Tagihan</span>
+                <span className="text-base text-[#d9691f]">{formatIDR(grandTotal)}</span>
+              </div>
+            </div>
+
+            {/* Submit Action */}
+            <div className="mt-6 flex flex-col gap-2">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isProcessing}
+                onClick={handleProcessPayment}
+                className="flex items-center justify-center rounded-full bg-[#d9691f] py-3 text-sm font-bold text-white shadow-lg shadow-[#d9691f]/30 hover:bg-[#c45c16] disabled:opacity-50"
+              >
+                {isProcessing ? "Memproses Penerbitan Tiket..." : "Konfirmasi & Bayar Sekarang"}
+              </motion.button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-xs text-[#8a7a63] hover:text-[#241608] py-1"
+              >
+                Batalkan
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Success Screen */
+          <div className="py-6 text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", damping: 12, stiffness: 200 }}
+              className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-3xl font-bold shadow-md"
+            >
+              ✓
+            </motion.div>
+
+            <h3 className="mt-4 font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+              Pemesanan Tiket Berhasil!
+            </h3>
+            <p className="mt-2 text-xs text-[#5a4a35] max-w-sm mx-auto leading-relaxed">
+              E-tiket resmi untuk <strong className="text-[#241608]">{event.title}</strong> telah terbit
+              dan otomatis tersimpan di akun <strong className="text-[#241608]">{userProfile.name}</strong>.
+            </p>
+
+            {createdTicket && (
+              <div className="my-5 mx-auto max-w-xs rounded-2xl border border-dashed border-[#d9691f] bg-white p-4 text-left shadow-xs">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-[#8a7a63]">Kode Booking:</span>
+                  <span className="font-mono font-bold text-[#d9691f]">{createdTicket.bookingCode}</span>
+                </div>
+                <div className="mt-2 pt-2 border-t border-[#e6d9bf] text-xs">
+                  <p className="font-bold text-[#241608]">{createdTicket.eventTitle}</p>
+                  <p className="text-[11px] text-[#8a7a63]">{createdTicket.tierName} · {createdTicket.qty} Tiket</p>
+                  <p className="text-[11px] text-[#8a7a63]">{createdTicket.venue}</p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2.5 max-w-xs mx-auto">
+              <Link
+                href="/User/tiket-saya/detail-tiket-beli"
+                className="flex items-center justify-center rounded-full bg-[#241608] py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#3a2010]"
+              >
+                Buka E-Tiket & Barcode
+              </Link>
+              <button
+                onClick={onClose}
+                className="rounded-full border border-[#e6d9bf] bg-white py-2.5 text-xs font-semibold text-[#241608] hover:bg-[#efe4cf]"
+              >
+                Kembali ke Beranda
+              </button>
+            </div>
+          </div>
+        )}
       </motion.div>
     </div>
   );
@@ -2076,136 +2886,6 @@ function WhyConcertGo() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Guest CTA (Khusus Pengguna Sebelum Login)                         */
-/* ------------------------------------------------------------------ */
-
-function GuestRegistrationCTA() {
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-12">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.97 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#241209] via-[#33170a] to-[#1a0c06] p-8 text-center text-[#f6efe1] shadow-2xl md:p-14"
-      >
-        <div className="relative z-10 mx-auto max-w-2xl">
-          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider text-[#d9a26a] backdrop-blur-sm">
-            GABUNG SEKARANG
-          </span>
-          <h2 className="mt-4 font-[var(--font-display,serif)] text-3xl font-bold md:text-5xl">
-            Siap Temukan Tiket Konser Impianmu?
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm text-[#e8dcc4] md:text-base">
-            Daftar akun gratis sekarang untuk menikmati kemudahan simpan konser favorit, akses tiket presale eksklusif, dan notifikasi jadwal musisi idola.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/Sign-up"
-              className="rounded-full bg-[#d9691f] px-7 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105 active:scale-95 hover:bg-[#c45c16]"
-            >
-              Daftar Akun Gratis
-            </Link>
-
-            <Link
-              href="/Sign-in"
-              className="rounded-full border border-white/30 bg-white/10 px-7 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-105 active:scale-95"
-            >
-              Sudah Punya Akun? Masuk
-            </Link>
-          </div>
-        </div>
-
-        {/* Ambient background decoration */}
-        <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-[#d9691f]/20 blur-3xl pointer-events-none" />
-        <div className="absolute -right-20 -bottom-20 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
-      </motion.div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Login Prompt Modal (Framer Motion)                                 */
-/* ------------------------------------------------------------------ */
-
-function LoginPromptModal({
-  event,
-  onClose,
-}: {
-  event: EventItem;
-  onClose: () => void;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        className="fixed inset-0 bg-black/70 backdrop-blur-xs"
-      />
-
-      {/* Modal Dialog */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.92, y: 20 }}
-        transition={{ type: "spring", damping: 25, stiffness: 350 }}
-        className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#f6efe1] p-6 shadow-2xl text-[#241608]"
-      >
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/60 text-[#4a3a26] hover:bg-white transition-colors"
-        >
-          ✕
-        </button>
-
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#d9691f] text-white mb-4 shadow-md shadow-[#d9691f]/30">
-          <IconLock />
-        </div>
-
-        <h3 className="font-[var(--font-display,serif)] text-xl font-bold">
-          Masuk untuk Melanjutkan Pembelian
-        </h3>
-        <p className="mt-2 text-xs leading-relaxed text-[#5a4a35]">
-          Kamu perlu masuk atau mendaftarkan akun ConcertGo terlebih dahulu untuk memesan tiket{" "}
-          <strong className="text-[#241608]">{event.title}</strong> di {event.venue}.
-        </p>
-
-        <div className="my-4 rounded-2xl bg-[#efe4cf] p-3 text-xs flex justify-between items-center">
-          <div>
-            <p className="font-semibold text-[#241608]">{event.title}</p>
-            <p className="text-[#8a7a63]">{event.city} · {event.date}</p>
-          </div>
-          <span className="font-bold text-[#d9691f]">{formatIDR(event.priceFrom)}</span>
-        </div>
-
-        <div className="flex flex-col gap-2.5">
-          <Link
-            href="/Sign-in"
-            className="flex items-center justify-center rounded-full bg-[#241608] py-2.5 text-sm font-semibold text-[#f6efe1] transition-transform hover:scale-[1.02] active:scale-95"
-          >
-            Masuk ke Akun
-          </Link>
-          <Link
-            href="/Sign-up"
-            className="flex items-center justify-center rounded-full border border-[#d9691f] bg-transparent py-2.5 text-sm font-semibold text-[#d9691f] transition-transform hover:scale-[1.02] active:scale-95"
-          >
-            Daftar Akun Baru
-          </Link>
-        </div>
-
-        <p className="mt-4 text-center text-[11px] text-[#8a7a63]">
-          Butuh bantuan? Kunjungi halaman Pusat Bantuan ConcertGo.
-        </p>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  Footer                                                             */
 /* ------------------------------------------------------------------ */
 
@@ -2308,6 +2988,17 @@ function SiteFooter() {
 /* ------------------------------------------------------------------ */
 /*  Inline SVG Icons                                                   */
 /* ------------------------------------------------------------------ */
+
+function IconGrid() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+    </svg>
+  );
+}
 
 function IconMusic() {
   return (
@@ -2471,6 +3162,16 @@ function IconRefreshCw() {
     </svg>
   );
 }
+function IconRefreshCwSmall() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M3 12a9 9 0 0 1 15.5-6.4L21 8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21 3v5h-5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21 12a9 9 0 0 1-15.5 6.4L3 16" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 21v-5h5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 function IconHeadphones() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -2478,11 +3179,72 @@ function IconHeadphones() {
     </svg>
   );
 }
-function IconLock() {
+function IconUser() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconTicket() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="3" y="7" width="18" height="12" rx="2.5" />
+      <path d="M3 12h18" strokeDasharray="1.5 2.2" />
+    </svg>
+  );
+}
+function IconHomeSmall() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  );
+}
+function IconLogout() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" strokeLinecap="round" />
+      <path d="M16 17l5-5-5-5M21 12H9" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconSettings() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+}
+function IconHeartSmall() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+    </svg>
+  );
+}
+function IconMessageSquare() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+function IconChevronDown({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={className}
+    >
+      <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

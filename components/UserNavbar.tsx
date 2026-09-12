@@ -310,29 +310,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                       )}
                     </Link>
 
-                    {/* Beri Masukan / Feedback */}
-                    <Link
-                      href="/User/settings?tab=feedback"
-                      onClick={() => setOpen(false)}
-                      className={`flex items-center justify-between rounded-xl px-3 py-2 transition-colors ${
-                        currentActive === "feedback"
-                          ? "bg-white text-[#d9691f] font-bold border border-[#e6d9bf] shadow-2xs"
-                          : "hover:bg-white hover:text-[#d9691f]"
-                      }`}
-                    >
-                      <span className="flex items-center gap-2.5">
-                        <IconMessageSmall /> Beri Masukan / Feedback
-                      </span>
-                      {currentActive === "feedback" ? (
-                        <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
-                          📍 Sedang Dibuka
-                        </span>
-                      ) : (
-                        <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-800">
-                          Saran
-                        </span>
-                      )}
-                    </Link>
+
                   </nav>
 
                   {/* Logout */}

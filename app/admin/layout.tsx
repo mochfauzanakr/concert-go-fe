@@ -12,6 +12,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Manajemen Pengguna", href: "/admin/Dashboard/users", icon: "👥" },
   ];
 
+  if (pathname === "/admin/Dashboard") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white">
       {/* Sidebar */}

@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { EVENTS } from "@/lib/eventsData";
 
 function formatIDR(amount: number) {
@@ -13,7 +14,7 @@ function formatIDR(amount: number) {
 export default function AdminConcertsPage() {
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-[#f1e6d0] p-6 rounded-2xl shadow-sm border border-[#e6d9bf]">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="flex justify-between items-center bg-[#f1e6d0] p-6 rounded-2xl shadow-sm border border-[#e6d9bf]">
         <div>
           <h2 className="text-xl font-bold font-[var(--font-display,serif)] text-[#241608]">Manajemen Konser</h2>
           <p className="text-sm text-[#8a7a63] mt-1">Kelola daftar konser dan ketersediaan tiket.</p>
@@ -21,9 +22,9 @@ export default function AdminConcertsPage() {
         <button className="bg-[#d9691f] hover:bg-[#c45c16] text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-all flex items-center gap-2">
           <span>➕</span> Tambah Konser Baru
         </button>
-      </div>
+      </motion.div>
 
-      <div className="bg-[#f1e6d0] rounded-2xl shadow-sm border border-[#e6d9bf] overflow-hidden">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }} className="bg-[#f1e6d0] rounded-2xl shadow-sm border border-[#e6d9bf] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -96,7 +97,7 @@ export default function AdminConcertsPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

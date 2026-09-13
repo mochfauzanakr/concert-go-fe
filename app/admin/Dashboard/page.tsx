@@ -277,76 +277,40 @@ export default function AdminHomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white lg:flex">
-      {/* Overlay mobile ketika sidebar terbuka */}
-      <AnimatePresence>
-        {sidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+    <div className="space-y-8">
+      {/* Sapaan & Alert Operasional */}
+      <section id="ringkasan" className="scroll-mt-24 space-y-6">
+        <WelcomeBar profile={ADMIN_PROFILE} pendingApprovalCount={approvals.length} />
+        {(pendingVerifCount > 0 || approvals.length > 0) && (
+          <OpsAlertBanner
+            pendingVerifCount={pendingVerifCount}
+            pendingApprovalCount={approvals.length}
           />
         )}
-      </AnimatePresence>
 
-      {/* Sidebar */}
-      <AdminSidebar
-        activeNav={activeNav}
-        onSelect={handleNavSelect}
-        open={sidebarOpen}
-        pendingApprovalCount={approvals.length}
-        profile={ADMIN_PROFILE}
-      />
+        {/* Grid Statistik */}
+        <StatCardsGrid pendingVerifCount={pendingVerifCount} pendingApprovalCount={approvals.length} />
 
-      {/* Konten Utama */}
-      <div className="flex min-h-screen flex-1 flex-col lg:pl-72">
-        <AdminTopbar
-          profile={ADMIN_PROFILE}
-          onOpenSidebar={() => setSidebarOpen(true)}
-          pendingVerifCount={pendingVerifCount}
-          pendingApprovalCount={approvals.length}
+        {/* Grafik Pendapatan + Aksi Cepat */}
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+          <RevenueChartCard />
+          <QuickActionsPanel />
+        </div>
+      </section>
+
+      {/* Persetujuan Acara & Acara Berkinerja Terbaik */}
+      <div id="persetujuan" className="scroll-mt-24 grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <PendingApprovalsCard
+          approvals={approvals}
+          onApprove={handleApprove}
+          onReject={handleReject}
         />
+        <TopEventsCard events={topEvents} />
+      </div>
 
-        <main className="flex-1 space-y-8 px-5 py-6 sm:px-8 sm:py-8">
-          {/* Sapaan & Alert Operasional */}
-          <section id="ringkasan" className="scroll-mt-24 space-y-6">
-            <WelcomeBar profile={ADMIN_PROFILE} pendingApprovalCount={approvals.length} />
-            {(pendingVerifCount > 0 || approvals.length > 0) && (
-              <OpsAlertBanner
-                pendingVerifCount={pendingVerifCount}
-                pendingApprovalCount={approvals.length}
-              />
-            )}
-
-            {/* Grid Statistik */}
-            <StatCardsGrid pendingVerifCount={pendingVerifCount} pendingApprovalCount={approvals.length} />
-
-            {/* Grafik Pendapatan + Aksi Cepat */}
-            <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-              <RevenueChartCard />
-              <QuickActionsPanel />
-            </div>
-          </section>
-
-          {/* Persetujuan Acara & Acara Berkinerja Terbaik */}
-          <div id="persetujuan" className="scroll-mt-24 grid grid-cols-1 gap-6 xl:grid-cols-3">
-            <PendingApprovalsCard
-              approvals={approvals}
-              onApprove={handleApprove}
-              onReject={handleReject}
-            />
-            <TopEventsCard events={topEvents} />
-          </div>
-
-          {/* Transaksi Terbaru */}
-          <div id="transaksi" className="scroll-mt-24">
-            <RecentTransactionsCard transactions={transactions} onVerify={handleVerifyPayment} />
-          </div>
-
-          <AdminFooterNote />
-        </main>
+      {/* Transaksi Terbaru */}
+      <div id="transaksi" className="scroll-mt-24">
+        <RecentTransactionsCard transactions={transactions} onVerify={handleVerifyPayment} />
       </div>
     </div>
   );

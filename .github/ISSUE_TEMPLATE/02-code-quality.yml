@@ -1,0 +1,43 @@
+name: Refactor & Code Quality
+description: Laporkan kode yang berantakan, struktur folder buruk, atau butuh pembersihan (Tech Debt)
+title: "[Refactor]: "
+labels: ["refactor"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Lokasi File / Folder
+      description: Tuliskan path file atau folder yang perlu dirapikan.
+      placeholder: "Contoh: app/admin/Dashboard/ atau components/UserNavbar.tsx"
+    validations:
+      required: true
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Deskripsi Masalah Kode / Folder
+      description: Apa yang membuat kode/folder ini tidak rapi?
+      placeholder: |
+        Contoh masalah:
+        - Nama folder tidak konsisten (ada PascalCase, ada lowercase)
+        - Logic komponen terlalu panjang (> 300 baris)
+        - Banyak duplikasi kode yang bisa dijadikan komponen bersama
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Tingkat Dampak / Urgensi
+      options:
+        - Low (Kode masih berjalan, hanya kurang rapi)
+        - Medium (Menghambat pengembangan fitur baru / bikin bingung)
+        - High (Bisa menyebabkan bug tersembunyi atau masalah performa)
+    validations:
+      required: true
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Usulan Perbaikan (Solusi)
+      description: Bagaimana sebaiknya kode/folder ini dirapikan?
+      placeholder: "Contoh: Pindahkan komponen X ke folder /components/shared dan bagi menjadi 2 file kecil."
+    validations:
+      required: false

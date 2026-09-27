@@ -1,0 +1,25 @@
+name: Bug Report
+description: Laporkan masalah atau error
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Langkah Reproduksi (Repro Steps)
+      description: Bagaimana cara kami menemukan error ini?
+      placeholder: |
+        1. Buka halaman X
+        2. Klik tombol Y
+        3. Lihat error Z
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Local / Development
+        - Production
+    validations:
+      required: true  

@@ -1,8 +1,11 @@
 name: CI Checks
-on:
-  pull_request:
-    branches: [ "main" ]
 
+on:
+  push:
+    branches: [ "main", "development" ]
+  pull_request:
+    branches: [ "main", "development" ]
+    
 jobs:
   lint-and-build:
     runs-on: ubuntu-latest

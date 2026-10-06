@@ -1,22 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import type { UserProfile } from "@/types/user";
 
-export type UserProfile = {
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  city: string;
-  birthdate: string;
-  bio: string;
-  initial: string;
-  badge: string;
-  avatar: string | null;
-  bgCover: string | null;
-  favoriteGenre: string;
-  memberSince: string;
-};
+export type { UserProfile };
 
 export const PRESET_BACKGROUNDS = [
   {
@@ -95,9 +83,6 @@ export const DEFAULT_PROFILE: UserProfile = {
   memberSince: "2022",
 };
 
-const STORAGE_KEY = "concertgo_user_profile";
-const EVENT_NAME = "concertgo_profile_changed";
-
 /**
  * Mengompresi dan mengubah resolusi file foto secara otomatis
  * agar ukuran file mengecil drastis (biasanya dari 5MB+ menjadi 20-80KB)
@@ -153,77 +138,57 @@ export function compressImageFile(
   });
 }
 
-export function getStoredProfile(): UserProfile {
-  if (typeof window === "undefined") return DEFAULT_PROFILE;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_PROFILE;
-    return { ...DEFAULT_PROFILE, ...JSON.parse(raw) };
-  } catch {
-    return DEFAULT_PROFILE;
-  }
+// -------------------------------------------------------------
+// ZUSTAND STATE MANAGEMENT
+// -------------------------------------------------------------
+
+interface UserProfileState {
+  profile: UserProfile;
+  updateProfile: (updates: Partial<UserProfile>) => UserProfile;
+  removeAvatar: () => UserProfile;
+  removeBgCover: () => UserProfile;
 }
 
-export function saveStoredProfile(profile: UserProfile): void {
-  if (typeof window === "undefined") return;
-  const serialized = JSON.stringify(profile);
-
-  try {
-    localStorage.setItem(STORAGE_KEY, serialized);
-  } catch (err) {
-    console.warn("Penyimpanan localStorage penuh atau quota exceeded:", err);
-    try {
-      sessionStorage.setItem(STORAGE_KEY, serialized);
-    } catch {}
-  }
-
-  try {
-    window.dispatchEvent(new Event(EVENT_NAME));
-    window.dispatchEvent(new Event("storage"));
-  } catch {}
-}
-
-export function useUserProfile() {
-  const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
-
-  useEffect(() => {
-    setProfile(getStoredProfile());
-
-    function handleSync() {
-      setProfile(getStoredProfile());
+export const useUserProfile = create<UserProfileState>()(
+  persist(
+    (set, get) => ({
+      profile: DEFAULT_PROFILE,
+      updateProfile: (updates) => {
+        const { profile } = get();
+        const updated = { ...profile, ...updates };
+        
+        // hitung initial ulang jika nama diubah
+        if (updates.name) {
+          updated.initial = updates.name.trim().charAt(0).toUpperCase() || "U";
+        }
+        
+        set({ profile: updated });
+        return updated;
+      },
+      removeAvatar: () => {
+        const { profile } = get();
+        const updated = { ...profile, avatar: null };
+        set({ profile: updated });
+        return updated;
+      },
+      removeBgCover: () => {
+        const { profile } = get();
+        const updated = { ...profile, bgCover: null };
+        set({ profile: updated });
+        return updated;
+      },
+    }),
+    {
+      name: "concertgo_user_profile", // Nama key di localStorage
+      storage: createJSONStorage(() => localStorage), // (Opsional) Secara spesifik set ke localStorage
+      
+      // Fallback manual atau custom serialize (Jika Quota Exceeded)
+      // Namun karena gambar sudah dicompress, kemungkinan kecil terjadi QuotaExceeded
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error("Gagal memuat state dari localStorage:", error);
+        }
+      },
     }
-
-    window.addEventListener(EVENT_NAME, handleSync);
-    window.addEventListener("storage", handleSync);
-    return () => {
-      window.removeEventListener(EVENT_NAME, handleSync);
-      window.removeEventListener("storage", handleSync);
-    };
-  }, []);
-
-  return {
-    profile,
-    updateProfile: (updates: Partial<UserProfile>) => {
-      const updated = { ...profile, ...updates };
-      // hitung initial ulang jika nama diubah
-      if (updates.name) {
-        updated.initial = updates.name.trim().charAt(0).toUpperCase() || "U";
-      }
-      setProfile(updated);
-      saveStoredProfile(updated);
-      return updated;
-    },
-    removeAvatar: () => {
-      const updated = { ...profile, avatar: null };
-      setProfile(updated);
-      saveStoredProfile(updated);
-      return updated;
-    },
-    removeBgCover: () => {
-      const updated = { ...profile, bgCover: null };
-      setProfile(updated);
-      saveStoredProfile(updated);
-      return updated;
-    },
-  };
-}
+  )
+);

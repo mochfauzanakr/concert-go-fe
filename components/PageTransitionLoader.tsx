@@ -130,7 +130,10 @@ function LoaderContent() {
         }
 
         // Mulai loading 2-3 detik untuk transisi ke halaman lain!
-        startLoadingTransition(DEFAULT_LOAD_DURATION);
+        const isAuthRoute = url.pathname === '/sign-in' || url.pathname === '/sign-up' || url.pathname === '/reset-password';
+        if (!isAuthRoute) {
+          startLoadingTransition(DEFAULT_LOAD_DURATION);
+        }
       } catch {
         // Abaikan parse error
       }
@@ -148,8 +151,9 @@ function LoaderContent() {
     if (pathname !== currentPathRef.current || newSearch !== currentSearchRef.current) {
       currentPathRef.current = pathname;
       currentSearchRef.current = newSearch;
+      const isAuthRoute = pathname === '/sign-in' || pathname === '/sign-up' || pathname === '/reset-password';
       // Jika loading belum aktif (misal dari back/forward button browser), picu loading
-      if (!isLoading) {
+      if (!isLoading && !isAuthRoute) {
         startLoadingTransition(DEFAULT_LOAD_DURATION);
       }
     }

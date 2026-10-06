@@ -21,13 +21,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserProfile } from "@/lib/userProfile";
+import { Home, Ticket, Heart, Clock, User, Settings, LogOut } from "lucide-react";
 
 export type ActiveNavPage =
   | "beranda"
-  | "tiket-saya"
+  | "tickets"
   | "wishlist"
   | "settings"
   | "profile"
@@ -50,15 +52,15 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
     activePage ||
     (pathname?.includes("/detail-tiket-beli")
       ? "detail-tiket"
-      : pathname?.startsWith("/User/tiket-saya")
-      ? "tiket-saya"
-      : pathname?.startsWith("/User/wishlist")
+      : pathname?.startsWith("/user/tickets")
+      ? "tickets"
+      : pathname?.startsWith("/user/wishlist")
       ? "wishlist"
-      : pathname?.startsWith("/User/settings")
+      : pathname?.startsWith("/user/settings")
       ? "settings"
-      : pathname?.startsWith("/User/Profile")
+      : pathname?.startsWith("/user/profile")
       ? "profile"
-      : pathname?.startsWith("/User/feedback")
+      : pathname?.startsWith("/user/feedback")
       ? "feedback"
       : "beranda");
 
@@ -77,10 +79,10 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5">
         {/* Sisi Kiri: Brand Logo ConcertGo */}
         <Link
-          href="/User/Homepage"
+          href="/user/homepage"
           className="group flex items-center gap-2.5 transition-transform hover:scale-105"
         >
-          <img src="/image/Logo.png" alt="ConcertGo" className="h-8 w-auto" />
+          <Image src="/image/Logo.png" alt="ConcertGo" width={32} height={32} className="h-8 w-auto" />
           <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-[#241608]">
             <span>Concert</span>
             <span className="text-[#d9691f]">Go</span>
@@ -100,7 +102,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
             >
               <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-xs font-bold text-white shadow-xs">
                 {profile.avatar ? (
-                  <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" />
+                  <Image src={profile.avatar} alt={profile.name} width={32} height={32} className="h-full w-full object-cover" />
                 ) : (
                   profile.initial
                 )}
@@ -134,7 +136,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                 >
                   {/* User Profile Card */}
                   <Link
-                    href="/User/Profile"
+                    href="/user/profile"
                     onClick={() => setOpen(false)}
                     className={`block rounded-2xl p-3 border transition-colors ${
                       currentActive === "profile"
@@ -145,7 +147,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-sm font-bold text-white shadow-xs">
                         {profile.avatar ? (
-                          <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" />
+                          <Image src={profile.avatar} alt={profile.name} width={44} height={44} className="h-full w-full object-cover" />
                         ) : (
                           profile.initial
                         )}
@@ -175,7 +177,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                   </div>
                   <nav className="space-y-1 text-xs font-semibold text-[#4a3a26]">
                     <Link
-                      href="/User/Homepage"
+                      href="/user/homepage"
                       onClick={() => setOpen(false)}
                       className={`flex items-center justify-between rounded-xl px-3 py-2 transition-colors ${
                         currentActive === "beranda"
@@ -184,7 +186,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <IconHomeSmall /> Beranda Utama
+                        <Home size={15} /> Beranda Utama
                       </span>
                       {currentActive === "beranda" ? (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
@@ -207,18 +209,18 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                   <nav className="mt-1 space-y-1 text-xs font-semibold text-[#4a3a26]">
                     {/* E-Tiket Saya */}
                     <Link
-                      href="/User/tiket-saya"
+                      href="/user/tickets"
                       onClick={() => setOpen(false)}
                       className={`flex items-center justify-between rounded-xl px-3 py-2 transition-colors ${
-                        currentActive === "tiket-saya" || currentActive === "detail-tiket"
+                        currentActive === "tickets" || currentActive === "detail-tiket"
                           ? "bg-white text-[#d9691f] font-bold border border-[#e6d9bf] shadow-2xs"
                           : "hover:bg-white hover:text-[#d9691f]"
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <IconTicketSmall /> E-Tiket Saya
+                        <Ticket size={15} /> E-Tiket Saya
                       </span>
-                      {currentActive === "tiket-saya" || currentActive === "detail-tiket" ? (
+                      {currentActive === "tickets" || currentActive === "detail-tiket" ? (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
                           📍 Sedang Dibuka
                         </span>
@@ -231,7 +233,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
 
                     {/* Wishlist Acara Favorit */}
                     <Link
-                      href="/User/wishlist"
+                      href="/user/wishlist"
                       onClick={() => setOpen(false)}
                       className={`flex items-center justify-between rounded-xl px-3 py-2 transition-colors ${
                         currentActive === "wishlist"
@@ -240,7 +242,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <IconHeartSmall /> Wishlist Acara Favorit
+                        <Heart size={15} /> Wishlist Acara Favorit
                       </span>
                       {currentActive === "wishlist" ? (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
@@ -255,11 +257,11 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
 
                     {/* Ringkasan Tiket Mendatang */}
                     <Link
-                      href="/User/Homepage#tiket-saya"
+                      href="/user/homepage#tickets"
                       onClick={() => setOpen(false)}
                       className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
                     >
-                      <IconClockSmall /> Ringkasan Tiket Mendatang
+                      <Clock size={15} /> Ringkasan Tiket Mendatang
                     </Link>
                   </nav>
 
@@ -272,7 +274,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                   <nav className="mt-1 space-y-1 text-xs font-semibold text-[#4a3a26]">
                     {/* Profil & Pengaturan Tema */}
                     <Link
-                      href="/User/Profile"
+                      href="/user/profile"
                       onClick={() => setOpen(false)}
                       className={`flex items-center justify-between rounded-xl px-3 py-2 transition-colors ${
                         currentActive === "profile"
@@ -281,7 +283,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <IconUserSmall /> Profil & Pengaturan Tema
+                        <User size={15} /> Profil & Pengaturan Tema
                       </span>
                       {currentActive === "profile" && (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
@@ -292,7 +294,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
 
                     {/* Pengaturan & Keamanan */}
                     <Link
-                      href="/User/settings"
+                      href="/user/settings"
                       onClick={() => setOpen(false)}
                       className={`flex items-center justify-between rounded-xl px-3 py-2 transition-colors ${
                         currentActive === "settings"
@@ -301,7 +303,7 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <IconSettingsSmall /> Pengaturan & Keamanan
+                        <Settings size={15} /> Pengaturan & Keamanan
                       </span>
                       {currentActive === "settings" && (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
@@ -316,10 +318,10 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
                   {/* Logout */}
                   <div className="mt-2.5 border-t border-[#e6d9bf] pt-2">
                     <Link
-                      href="/Sign-in"
+                      href="/sign-in"
                       className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-red-600 transition-colors hover:bg-red-50"
                     >
-                      <IconLogoutSmall /> Keluar dari Akun
+                      <LogOut size={15} /> Keluar dari Akun
                     </Link>
                   </div>
                 </motion.div>
@@ -332,72 +334,4 @@ export default function UserNavbar({ activePage, extraRightAction }: UserNavbarP
   );
 }
 
-function IconHomeSmall() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
-    </svg>
-  );
-}
-
-function IconTicketSmall() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="3" y="7" width="18" height="12" rx="2" />
-      <path d="M3 12h18" strokeDasharray="2 2" />
-    </svg>
-  );
-}
-
-function IconHeartSmall() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-    </svg>
-  );
-}
-
-function IconClockSmall() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconUserSmall() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconSettingsSmall() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  );
-}
-
-function IconMessageSmall() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
-function IconLogoutSmall() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" strokeLinecap="round" />
-      <path d="M16 17l5-5-5-5M21 12H9" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+/* Inline SVG icons removed — using lucide-react instead */

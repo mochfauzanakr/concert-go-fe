@@ -5,20 +5,32 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 
 export default function GlobalTemplate({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+  const isAuth = pathname === '/sign-in' || pathname === '/sign-up' || pathname === '/reset-password';
+  const [mounted, setMounted] = useState(isAuth);
 
   useEffect(() => {
+    // Abaikan loading khusus untuk rute otentikasi agar bisa langsung bergeser (slide) tanpa jeda
+    const isAuth = pathname === '/sign-in' || pathname === '/sign-up' || pathname === '/reset-password';
+    
+    if (isAuth) {
+      setMounted(true);
+      return;
+    }
+
     setMounted(false);
     
     // Menahan mounting konten selama 2.4 detik (sinkron dengan PageTransitionLoader)
-    // agar animasi Framer Motion tidak terlewat/selesai di balik layar loading.
     const timer = setTimeout(() => {
       setMounted(true);
     }, 2400);
     
     return () => clearTimeout(timer);
   }, [pathname]);
+
+  if (isAuth) {
+    return <div className="h-full w-full">{children}</div>;
+  }
 
   if (!mounted) {
     // Solusi Layar Hitam: 

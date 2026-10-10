@@ -30,7 +30,7 @@ export default function SignInPage() {
   const { toasts, push, dismiss } = useToasts();
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608]">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-theme-bg font-[var(--font-body,ui-sans-serif)] text-theme-text">
       <AuthHeader />
       <ToastStack toasts={toasts} dismiss={dismiss} />
 
@@ -38,7 +38,7 @@ export default function SignInPage() {
         {/* Soft Background Accents */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d9691f]/10 via-[#f6efe1] to-[#f1e6d0]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d9691f]/10 via-theme-bg to-theme-card-hover"
         />
         <div
           aria-hidden
@@ -46,7 +46,7 @@ export default function SignInPage() {
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-20 bottom-20 h-72 w-72 rounded-full bg-[#241209]/15 blur-3xl"
+          className="pointer-events-none absolute -right-20 bottom-20 h-72 w-72 rounded-full bg-theme-dark/15 blur-3xl"
         />
 
         <SignInCard onToast={push} />
@@ -125,10 +125,10 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
       initial={{ opacity: 0, x: -40 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4 }}
-      className="relative z-10 w-full max-w-4xl overflow-hidden rounded-3xl border border-[#e6d9bf] bg-white shadow-2xl md:grid md:grid-cols-12"
+      className="relative z-10 w-full max-w-4xl overflow-hidden rounded-3xl border border-theme-border bg-theme-card shadow-2xl md:grid md:grid-cols-12"
     >
       {/* Left Column: Visual Concert Banner Showcase (Hidden on Mobile) */}
-      <div className="relative hidden md:col-span-5 md:flex md:flex-col md:justify-between p-8 text-[#f6efe1] overflow-hidden bg-[#241209]">
+      <div className="relative hidden md:col-span-5 md:flex md:flex-col md:justify-between p-8 text-[#f6efe1] overflow-hidden bg-theme-dark">
         <Image
           src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop"
           alt="Concert stage crowd"
@@ -140,7 +140,7 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
 
         {/* Top Tag */}
         <div className="relative z-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-[#d9a26a] backdrop-blur-md border border-white/10">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-theme-card/15 px-3 py-1 text-xs font-semibold text-[#d9a26a] backdrop-blur-md border border-theme-card/10">
             <span className="h-2 w-2 rounded-full bg-[#d9691f] animate-pulse" />
             TIKET RESMI 100%
           </span>
@@ -157,7 +157,7 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
         </div>
 
         {/* Bottom Social Proof */}
-        <div className="relative z-10 rounded-2xl bg-white/10 p-3.5 backdrop-blur-md border border-white/10 text-xs">
+        <div className="relative z-10 rounded-2xl bg-theme-card/10 p-3.5 backdrop-blur-md border border-theme-card/10 text-xs">
           <div className="flex text-amber-400 gap-1 text-xs mb-1">★★★★★</div>
           <p className="text-white/90 font-medium leading-relaxed">
             &ldquo;Checkout tiket tercepat, barcode resmi langsung masuk email tanpa antrean calo.&rdquo;
@@ -167,24 +167,24 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
       </div>
 
       {/* Right Column: Clean Form Container */}
-      <div className="p-7 sm:p-10 md:col-span-7 flex flex-col justify-center bg-white">
+      <div className="p-7 sm:p-10 md:col-span-7 flex flex-col justify-center bg-theme-card">
         {step === "credentials" ? (
           <>
             {/* Top Switch Tabs (Masuk vs Daftar) */}
-            <div className="relative flex items-center rounded-2xl bg-[#efe4cf]/60 p-1 mb-8">
+            <div className="relative flex items-center rounded-2xl bg-theme-card-hover/60 p-1 mb-8">
               {/* Tab Indicator */}
               <motion.div
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
                 transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                className="absolute left-1 top-1 bottom-1 w-[calc(50%-4px)] rounded-xl bg-white shadow-xs"
+                className="absolute left-1 top-1 bottom-1 w-[calc(50%-4px)] rounded-xl bg-theme-card shadow-xs"
               />
-              <span className="relative z-10 flex-1 text-center py-2 rounded-xl text-xs font-bold text-[#241608]">
+              <span className="relative z-10 flex-1 text-center py-2 rounded-xl text-xs font-bold text-theme-text">
                 Masuk
               </span>
               <Link
                 href="/sign-up"
-                className="relative z-10 flex-1 text-center py-2 rounded-xl text-xs font-semibold text-[#5a4a35] hover:text-[#241608] transition-colors"
+                className="relative z-10 flex-1 text-center py-2 rounded-xl text-xs font-semibold text-theme-text-muted hover:text-theme-text transition-colors"
               >
                 Daftar Akun
               </Link>
@@ -192,10 +192,10 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
 
             {/* Header Text */}
             <div className="mb-6">
-              <h1 className="font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+              <h1 className="font-[var(--font-display,serif)] text-2xl font-bold text-theme-text">
                 Selamat Datang Kembali
               </h1>
-              <p className="mt-1 text-xs text-[#5a4a35]">
+              <p className="mt-1 text-xs text-theme-text-muted">
                 Masukkan alamat email dan kata sandi untuk mengakses akunmu.
               </p>
             </div>
@@ -205,7 +205,7 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
               <button
                 type="button"
                 onClick={() => handleSocial("Google")}
-                className="flex items-center justify-center gap-2 rounded-xl border border-[#e6d9bf] bg-[#fbf8f2] py-2.5 px-3 text-xs font-semibold text-[#241608] transition-all hover:bg-white hover:border-[#d9691f]/50 hover:shadow-xs"
+                className="flex items-center justify-center gap-2 rounded-xl border border-theme-border bg-[#fbf8f2] py-2.5 px-3 text-xs font-semibold text-theme-text transition-all hover:bg-theme-card hover:border-[#d9691f]/50 hover:shadow-xs"
               >
                 <IconGoogle />
                 <span>Google</span>
@@ -214,7 +214,7 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
               <button
                 type="button"
                 onClick={() => handleSocial("Facebook")}
-                className="flex items-center justify-center gap-2 rounded-xl border border-[#e6d9bf] bg-[#fbf8f2] py-2.5 px-3 text-xs font-semibold text-[#241608] transition-all hover:bg-white hover:border-[#1877F2]/50 hover:shadow-xs"
+                className="flex items-center justify-center gap-2 rounded-xl border border-theme-border bg-[#fbf8f2] py-2.5 px-3 text-xs font-semibold text-theme-text transition-all hover:bg-theme-card hover:border-[#1877F2]/50 hover:shadow-xs"
               >
                 <IconFacebook />
                 <span>Facebook</span>
@@ -222,8 +222,8 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
             </div>
 
             <div className="relative mb-6 flex items-center justify-center">
-              <span className="absolute inset-x-0 h-px bg-[#e6d9bf]" />
-              <span className="relative bg-white px-3 text-[11px] font-medium uppercase tracking-wider text-[#8a7a63]">
+              <span className="absolute inset-x-0 h-px bg-theme-border" />
+              <span className="relative bg-theme-card px-3 text-[11px] font-medium uppercase tracking-wider text-theme-text-light">
                 atau dengan email
               </span>
             </div>
@@ -231,17 +231,17 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
             {/* Credential Form */}
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#4a3a26] mb-1.5">
+                <label className="block text-xs font-semibold text-theme-text-muted mb-1.5">
                   Alamat Email
                 </label>
                 <div
                   className={`relative flex items-center rounded-xl border transition-all ${
                     errors.email
                       ? "border-rose-400 bg-rose-50/30 ring-2 ring-rose-200"
-                      : "border-[#e6d9bf] bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#d9691f]/20"
+                      : "border-theme-border bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-theme-card focus-within:ring-2 focus-within:ring-[#d9691f]/20"
                   }`}
                 >
-                  <span className="pl-3.5 text-[#8a7a63]">
+                  <span className="pl-3.5 text-theme-text-light">
                     <Mail className="h-4 w-4" />
                   </span>
                   <input
@@ -253,7 +253,7 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
                     }}
                     placeholder="nama@email.com"
                     autoComplete="email"
-                    className="w-full bg-transparent py-2.5 pl-3 pr-4 text-xs sm:text-sm text-[#241608] placeholder:text-[#a1917a] focus:outline-hidden"
+                    className="w-full bg-transparent py-2.5 pl-3 pr-4 text-xs sm:text-sm text-theme-text placeholder:text-[#a1917a] focus:outline-hidden"
                   />
                 </div>
                 {errors.email && (
@@ -262,17 +262,17 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#4a3a26] mb-1.5">
+                <label className="block text-xs font-semibold text-theme-text-muted mb-1.5">
                   Kata Sandi
                 </label>
                 <div
                   className={`relative flex items-center rounded-xl border transition-all ${
                     errors.password
                       ? "border-rose-400 bg-rose-50/30 ring-2 ring-rose-200"
-                      : "border-[#e6d9bf] bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#d9691f]/20"
+                      : "border-theme-border bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-theme-card focus-within:ring-2 focus-within:ring-[#d9691f]/20"
                   }`}
                 >
-                  <span className="pl-3.5 text-[#8a7a63]">
+                  <span className="pl-3.5 text-theme-text-light">
                     <Lock className="h-4 w-4" />
                   </span>
                   <input
@@ -284,12 +284,12 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
                     }}
                     placeholder="Minimal 8 karakter"
                     autoComplete="current-password"
-                    className="w-full bg-transparent py-2.5 pl-3 pr-10 text-xs sm:text-sm text-[#241608] placeholder:text-[#a1917a] focus:outline-hidden"
+                    className="w-full bg-transparent py-2.5 pl-3 pr-10 text-xs sm:text-sm text-theme-text placeholder:text-[#a1917a] focus:outline-hidden"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 text-[#8a7a63] hover:text-[#241608] transition-colors flex items-center"
+                    className="absolute right-3 text-theme-text-light hover:text-theme-text transition-colors flex items-center"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -300,7 +300,7 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center gap-2 text-[#5a4a35] cursor-pointer select-none">
+                <label className="flex items-center gap-2 text-theme-text-muted cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={remember}
@@ -322,14 +322,14 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
                 whileTap={{ scale: 0.985 }}
                 type="submit"
                 disabled={loading}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#241608] py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-theme-button py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
               >
                 {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {loading ? "Memverifikasi data..." : "Masuk ke Akun"}
               </motion.button>
             </form>
 
-            <p className="mt-6 text-center text-xs text-[#5a4a35]">
+            <p className="mt-6 text-center text-xs text-theme-text-muted">
               Belum punya akun ConcertGo?{" "}
               <Link href="/sign-up" className="font-bold text-[#d9691f] hover:underline">
                 Daftar sekarang
@@ -438,15 +438,15 @@ function VerificationStep({
   return (
     <div className="py-2">
       <div className="text-center mb-6">
-        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#efe4cf] text-[#d9691f]">
+        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-theme-card-hover text-[#d9691f]">
           <ShieldCheck className="h-6 w-6" />
         </div>
-        <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+        <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-theme-text">
           Masukkan Kode Verifikasi
         </h2>
-        <p className="mt-1 text-xs text-[#5a4a35] max-w-sm mx-auto">
+        <p className="mt-1 text-xs text-theme-text-muted max-w-sm mx-auto">
           Kami telah mengirimkan 6 digit kode keamanan ke{" "}
-          <strong className="text-[#241608] font-semibold">{email || "email Anda"}</strong>.
+          <strong className="text-theme-text font-semibold">{email || "email Anda"}</strong>.
         </p>
       </div>
 
@@ -464,10 +464,10 @@ function VerificationStep({
               value={d}
               onChange={(e) => updateDigit(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(e, i)}
-              className={`h-12 w-11 sm:h-13 sm:w-12 rounded-xl border text-center text-lg font-bold text-[#241608] transition-all focus:outline-hidden ${
+              className={`h-12 w-11 sm:h-13 sm:w-12 rounded-xl border text-center text-lg font-bold text-theme-text transition-all focus:outline-hidden ${
                 error
                   ? "border-rose-400 bg-rose-50/50"
-                  : "border-[#e6d9bf] bg-[#fbf8f2] focus:border-[#d9691f] focus:bg-white focus:ring-2 focus:ring-[#d9691f]/20"
+                  : "border-theme-border bg-[#fbf8f2] focus:border-[#d9691f] focus:bg-theme-card focus:ring-2 focus:ring-[#d9691f]/20"
               }`}
             />
           ))}
@@ -480,15 +480,15 @@ function VerificationStep({
           whileTap={{ scale: 0.985 }}
           type="submit"
           disabled={verifying}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#241608] py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-theme-button py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
         >
           {verifying && <Loader2 className="h-4 w-4 animate-spin" />}
           {verifying ? "Memverifikasi..." : "Konfirmasi & Masuk"}
         </motion.button>
 
-        <div className="mt-4 flex flex-col items-center gap-2 text-xs text-[#5a4a35]">
+        <div className="mt-4 flex flex-col items-center gap-2 text-xs text-theme-text-muted">
           {resendIn > 0 ? (
-            <span>Kirim ulang kode dalam <strong className="text-[#241608]">{resendIn}s</strong></span>
+            <span>Kirim ulang kode dalam <strong className="text-theme-text">{resendIn}s</strong></span>
           ) : (
             <button
               type="button"
@@ -502,7 +502,7 @@ function VerificationStep({
           <button
             type="button"
             onClick={onBack}
-            className="text-[#8a7a63] hover:text-[#241608] mt-1 transition-colors"
+            className="text-theme-text-light hover:text-theme-text mt-1 transition-colors"
           >
             ← Ubah alamat email
           </button>

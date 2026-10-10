@@ -81,14 +81,14 @@ export default function ResetPasswordPage() {
   const { toasts, push, dismiss } = useToasts();
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608]">
+    <div className="flex min-h-screen flex-col bg-theme-bg font-[var(--font-body,ui-sans-serif)] text-theme-text">
       <AuthHeader />
       <ToastStack toasts={toasts} dismiss={dismiss} />
 
       <main className="relative flex flex-1 items-center justify-center px-4 py-10 md:py-16">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d9691f]/10 via-[#f6efe1] to-[#f1e6d0]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#d9691f]/10 via-theme-bg to-theme-card-hover"
         />
         <div
           aria-hidden
@@ -96,7 +96,7 @@ export default function ResetPasswordPage() {
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-20 bottom-20 h-72 w-72 rounded-full bg-[#241209]/15 blur-3xl"
+          className="pointer-events-none absolute -right-20 bottom-20 h-72 w-72 rounded-full bg-theme-dark/15 blur-3xl"
         />
 
         <ResetPasswordCard onToast={push} />
@@ -113,21 +113,21 @@ export default function ResetPasswordPage() {
 
 function AuthHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-[#e6d9bf] bg-[#f6efe1]/95 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-theme-border bg-theme-bg/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2.5 transition-transform hover:scale-105">
           <img src="/image/Logo.png" alt="ConcertGo" className="h-8 w-auto" />
-          <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-[#241608]">
+          <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-theme-text">
             <span>Concert</span>
             <span className="text-[#d9691f]">Go</span>
           </span>
         </Link>
 
         <div className="flex items-center gap-3">
-          <span className="hidden text-xs text-[#5a4a35] sm:inline">Ingat kata sandi?</span>
+          <span className="hidden text-xs text-theme-text-muted sm:inline">Ingat kata sandi?</span>
           <Link
             href="/sign-in"
-            className="rounded-full border border-[#241608] px-4 py-1.5 text-xs font-semibold text-[#241608] transition-all hover:bg-[#241608] hover:text-[#f6efe1]"
+            className="rounded-full border border-theme-button px-4 py-1.5 text-xs font-semibold text-theme-text transition-all hover:bg-theme-button hover:text-[#f6efe1]"
           >
             Masuk ke Akun
           </Link>
@@ -154,10 +154,10 @@ function ResetPasswordCard({ onToast }: { onToast: (kind: Toast["kind"], msg: st
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="relative z-10 w-full max-w-4xl overflow-hidden rounded-3xl border border-[#e6d9bf] bg-white shadow-2xl md:grid md:grid-cols-12"
+      className="relative z-10 w-full max-w-4xl overflow-hidden rounded-3xl border border-theme-border bg-theme-card shadow-2xl md:grid md:grid-cols-12"
     >
       {/* Left Column: Visual Showcase & Guide (Hidden on Mobile) */}
-      <div className="relative hidden md:col-span-5 md:flex md:flex-col md:justify-between p-8 text-[#f6efe1] overflow-hidden bg-[#241209]">
+      <div className="relative hidden md:col-span-5 md:flex md:flex-col md:justify-between p-8 text-[#f6efe1] overflow-hidden bg-theme-dark">
         <img
           src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1200&auto=format&fit=crop"
           alt="Concert stage atmosphere"
@@ -167,7 +167,7 @@ function ResetPasswordCard({ onToast }: { onToast: (kind: Toast["kind"], msg: st
 
         {/* Top Tag */}
         <div className="relative z-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-[#d9a26a] backdrop-blur-md border border-white/10">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-theme-card/15 px-3 py-1 text-xs font-semibold text-[#d9a26a] backdrop-blur-md border border-theme-card/10">
             <span className="h-2 w-2 rounded-full bg-[#d9691f] animate-pulse" />
             PUSAT PEMULIHAN AKUN
           </span>
@@ -183,22 +183,22 @@ function ResetPasswordCard({ onToast }: { onToast: (kind: Toast["kind"], msg: st
           </p>
 
           <div className="mt-6 space-y-3 text-xs">
-            <div className={`flex items-center gap-3 rounded-xl p-2.5 transition-colors ${stepNumber >= 1 ? "bg-white/15 text-white" : "text-white/50"}`}>
-              <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${stepNumber >= 1 ? "bg-[#d9691f] text-white" : "bg-white/10"}`}>
+            <div className={`flex items-center gap-3 rounded-xl p-2.5 transition-colors ${stepNumber >= 1 ? "bg-theme-card/15 text-white" : "text-white/50"}`}>
+              <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${stepNumber >= 1 ? "bg-[#d9691f] text-white" : "bg-theme-card/10"}`}>
                 1
               </span>
               <span>Masukkan email akun terdaftar</span>
             </div>
 
-            <div className={`flex items-center gap-3 rounded-xl p-2.5 transition-colors ${stepNumber >= 2 ? "bg-white/15 text-white" : "text-white/50"}`}>
-              <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${stepNumber >= 2 ? "bg-[#d9691f] text-white" : "bg-white/10"}`}>
+            <div className={`flex items-center gap-3 rounded-xl p-2.5 transition-colors ${stepNumber >= 2 ? "bg-theme-card/15 text-white" : "text-white/50"}`}>
+              <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${stepNumber >= 2 ? "bg-[#d9691f] text-white" : "bg-theme-card/10"}`}>
                 2
               </span>
               <span>Verifikasi kode OTP 6 digit</span>
             </div>
 
-            <div className={`flex items-center gap-3 rounded-xl p-2.5 transition-colors ${stepNumber >= 3 ? "bg-white/15 text-white" : "text-white/50"}`}>
-              <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${stepNumber >= 3 ? "bg-[#d9691f] text-white" : "bg-white/10"}`}>
+            <div className={`flex items-center gap-3 rounded-xl p-2.5 transition-colors ${stepNumber >= 3 ? "bg-theme-card/15 text-white" : "text-white/50"}`}>
+              <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${stepNumber >= 3 ? "bg-[#d9691f] text-white" : "bg-theme-card/10"}`}>
                 3
               </span>
               <span>Buat & simpan kata sandi baru</span>
@@ -207,7 +207,7 @@ function ResetPasswordCard({ onToast }: { onToast: (kind: Toast["kind"], msg: st
         </div>
 
         {/* Bottom Security Badge */}
-        <div className="relative z-10 rounded-2xl bg-white/10 p-3.5 backdrop-blur-md border border-white/10 text-xs">
+        <div className="relative z-10 rounded-2xl bg-theme-card/10 p-3.5 backdrop-blur-md border border-theme-card/10 text-xs">
           <p className="text-white/90 font-medium leading-relaxed">
             Perlu bantuan darurat? Hubungi Customer Service kami 24/7.
           </p>
@@ -215,7 +215,7 @@ function ResetPasswordCard({ onToast }: { onToast: (kind: Toast["kind"], msg: st
       </div>
 
       {/* Right Column: Clean Form Container */}
-      <div className="p-7 sm:p-10 md:col-span-7 flex flex-col justify-center bg-white">
+      <div className="p-7 sm:p-10 md:col-span-7 flex flex-col justify-center bg-theme-card">
         <AnimatePresence mode="wait">
           {step === "email" && (
             <motion.div
@@ -325,30 +325,30 @@ function EmailStep({
   return (
     <>
       <div className="mb-6">
-        <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#efe4cf] text-[#d9691f]">
+        <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-theme-card-hover text-[#d9691f]">
           <IconKey />
         </div>
-        <h1 className="font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+        <h1 className="font-[var(--font-display,serif)] text-2xl font-bold text-theme-text">
           Lupa Kata Sandi?
         </h1>
-        <p className="mt-1 text-xs text-[#5a4a35]">
+        <p className="mt-1 text-xs text-theme-text-muted">
           Jangan cemas! Masukkan alamat email akun ConcertGo-mu untuk menerima kode verifikasi pemulihan sandi.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <div>
-          <label className="block text-xs font-semibold text-[#4a3a26] mb-1.5">
+          <label className="block text-xs font-semibold text-theme-text-muted mb-1.5">
             Alamat Email Akun
           </label>
           <div
             className={`relative flex items-center rounded-xl border transition-all ${
               error
                 ? "border-rose-400 bg-rose-50/30 ring-2 ring-rose-200"
-                : "border-[#e6d9bf] bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#d9691f]/20"
+                : "border-theme-border bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-theme-card focus-within:ring-2 focus-within:ring-[#d9691f]/20"
             }`}
           >
-            <span className="pl-3.5 text-[#8a7a63]">
+            <span className="pl-3.5 text-theme-text-light">
               <IconEnvelope />
             </span>
             <input
@@ -360,7 +360,7 @@ function EmailStep({
               }}
               placeholder="nama@email.com"
               autoComplete="email"
-              className="w-full bg-transparent py-2.5 pl-3 pr-4 text-xs sm:text-sm text-[#241608] placeholder:text-[#a1917a] focus:outline-hidden"
+              className="w-full bg-transparent py-2.5 pl-3 pr-4 text-xs sm:text-sm text-theme-text placeholder:text-[#a1917a] focus:outline-hidden"
             />
           </div>
           {error && <p className="mt-1 text-[11px] font-medium text-rose-600">{error}</p>}
@@ -371,14 +371,14 @@ function EmailStep({
           whileTap={{ scale: 0.985 }}
           type="submit"
           disabled={loading}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#241608] py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-theme-button py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
         >
           {loading && <IconSpinner />}
           {loading ? "Mengirim kode..." : "Kirim Kode Verifikasi"}
         </motion.button>
       </form>
 
-      <div className="mt-8 border-t border-[#e6d9bf] pt-4 text-center text-xs text-[#5a4a35]">
+      <div className="mt-8 border-t border-theme-border pt-4 text-center text-xs text-theme-text-muted">
         Sudah mengingat kata sandi?{" "}
         <Link href="/sign-in" className="font-bold text-[#d9691f] hover:underline">
           Kembali ke halaman masuk
@@ -478,15 +478,15 @@ function OTPVerificationStep({
   return (
     <>
       <div className="mb-6">
-        <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#efe4cf] text-[#d9691f]">
+        <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-theme-card-hover text-[#d9691f]">
           <IconShieldCheck />
         </div>
-        <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+        <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-theme-text">
           Verifikasi Kode OTP
         </h2>
-        <p className="mt-1 text-xs text-[#5a4a35]">
+        <p className="mt-1 text-xs text-theme-text-muted">
           Masukkan 6 digit kode keamanan yang kami kirimkan ke{" "}
-          <strong className="text-[#241608] font-semibold">{email || "email Anda"}</strong>.
+          <strong className="text-theme-text font-semibold">{email || "email Anda"}</strong>.
         </p>
       </div>
 
@@ -504,10 +504,10 @@ function OTPVerificationStep({
               value={d}
               onChange={(e) => updateDigit(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(e, i)}
-              className={`h-12 w-11 sm:h-13 sm:w-12 rounded-xl border text-center text-lg font-bold text-[#241608] transition-all focus:outline-hidden ${
+              className={`h-12 w-11 sm:h-13 sm:w-12 rounded-xl border text-center text-lg font-bold text-theme-text transition-all focus:outline-hidden ${
                 error
                   ? "border-rose-400 bg-rose-50/50"
-                  : "border-[#e6d9bf] bg-[#fbf8f2] focus:border-[#d9691f] focus:bg-white focus:ring-2 focus:ring-[#d9691f]/20"
+                  : "border-theme-border bg-[#fbf8f2] focus:border-[#d9691f] focus:bg-theme-card focus:ring-2 focus:ring-[#d9691f]/20"
               }`}
             />
           ))}
@@ -520,15 +520,15 @@ function OTPVerificationStep({
           whileTap={{ scale: 0.985 }}
           type="submit"
           disabled={verifying}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#241608] py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-theme-button py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
         >
           {verifying && <IconSpinner />}
           {verifying ? "Memverifikasi..." : "Verifikasi & Lanjutkan"}
         </motion.button>
 
-        <div className="mt-5 flex flex-col items-center gap-2 text-xs text-[#5a4a35]">
+        <div className="mt-5 flex flex-col items-center gap-2 text-xs text-theme-text-muted">
           {resendIn > 0 ? (
-            <span>Kirim ulang kode dalam <strong className="text-[#241608]">{resendIn}s</strong></span>
+            <span>Kirim ulang kode dalam <strong className="text-theme-text">{resendIn}s</strong></span>
           ) : (
             <button
               type="button"
@@ -542,7 +542,7 @@ function OTPVerificationStep({
           <button
             type="button"
             onClick={onBack}
-            className="text-[#8a7a63] hover:text-[#241608] mt-1 transition-colors"
+            className="text-theme-text-light hover:text-theme-text mt-1 transition-colors"
           >
             ← Ubah alamat email
           </button>
@@ -621,30 +621,30 @@ function NewPasswordStep({
   return (
     <>
       <div className="mb-6">
-        <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#efe4cf] text-[#d9691f]">
+        <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-theme-card-hover text-[#d9691f]">
           <IconLock />
         </div>
-        <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+        <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-theme-text">
           Atur Kata Sandi Baru
         </h2>
-        <p className="mt-1 text-xs text-[#5a4a35]">
+        <p className="mt-1 text-xs text-theme-text-muted">
           Buat kata sandi baru yang kuat untuk melindungi akun dan tiket konser Anda.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <div>
-          <label className="block text-xs font-semibold text-[#4a3a26] mb-1.5">
+          <label className="block text-xs font-semibold text-theme-text-muted mb-1.5">
             Kata Sandi Baru
           </label>
           <div
             className={`relative flex items-center rounded-xl border transition-all ${
               errors.password
                 ? "border-rose-400 bg-rose-50/30 ring-2 ring-rose-200"
-                : "border-[#e6d9bf] bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#d9691f]/20"
+                : "border-theme-border bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-theme-card focus-within:ring-2 focus-within:ring-[#d9691f]/20"
             }`}
           >
-            <span className="pl-3.5 text-[#8a7a63]">
+            <span className="pl-3.5 text-theme-text-light">
               <IconLock />
             </span>
             <input
@@ -656,12 +656,12 @@ function NewPasswordStep({
               }}
               placeholder="Minimal 8 karakter"
               autoComplete="new-password"
-              className="w-full bg-transparent py-2.5 pl-3 pr-10 text-xs sm:text-sm text-[#241608] placeholder:text-[#a1917a] focus:outline-hidden"
+              className="w-full bg-transparent py-2.5 pl-3 pr-10 text-xs sm:text-sm text-theme-text placeholder:text-[#a1917a] focus:outline-hidden"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 text-[#8a7a63] hover:text-[#241608] transition-colors"
+              className="absolute right-3 text-theme-text-light hover:text-theme-text transition-colors"
             >
               {showPassword ? <IconEyeOff /> : <IconEye />}
             </button>
@@ -674,9 +674,9 @@ function NewPasswordStep({
         {/* Strength Bar */}
         {password && (
           <div className="space-y-1">
-            <div className="flex justify-between text-[10px] text-[#8a7a63]">
+            <div className="flex justify-between text-[10px] text-theme-text-light">
               <span>Kekuatan Sandi</span>
-              <span className="font-semibold text-[#241608]">
+              <span className="font-semibold text-theme-text">
                 {passwordStrength <= 1 ? "Lemah" : passwordStrength <= 3 ? "Sedang" : "Sangat Kuat"}
               </span>
             </div>
@@ -691,7 +691,7 @@ function NewPasswordStep({
                         : passwordStrength <= 3
                         ? "bg-amber-500"
                         : "bg-emerald-500"
-                      : "bg-[#e6d9bf]"
+                      : "bg-theme-border"
                   }`}
                 />
               ))}
@@ -700,17 +700,17 @@ function NewPasswordStep({
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-[#4a3a26] mb-1.5">
+          <label className="block text-xs font-semibold text-theme-text-muted mb-1.5">
             Konfirmasi Kata Sandi Baru
           </label>
           <div
             className={`relative flex items-center rounded-xl border transition-all ${
               errors.confirmPassword
                 ? "border-rose-400 bg-rose-50/30 ring-2 ring-rose-200"
-                : "border-[#e6d9bf] bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#d9691f]/20"
+                : "border-theme-border bg-[#fbf8f2] focus-within:border-[#d9691f] focus-within:bg-theme-card focus-within:ring-2 focus-within:ring-[#d9691f]/20"
             }`}
           >
-            <span className="pl-3.5 text-[#8a7a63]">
+            <span className="pl-3.5 text-theme-text-light">
               <IconLock />
             </span>
             <input
@@ -722,12 +722,12 @@ function NewPasswordStep({
               }}
               placeholder="Ulangi kata sandi baru"
               autoComplete="new-password"
-              className="w-full bg-transparent py-2.5 pl-3 pr-10 text-xs sm:text-sm text-[#241608] placeholder:text-[#a1917a] focus:outline-hidden"
+              className="w-full bg-transparent py-2.5 pl-3 pr-10 text-xs sm:text-sm text-theme-text placeholder:text-[#a1917a] focus:outline-hidden"
             />
             <button
               type="button"
               onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 text-[#8a7a63] hover:text-[#241608] transition-colors"
+              className="absolute right-3 text-theme-text-light hover:text-theme-text transition-colors"
             >
               {showConfirm ? <IconEyeOff /> : <IconEye />}
             </button>
@@ -742,7 +742,7 @@ function NewPasswordStep({
           whileTap={{ scale: 0.985 }}
           type="submit"
           disabled={saving}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#241608] py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-theme-button py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f] disabled:opacity-70"
         >
           {saving && <IconSpinner />}
           {saving ? "Menyimpan sandi baru..." : "Simpan Kata Sandi Baru"}
@@ -765,17 +765,17 @@ function DoneStep({ email }: { email: string }) {
         </svg>
       </div>
 
-      <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+      <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-theme-text">
         Kata Sandi Berhasil Diubah!
       </h2>
-      <p className="mt-2 text-xs leading-relaxed text-[#5a4a35] max-w-sm mx-auto">
-        Kata sandi baru untuk akun <strong className="text-[#241608]">{email || "Anda"}</strong> telah aktif. Silakan masuk kembali untuk melanjutkan eksplorasi konser impianmu.
+      <p className="mt-2 text-xs leading-relaxed text-theme-text-muted max-w-sm mx-auto">
+        Kata sandi baru untuk akun <strong className="text-theme-text">{email || "Anda"}</strong> telah aktif. Silakan masuk kembali untuk melanjutkan eksplorasi konser impianmu.
       </p>
 
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="mt-6">
         <Link
           href="/sign-in"
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#241608] py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f]"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-theme-button py-3 text-xs sm:text-sm font-semibold text-[#f6efe1] shadow-md transition-colors hover:bg-[#d9691f]"
         >
           Masuk ke Akun Sekarang
         </Link>
@@ -790,8 +790,8 @@ function DoneStep({ email }: { email: string }) {
 
 function AuthFooter() {
   return (
-    <footer className="border-t border-[#e6d9bf] bg-[#f1e6d0] py-6 px-6">
-      <div className="mx-auto flex max-w-6xl flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5a4a35]">
+    <footer className="border-t border-theme-border bg-theme-card-hover py-6 px-6">
+      <div className="mx-auto flex max-w-6xl flex-col sm:flex-row items-center justify-between gap-4 text-xs text-theme-text-muted">
         <p>© 2026 ConcertGo Indonesia. Hak cipta dilindungi undang-undang.</p>
         <div className="flex gap-4 font-medium">
           <a href="#" className="hover:text-[#d9691f]">Pusat Bantuan</a>

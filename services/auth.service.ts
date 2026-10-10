@@ -49,4 +49,18 @@ export const authService = {
     });
     return response.data;
   },
+
+  async verifyEmail(email: string, code: string): Promise<void> {
+    await apiClient("/auth/verify-email", {
+      method: "POST",
+      body: JSON.stringify({ email, code }),
+    });
+  },
+
+  async resendVerification(email: string): Promise<void> {
+    await apiClient("/auth/resend-verification", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  },
 };

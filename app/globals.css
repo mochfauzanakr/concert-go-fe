@@ -6,10 +6,50 @@
 }
 
 @theme inline {
+  --color-theme-bg: var(--theme-bg);
+  --color-theme-text: var(--theme-text);
+  --color-theme-border: var(--theme-border);
+  --color-theme-text-muted: var(--theme-text-muted);
+  --color-theme-text-light: var(--theme-text-light);
+  --color-theme-card-hover: var(--theme-card-hover);
+  --color-theme-bg-soft: var(--theme-bg-soft);
+  --color-theme-card: var(--theme-card);
+  --color-theme-dark: var(--theme-dark);
+  --color-theme-button: var(--theme-button);
+  --color-theme-accent: #d9691f;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  /* Light Theme (Warm Cream & Terracotta) */
+  --theme-bg: #f6efe1;
+  --theme-text: #241608;
+  --theme-border: #e6d9bf;
+  --theme-text-muted: #4a3a26;
+  --theme-text-light: #8a7a63;
+  --theme-card-hover: #efe4cf;
+  --theme-bg-soft: #fdfaf5;
+  --theme-card: #ffffff;
+  --theme-dark: #241209;
+  --theme-button: #241608;
+}
+
+[data-theme="dark"] {
+  /* Dark Theme (Stage Midnight & Neon / Coklat Gelap) */
+  --theme-bg: #18110b;
+  --theme-text: #ffffff;
+  --theme-border: #3a2211;
+  --theme-text-muted: #a39585;
+  --theme-text-light: #6e5d4a;
+  --theme-card-hover: #2d1808;
+  --theme-bg-soft: #120d08;
+  --theme-card: #241209;
+  --theme-dark: #000000;
+  --theme-button: #d9691f;
 }
 
 @media (prefers-color-scheme: dark) {

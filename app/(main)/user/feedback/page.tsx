@@ -11,11 +11,11 @@ export default function FeedbackPage() {
   }, [router]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f6efe1] text-[#241608]">
-      <div className="rounded-3xl border border-[#e6d9bf] bg-white/80 p-8 text-center shadow-md">
+    <div className="flex min-h-screen items-center justify-center bg-theme-bg text-theme-text">
+      <div className="rounded-3xl border border-theme-border bg-theme-card/80 p-8 text-center shadow-md">
         <span className="text-3xl">💬</span>
-        <p className="mt-3 text-sm font-bold text-[#241608]">Membuka Halaman Masukan & Feedback...</p>
-        <p className="mt-1 text-xs text-[#8a7a63]">Mohon tunggu sebentar.</p>
+        <p className="mt-3 text-sm font-bold text-theme-text">Membuka Halaman Masukan & Feedback...</p>
+        <p className="mt-1 text-xs text-theme-text-light">Mohon tunggu sebentar.</p>
       </div>
     </div>
   );

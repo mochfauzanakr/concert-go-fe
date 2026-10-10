@@ -13,21 +13,21 @@ const DUMMY_USERS = [
 export default function AdminUsersPage() {
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="flex justify-between items-center bg-[#f1e6d0] p-6 rounded-2xl shadow-sm border border-[#e6d9bf]">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="flex justify-between items-center bg-theme-card-hover p-6 rounded-2xl shadow-sm border border-theme-border">
         <div>
-          <h2 className="text-xl font-bold font-[var(--font-display,serif)] text-[#241608]">Manajemen Pengguna</h2>
-          <p className="text-sm text-[#8a7a63] mt-1">Kelola akun pengguna terdaftar, peran, dan status.</p>
+          <h2 className="text-xl font-bold font-[var(--font-display,serif)] text-theme-text">Manajemen Pengguna</h2>
+          <p className="text-sm text-theme-text-light mt-1">Kelola akun pengguna terdaftar, peran, dan status.</p>
         </div>
         <button className="bg-[#d9691f] hover:bg-[#c45c16] text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-all flex items-center gap-2">
           <span>➕</span> Tambah Pengguna
         </button>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }} className="bg-[#f1e6d0] rounded-2xl shadow-sm border border-[#e6d9bf] overflow-hidden">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.1 }} className="bg-theme-card-hover rounded-2xl shadow-sm border border-theme-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white/40 border-b border-[#e6d9bf] text-[#5a4a35] text-sm font-semibold uppercase tracking-wider">
+              <tr className="bg-theme-card/40 border-b border-theme-border text-theme-text-muted text-sm font-semibold uppercase tracking-wider">
                 <th className="py-4 px-6">Nama Pengguna</th>
                 <th className="py-4 px-6">Email</th>
                 <th className="py-4 px-6">Peran</th>
@@ -36,23 +36,23 @@ export default function AdminUsersPage() {
                 <th className="py-4 px-6 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#e6d9bf]/50">
+            <tbody className="divide-y divide-theme-border/50">
               {DUMMY_USERS.map((user) => (
-                <tr key={user.id} className="hover:bg-white/50 transition-colors group">
+                <tr key={user.id} className="hover:bg-theme-card/50 transition-colors group">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-[#e6d9bf] flex items-center justify-center text-[#d9691f] font-bold shrink-0">
+                      <div className="h-10 w-10 rounded-full bg-theme-border flex items-center justify-center text-[#d9691f] font-bold shrink-0">
                         {user.name.charAt(0)}
                       </div>
-                      <span className="font-bold text-[#241608] group-hover:text-[#d9691f] transition-colors">{user.name}</span>
+                      <span className="font-bold text-theme-text group-hover:text-[#d9691f] transition-colors">{user.name}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-[#5a4a35]">
+                  <td className="py-4 px-6 text-theme-text-muted">
                     {user.email}
                   </td>
                   <td className="py-4 px-6">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                      user.role === 'Admin' ? 'bg-orange-200 text-[#d9691f]' : 'bg-[#e6d9bf]/50 text-[#241608]'
+                      user.role === 'Admin' ? 'bg-orange-200 text-[#d9691f]' : 'bg-theme-border/50 text-theme-text'
                     }`}>
                       {user.role}
                     </span>
@@ -64,15 +64,15 @@ export default function AdminUsersPage() {
                       {user.status}
                     </span>
                   </td>
-                  <td className="py-4 px-6 text-sm text-[#8a7a63]">
+                  <td className="py-4 px-6 text-sm text-theme-text-light">
                     {user.lastLogin}
                   </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-2 text-[#8a7a63] hover:text-[#d9691f] transition-colors" title="Edit">
+                      <button className="p-2 text-theme-text-light hover:text-[#d9691f] transition-colors" title="Edit">
                         ✏️
                       </button>
-                      <button className="p-2 text-[#8a7a63] hover:text-red-600 transition-colors" title="Hapus">
+                      <button className="p-2 text-theme-text-light hover:text-red-600 transition-colors" title="Hapus">
                         🗑️
                       </button>
                     </div>

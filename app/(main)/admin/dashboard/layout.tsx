@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white lg:flex">
+    <div className="min-h-screen bg-theme-bg font-[var(--font-body,ui-sans-serif)] text-theme-text selection:bg-[#d9691f] selection:text-white lg:flex">
       {/* Overlay mobile ketika sidebar terbuka */}
       <AnimatePresence>
         {sidebarOpen && (

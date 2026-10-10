@@ -34,7 +34,7 @@ async function refreshAccessToken(): Promise<boolean> {
     setAccessToken(null);
     localStorage.removeItem("refreshToken");
     // Redirect ke login bisa dihandle di level komponen/router
-    if (typeof window !== "undefined") window.location.href = "/login";
+    if (typeof window !== "undefined") window.location.href = "/sign-in";
     return false;
   }
 }
@@ -63,7 +63,7 @@ export async function apiClient<T>(
   let response = await fetch(url, config);
 
   // Auto-retry logic for 401
-  if (response.status === 401 && token) {
+  if (response.status === 401) {
     const refreshed = await refreshAccessToken();
     if (refreshed) {
       // Retry the request with new token

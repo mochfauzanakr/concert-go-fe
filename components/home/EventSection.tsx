@@ -1,3 +1,4 @@
+import { useTranslation } from "@/hooks/useTranslation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -64,11 +65,11 @@ export function CarouselEventSection({
             {badge} · {events.length} Acara Resmi
           </span>
         </div>
-        <h2 className="mt-1 font-[var(--font-display,serif)] text-2xl font-bold text-[#241608] md:text-3xl">
+        <h2 className="mt-1 font-[var(--font-display,serif)] text-2xl font-bold text-theme-text md:text-3xl">
           {title}
         </h2>
         {subtitle && (
-          <p className="mt-1 text-xs text-[#5a4a35] md:text-sm">
+          <p className="mt-1 text-xs text-theme-text-muted md:text-sm">
             {subtitle}
           </p>
         )}
@@ -83,7 +84,7 @@ export function CarouselEventSection({
             onClick={handlePrev}
             aria-label="Halaman Sebelumnya"
             title="Halaman Sebelumnya"
-            className="group absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 flex h-9.5 w-9.5 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-[#e6d9bf] bg-white/95 text-[#241608] shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:border-[#d9691f] hover:bg-[#d9691f] hover:text-white active:scale-95 cursor-pointer"
+            className="group absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 flex h-9.5 w-9.5 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-theme-border bg-theme-card/95 text-theme-text shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:border-[#d9691f] hover:bg-[#d9691f] hover:text-white active:scale-95 cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
           </button>
@@ -96,7 +97,7 @@ export function CarouselEventSection({
             onClick={handleNext}
             aria-label="Halaman Selanjutnya"
             title="Halaman Selanjutnya"
-            className="group absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 flex h-9.5 w-9.5 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-[#e6d9bf] bg-white/95 text-[#241608] shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:border-[#d9691f] hover:bg-[#d9691f] hover:text-white active:scale-95 cursor-pointer"
+            className="group absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 flex h-9.5 w-9.5 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-theme-border bg-theme-card/95 text-theme-text shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:border-[#d9691f] hover:bg-[#d9691f] hover:text-white active:scale-95 cursor-pointer"
           >
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
           </button>
@@ -145,7 +146,7 @@ export function CarouselEventSection({
                 className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
                   isActive
                     ? "w-8 bg-[#d9691f] shadow-xs"
-                    : "w-2.5 bg-[#e6d9bf] hover:bg-[#caa885]"
+                    : "w-2.5 bg-theme-border hover:bg-[#caa885]"
                 }`}
               />
             );
@@ -171,6 +172,7 @@ function EventCard({
   onOpenDetail: () => void;
   onBuy: () => void;
 }) {
+  const { language } = useTranslation();
   return (
     <motion.article
       initial={{ opacity: 0, y: 25 }}
@@ -178,10 +180,10 @@ function EventCard({
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.35, delay: index * 0.05 }}
       whileHover={{ y: -6 }}
-      className="group flex flex-col overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#f1e6d0] shadow-sm transition-all duration-300 hover:shadow-xl hover:border-[#d9691f]/50"
+      className="group flex flex-col overflow-hidden rounded-3xl border border-theme-border bg-theme-card-hover shadow-sm transition-all duration-300 hover:shadow-xl hover:border-[#d9691f]/50"
     >
       {/* Visual Poster Banner Event */}
-      <div className="relative h-48 w-full overflow-hidden bg-[#241209]">
+      <div className="relative h-48 w-full overflow-hidden bg-theme-dark">
         <Image
           src={event.image}
           alt={event.title}
@@ -194,7 +196,7 @@ function EventCard({
 
         {/* Top Badges & Calendar Widget */}
         <div className="absolute top-3 inset-x-3 flex items-start justify-between">
-          <div className="flex items-center gap-1.5 rounded-xl bg-black/55 px-2.5 py-1 text-center font-mono backdrop-blur-md border border-white/10">
+          <div className="flex items-center gap-1.5 rounded-xl bg-black/55 px-2.5 py-1 text-center font-mono backdrop-blur-md border border-theme-card/10">
             <span className="text-sm font-black text-white">{event.dayMonth.day}</span>
             <span className="text-[10px] font-bold text-[#d9a26a] uppercase">{event.dayMonth.month}</span>
           </div>
@@ -225,11 +227,11 @@ function EventCard({
 
         {/* Bottom Tag & Social Proof */}
         <div className="absolute bottom-3 inset-x-3 flex items-center justify-between text-white">
-          <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-medium backdrop-blur-md">
+          <span className="rounded-full bg-theme-card/20 px-2.5 py-0.5 text-[10px] font-medium backdrop-blur-md">
             {event.genre}
           </span>
           <span className="text-[10px] text-white/90 font-medium bg-black/40 px-2 py-0.5 rounded-full backdrop-blur-md">
-            {event.interestedCount}
+            {language === "en" ? event.interestedCount.replace("peminat", "interested") : event.interestedCount}
           </span>
         </div>
       </div>
@@ -238,19 +240,19 @@ function EventCard({
       <div className="flex flex-1 flex-col justify-between gap-3 p-5">
         <div>
           <button type="button" className="cursor-pointer text-left focus:outline-hidden" onClick={onOpenDetail}>
-            <h3 className="font-[var(--font-display,serif)] text-lg font-bold leading-snug text-[#241608] hover:text-[#d9691f] transition-colors line-clamp-1">
+            <h3 className="font-[var(--font-display,serif)] text-lg font-bold leading-snug text-theme-text hover:text-[#d9691f] transition-colors line-clamp-1">
               {event.title}
             </h3>
             <p className="mt-0.5 text-xs font-semibold text-[#d9691f] line-clamp-1">
               {event.artist}
             </p>
           </button>
-          <p className="mt-2 text-xs leading-relaxed text-[#5a4a35] line-clamp-2">
-            {event.blurb}
+          <p className="mt-2 text-xs leading-relaxed text-theme-text-muted line-clamp-2">
+            {language === "en" ? `Enjoy the official and best ${event.title} experience with ${event.artist}. Get your official tickets without queues with instant verification.` : event.blurb}
           </p>
         </div>
 
-        <div className="space-y-1.5 pt-1 text-[11px] font-medium text-[#8a7a63]">
+        <div className="space-y-1.5 pt-1 text-[11px] font-medium text-theme-text-light">
           <p className="flex items-center gap-1.5">
             <MapPin className="w-3.5 h-3.5" />
             <span className="truncate">
@@ -267,13 +269,13 @@ function EventCard({
 
         {/* Status Penjualan Bar */}
         <div className="space-y-1 pt-1">
-          <div className="flex justify-between text-[10px] font-medium text-[#8a7a63]">
-            <span>Kuota Tiket</span>
-            <span className={event.soldPercentage > 85 ? "text-red-600 font-bold" : "text-[#241608]"}>
-              {event.soldPercentage}% Terjual
+          <div className="flex justify-between text-[10px] font-medium text-theme-text-light">
+            <span>{language === "en" ? "Ticket Quota" : "Kuota Tiket"}</span>
+            <span className={event.soldPercentage > 85 ? "text-red-600 font-bold" : "text-theme-text"}>
+              {event.soldPercentage}% {language === "en" ? "Sold" : "Terjual"}
             </span>
           </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#e6d9bf]">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-theme-border">
             <div
               className={`h-full rounded-full ${
                 event.soldPercentage > 85 ? "bg-red-600" : "bg-[#d9691f]"
@@ -284,17 +286,17 @@ function EventCard({
         </div>
 
         {/* Action Bottom */}
-        <div className="mt-2 flex items-center justify-between border-t border-[#e6d9bf] pt-3">
+        <div className="mt-2 flex items-center justify-between border-t border-theme-border pt-3">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-[#8a7a63]">Mulai Dari</p>
-            <p className="text-sm font-bold text-[#241608]">{formatIDR(event.priceFrom)}</p>
+            <p className="text-[10px] uppercase tracking-wider text-theme-text-light">{language === "en" ? "START FROM" : "MULAI DARI"}</p>
+            <p className="text-sm font-bold text-theme-text">{formatIDR(event.priceFrom)}</p>
           </div>
 
           <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={onOpenDetail}
-              className="rounded-full border border-[#241608]/30 px-3 py-1.5 text-xs font-semibold text-[#241608] transition-colors hover:bg-white/60"
+              className="rounded-full border border-theme-button/30 px-3 py-1.5 text-xs font-semibold text-theme-text transition-colors hover:bg-theme-card/60"
             >
               Detail
             </button>
@@ -304,10 +306,8 @@ function EventCard({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onBuy}
-              className="rounded-full bg-[#241608] px-3.5 py-1.5 text-xs font-semibold text-[#f6efe1] shadow-xs transition-colors hover:bg-[#d9691f]"
-            >
-              Pesan
-            </motion.button>
+              className="rounded-full bg-theme-button px-3.5 py-1.5 text-xs font-semibold text-[#f6efe1] shadow-xs transition-colors hover:bg-[#d9691f]"
+            >{language === "en" ? "Order" : "Pesan"}</motion.button>
           </div>
         </div>
       </div>

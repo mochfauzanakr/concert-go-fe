@@ -113,7 +113,7 @@ export default function ConcertGoLandingPage() {
   }
 
   return (
-    <div id="top" className="min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white">
+    <div id="top" className="min-h-screen bg-theme-bg font-[var(--font-body,ui-sans-serif)] text-theme-text selection:bg-[#d9691f] selection:text-white">
       <SiteHeader />
 
       <main>
@@ -149,14 +149,14 @@ export default function ConcertGoLandingPage() {
         <div id="konser" className="space-y-12 sm:space-y-16">
           {filtered.length === 0 ? (
             <section className="mx-auto max-w-7xl scroll-mt-24 px-6 py-12 text-center">
-              <div className="mx-auto max-w-md rounded-3xl border border-[#e6d9bf] bg-white/70 p-8 shadow-sm">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#efe4cf] text-2xl text-[#d9691f]">
+              <div className="mx-auto max-w-md rounded-3xl border border-theme-border bg-theme-card/70 p-8 shadow-sm">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-theme-card-hover text-2xl text-[#d9691f]">
                   🔍
                 </div>
-                <h3 className="mt-4 font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
+                <h3 className="mt-4 font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
                   Tidak Ada Acara Ditemukan
                 </h3>
-                <p className="mt-2 text-sm text-[#8a7a63]">
+                <p className="mt-2 text-sm text-theme-text-light">
                   Belum ada acara yang cocok dengan kombinasi filter atau kata kunci pencarianmu saat ini.
                 </p>
                 <button

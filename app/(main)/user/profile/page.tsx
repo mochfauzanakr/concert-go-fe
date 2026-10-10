@@ -28,7 +28,7 @@ export default function UserProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white">
+    <div className="min-h-screen bg-theme-bg font-[var(--font-body,ui-sans-serif)] text-theme-text selection:bg-[#d9691f] selection:text-white">
       {/* Header Pengguna Terpadu */}
       <UserNavbar activePage="profile" />
 
@@ -53,7 +53,7 @@ export default function UserProfilePage() {
           <StatsAndLoyaltyRow />
 
           {/* Navigasi Tab Profil */}
-          <div className="mt-8 flex flex-wrap items-center gap-2 border-b border-[#e6d9bf] pb-3 text-sm font-semibold">
+          <div className="mt-8 flex flex-wrap items-center gap-2 border-b border-theme-border pb-3 text-sm font-semibold">
             {[
               { id: "info", label: "Informasi Akun", icon: <User className="w-4 h-4" /> },
               { id: "background", label: "Tema & Background Beranda", icon: <Palette className="w-4 h-4" /> },
@@ -65,8 +65,8 @@ export default function UserProfilePage() {
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 transition-all ${
                   activeTab === tab.id
-                    ? "bg-[#241608] text-[#f6efe1] shadow-md shadow-[#241608]/20"
-                    : "bg-white/60 text-[#5a4a35] hover:bg-white hover:text-[#241608]"
+                    ? "bg-theme-button text-[#f6efe1] shadow-md shadow-black/20"
+                    : "bg-theme-card/60 text-theme-text-muted hover:bg-theme-card hover:text-theme-text"
                 }`}
               >
                 <span>{tab.icon}</span>

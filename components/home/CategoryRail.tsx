@@ -24,21 +24,21 @@ export function CategoryRail({
               whileTap={{ scale: 0.95 }}
               onClick={() => onSelect(c.label)}
               className={`group flex flex-col items-center gap-1.5 sm:gap-2 rounded-2xl p-2 sm:p-2.5 transition-all focus:outline-hidden cursor-pointer ${
-                isSelected ? "bg-white shadow-md shadow-[#241608]/8 ring-2 ring-[#d9691f]/35" : "hover:bg-white/40"
+                isSelected ? "bg-theme-card shadow-md shadow-black/10 ring-2 ring-[#d9691f]/35" : "hover:bg-theme-card/40"
               }`}
             >
               <span
                 className={`flex h-11 w-11 sm:h-13 sm:w-13 items-center justify-center rounded-2xl border transition-all ${
                   isSelected
                     ? "border-[#d9691f] bg-[#d9691f] text-[#f6efe1] shadow-md shadow-[#d9691f]/25 scale-105"
-                    : "border-[#e6d9bf] bg-[#efe4cf] text-[#4a3a26] group-hover:border-[#d9691f] group-hover:bg-[#f6efe1]"
+                    : "border-theme-border bg-theme-card-hover text-theme-text-muted group-hover:border-[#d9691f] group-hover:bg-theme-bg"
                 }`}
               >
                 {c.icon}
               </span>
               <span
                 className={`text-[11px] sm:text-[12px] font-medium leading-tight whitespace-nowrap transition-colors ${
-                  isSelected ? "font-bold text-[#d9691f]" : "text-[#4a3a26]"
+                  isSelected ? "font-bold text-[#d9691f]" : "text-theme-text-muted"
                 }`}
               >
                 {c.label}

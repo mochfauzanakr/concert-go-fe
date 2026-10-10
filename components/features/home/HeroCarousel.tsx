@@ -1,6 +1,7 @@
 "use client";
+import { useTranslation } from "@/hooks/useTranslation";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Clock, Ticket } from "lucide-react";
 import { EVENTS, type EventItem } from "@/lib/eventsData";
@@ -23,7 +24,7 @@ const HERO_SLIDES = [
     venue: "Istora Senayan, Jakarta",
     date: "12 Sep 2026",
     time: "19:00 WIB",
-    tag: "PANGGUNG UTAMA · BEST SELLER",
+    tag: "{t.home.hero_tag_1}",
     price: 250000,
     image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?q=80&w=1600&auto=format&fit=crop",
     gradient: "from-[#3a1c0f]/90 via-[#241209]/80 to-[#120a05]/95",
@@ -37,7 +38,7 @@ const HERO_SLIDES = [
     venue: "GWK Cultural Park & Pantai Karang, Bali",
     date: "20 - 22 Sep 2026",
     time: "15:00 WITA",
-    tag: "FESTIVAL RESMI · EARLY BIRD",
+    tag: "{t.home.hero_tag_2}",
     price: 180000,
     image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1600&auto=format&fit=crop",
     gradient: "from-[#1b2d28]/90 via-[#0f1f1a]/85 to-[#0a1210]/95",
@@ -51,7 +52,7 @@ const HERO_SLIDES = [
     venue: "Eldorado Dome, Bandung",
     date: "10 Okt 2026",
     time: "20:00 WIB",
-    tag: "TRENDING #1 · HAMPIR HABIS",
+    tag: "{t.home.hero_tag_3}",
     price: 100000,
     image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1600&auto=format&fit=crop",
     gradient: "from-[#2f1938]/90 via-[#1e0f24]/85 to-[#0d0710]/95",
@@ -65,8 +66,9 @@ export default function HeroCarousel({
 }: {
   index: number;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
-  onOpenDetail: (event: EventItem) => void;
+  onOpenDetail: (event: any) => void;
 }) {
+  const { t, language } = useTranslation();
   const currentSlide = HERO_SLIDES[index % HERO_SLIDES.length];
 
   useEffect(() => {
@@ -104,12 +106,12 @@ export default function HeroCarousel({
 
           {/* Top meta */}
           <div className="relative z-10 flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-black/40 px-3.5 py-1 text-xs font-semibold tracking-wider text-[#d9a26a] backdrop-blur-md border border-white/10">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-black/40 px-3.5 py-1 text-xs font-semibold tracking-wider text-[#d9a26a] backdrop-blur-md border border-theme-card/10">
               <span className="h-2 w-2 animate-pulse rounded-full bg-[#d9691f]" />
-              {currentSlide.tag}
+              {currentSlide.id === "hero-1" ? t.home.hero_tag_1 : currentSlide.id === "hero-2" ? t.home.hero_tag_2 : t.home.hero_tag_3}
             </span>
-            <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
-              Mulai {formatIDR(currentSlide.price)}
+            <span className="rounded-full bg-theme-card/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
+              {t.home.start_from} {formatIDR(currentSlide.price)}
             </span>
           </div>
 
@@ -142,7 +144,7 @@ export default function HeroCarousel({
           </div>
 
           {/* Bottom actions & indicators */}
-          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/20">
+          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-theme-card/20">
             <div className="flex items-center gap-2">
               <button
                 aria-label="Sebelumnya"
@@ -166,7 +168,7 @@ export default function HeroCarousel({
                     onClick={() => setIndex(i)}
                     aria-label={`Slide ${i + 1}`}
                     className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                      i === index % HERO_SLIDES.length ? "w-8 bg-[#d9691f]" : "w-2 bg-white/40 hover:bg-white/60"
+                      i === index % HERO_SLIDES.length ? "w-8 bg-[#d9691f]" : "w-2 bg-theme-card/40 hover:bg-theme-card/60"
                     }`}
                   />
                 ))}
@@ -179,7 +181,7 @@ export default function HeroCarousel({
               onClick={() => onOpenDetail(activeEvent)}
               className="inline-flex items-center gap-2 rounded-full bg-[#d9691f] px-5 py-2.5 text-xs font-semibold text-white shadow-lg shadow-[#d9691f]/30 transition-colors hover:bg-[#c45c16] sm:text-sm cursor-pointer"
             >
-              <Ticket size={16} /> Lihat Detail & Tiket
+              <Ticket size={16} /> {t.home.btn_view_detail || "Lihat Detail & Tiket"}
             </motion.button>
           </div>
         </div>
@@ -188,44 +190,44 @@ export default function HeroCarousel({
         <div className="grid grid-rows-2 gap-4">
           <motion.div
             whileHover={{ y: -3 }}
-            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#241209] p-6 text-white shadow-md"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-theme-border bg-theme-dark p-6 text-white shadow-md"
           >
             <img
               src={EVENTS[2].image}
-              alt={EVENTS[2].title}
+              alt={language === "en" ? "Surabaya Rock Revival" : EVENTS[2].title}
               className="absolute inset-0 h-full w-full object-cover opacity-35 transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#241209] via-[#241209]/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-theme-dark via-[#241209]/80 to-transparent" />
 
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <span className="rounded-full bg-[#d9691f] px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
-                  🔥 Trending Pekan Ini
+                  🔥 {t.home.trending_title || "Trending Pekan Ini"}
                 </span>
                 <span className="text-xs font-bold text-[#f6efe1]">{formatIDR(EVENTS[2]?.priceFrom ?? 100000)}</span>
               </div>
               <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold">
-                {EVENTS[2]?.title ?? "Neon Dangdut Koplo Party"}
+                {language === "en" ? "Surabaya Rock Revival" : (EVENTS[2]?.title ?? "Neon Dangdut Koplo Party")}
               </h3>
               <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">
-                {EVENTS[2]?.blurb ?? "Goyang sampai subuh dengan remix koplo modern dan tata laser canggih."}
+                {language === "en" ? "Enjoy the official and best Surabaya Rock Revival experience with Surabaya Rockers Community. Get your official tickets without queues with instant verification." : (EVENTS[2]?.blurb ?? "Goyang sampai subuh dengan remix koplo modern dan tata laser canggih.")}
               </p>
             </div>
 
-            <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-white/20 text-xs text-[#c4b59d]">
+            <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-theme-card/20 text-xs text-[#c4b59d]">
               <span>{EVENTS[2]?.venue ?? "Bandung"} · {EVENTS[2]?.city ?? "Bandung"}</span>
               <button
                 onClick={() => onOpenDetail(EVENTS[2])}
                 className="font-semibold text-white hover:text-[#d9a26a] hover:underline cursor-pointer"
               >
-                Lihat Acara →
+                {t.home.btn_view_event || "Lihat Acara"} →
               </button>
             </div>
           </motion.div>
 
           <motion.div
             whileHover={{ y: -3 }}
-            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#1a1208] p-6 text-white shadow-md"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-theme-border bg-[#1a1208] p-6 text-white shadow-md"
           >
             <img
               src={EVENTS[7]?.image ?? EVENTS[0].image}
@@ -237,25 +239,25 @@ export default function HeroCarousel({
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <span className="rounded-full bg-amber-600 px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
-                  ⚡ Flash Sale H-30
+                  ⚡ {t.home.flash_sale || "Flash Sale H-30"}
                 </span>
-                <span className="text-xs font-mono text-amber-300">Hemat 25%</span>
+                <span className="text-xs font-mono text-amber-300">{t.home.save_25 || "Hemat 25%"}</span>
               </div>
               <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold">
                 {EVENTS[7]?.title ?? "Musikal Laskar Pelangi"}
               </h3>
               <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">
-                {EVENTS[7]?.blurb ?? "Kisah inspiratif anak-anak Belitong di panggung megah berbalut aransemen orkestra."}
+                {language === "en" ? "Enjoy the official and best Neon Dangdut Koplo Party experience with Rafi & The Koplo Machine. Get your official tickets without queues with instant verification." : (EVENTS[7]?.blurb ?? "Malam kebangkitan musik rock Surabaya bersama band-band cadas legendaris lokal.")}
               </p>
             </div>
 
-            <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-white/20 text-xs text-[#c4b59d]">
+            <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-theme-card/20 text-xs text-[#c4b59d]">
               <span>{EVENTS[7]?.venue ?? "Jakarta"} · {EVENTS[7]?.city ?? "Jakarta"}</span>
               <button
                 onClick={() => onOpenDetail(EVENTS[7])}
                 className="font-semibold text-white hover:text-[#d9a26a] hover:underline cursor-pointer"
               >
-                Lihat Acara →
+                {t.home.btn_view_event || "Lihat Acara"} →
               </button>
             </div>
           </motion.div>

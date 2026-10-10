@@ -181,7 +181,7 @@ function LoaderContent() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#f6efe1]/90 backdrop-blur-xl text-[#241608] select-none"
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-theme-bg/90 backdrop-blur-xl text-theme-text select-none"
           style={{ pointerEvents: "all" }}
           aria-live="polite"
           aria-busy="true"
@@ -198,7 +198,7 @@ function LoaderContent() {
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.95, y: -10, opacity: 0 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="relative flex flex-col items-center max-w-sm w-full mx-4 px-6 py-8 rounded-3xl border border-[#e6d9bf]/80 bg-white/75 backdrop-blur-md shadow-2xl text-center"
+            className="relative flex flex-col items-center max-w-sm w-full mx-4 px-6 py-8 rounded-3xl border border-theme-border/80 bg-theme-card/75 backdrop-blur-md shadow-2xl text-center"
           >
             {/* Logo Container with Orbiting Pulse Ring */}
             <div className="relative mb-5 flex items-center justify-center">
@@ -207,7 +207,7 @@ function LoaderContent() {
               <div className="absolute h-20 w-20 rounded-full border-2 border-dashed border-[#d9691f] animate-spin" style={{ animationDuration: "6s" }} />
 
               {/* Logo Background */}
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-[#241608] shadow-lg shadow-[#241608]/20">
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-theme-button shadow-lg shadow-black/20">
                 <img
                   src="/image/Logo.png"
                   alt="ConcertGo"
@@ -217,7 +217,7 @@ function LoaderContent() {
             </div>
 
             {/* Brand Title */}
-            <div className="font-[var(--font-display,serif)] text-2xl font-black tracking-tight text-[#241608]">
+            <div className="font-[var(--font-display,serif)] text-2xl font-black tracking-tight text-theme-text">
               <span>Concert</span>
               <span className="text-[#d9691f]">Go</span>
             </div>
@@ -248,14 +248,14 @@ function LoaderContent() {
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25 }}
-              className="mt-4 text-xs font-semibold text-[#8a7a63] tracking-wide"
+              className="mt-4 text-xs font-semibold text-theme-text-light tracking-wide"
             >
               {statusText}
             </motion.p>
 
             {/* Progress Bar Container */}
             <div className="mt-5 w-full">
-              <div className="h-2 w-full overflow-hidden rounded-full bg-[#f6efe1] border border-[#e6d9bf]/60 p-[2px]">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-theme-bg border border-theme-border/60 p-[2px]">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-[#d9691f] via-[#f59e0b] to-[#d9691f] shadow-xs"
                   style={{ width: `${progress}%` }}

@@ -203,21 +203,21 @@ export function SearchHero(props: {
       transition={{ duration: 0.35 }}
       className="mx-auto max-w-3xl px-6 pb-12 pt-4 text-center"
     >
-      <span className="inline-flex items-center gap-2 rounded-full border border-[#d9691f]/30 bg-[#efe4cf]/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#b5772f]">
+      <span className="inline-flex items-center gap-2 rounded-full border border-[#d9691f]/30 bg-theme-card-hover/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#b5772f]">
         <Sparkles className="w-3.5 h-3.5" /> {meta.tag}
       </span>
 
-      <h2 className="mt-4 font-[var(--font-display,serif)] text-3xl font-bold leading-tight text-[#241608] md:text-5xl">
+      <h2 className="mt-4 font-[var(--font-display,serif)] text-3xl font-bold leading-tight text-theme-text md:text-5xl">
         {meta.title}
       </h2>
-      <p className="mx-auto mt-3 max-w-lg text-sm text-[#5a4a35] md:text-base">
+      <p className="mx-auto mt-3 max-w-lg text-sm text-theme-text-muted md:text-base">
         {meta.subtitle}
       </p>
 
       {/* Input Search Box */}
       <div ref={containerRef} className="relative mx-auto mt-8 max-w-xl">
-        <div className="flex items-center gap-2 rounded-full border border-[#e6d9bf] bg-white p-2 pl-5 shadow-md shadow-[#241608]/5 transition-all focus-within:border-[#d9691f] focus-within:ring-2 focus-within:ring-[#d9691f]/20">
-          <Search className="w-5 h-5 text-[#8a7a63]" />
+        <div className="flex items-center gap-2 rounded-full border border-theme-border bg-theme-card p-2 pl-5 shadow-md shadow-black/5 transition-all focus-within:border-[#d9691f] focus-within:ring-2 focus-within:ring-[#d9691f]/20">
+          <Search className="w-5 h-5 text-theme-text-light" />
           <input
             value={query}
             onChange={(e) => {
@@ -230,7 +230,7 @@ export function SearchHero(props: {
             role="combobox"
             aria-expanded={showDropdown}
             aria-controls="search-suggestions"
-            className="flex-1 bg-transparent text-sm text-[#241608] placeholder:text-[#8a7a63] focus:outline-hidden"
+            className="flex-1 bg-transparent text-sm text-theme-text placeholder:text-theme-text-light focus:outline-hidden"
           />
           {query && (
             <button
@@ -240,7 +240,7 @@ export function SearchHero(props: {
                 setQuery("");
                 setIsOpen(false);
               }}
-              className="shrink-0 rounded-full px-2 py-1 text-xs text-[#8a7a63] hover:text-[#241608]"
+              className="shrink-0 rounded-full px-2 py-1 text-xs text-theme-text-light hover:text-theme-text"
             >
               ✕
             </button>
@@ -249,7 +249,7 @@ export function SearchHero(props: {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             onClick={onSubmit}
-            className="rounded-full bg-[#241608] px-5 py-2.5 text-xs font-semibold text-[#f6efe1] transition-colors hover:bg-[#3a2010] sm:text-sm"
+            className="rounded-full bg-theme-button px-5 py-2.5 text-xs font-semibold text-[#f6efe1] transition-colors hover:bg-[#3a2010] sm:text-sm"
           >
             Temukan
           </motion.button>
@@ -265,7 +265,7 @@ export function SearchHero(props: {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 5, scale: 0.98 }}
               transition={{ duration: 0.2 }}
-              className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-2xl border border-[#e6d9bf] bg-white text-left shadow-2xl"
+              className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-2xl border border-theme-border bg-theme-card text-left shadow-2xl"
             >
               {suggestions.map((s, i) => (
                 <li key={s.key} role="option" aria-selected={i === highlightIndex}>
@@ -275,19 +275,19 @@ export function SearchHero(props: {
                     onMouseEnter={() => setHighlightIndex(i)}
                     onClick={() => applySuggestion(s)}
                     className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors ${
-                      i === highlightIndex ? "bg-[#f6efe1]" : "bg-white hover:bg-[#f6efe1]/50"
+                      i === highlightIndex ? "bg-theme-bg" : "bg-theme-card hover:bg-theme-bg/50"
                     }`}
                   >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#efe4cf] text-[#8a7a63]">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-theme-card-hover text-theme-text-light">
                       {s.kind === "city" ? <MapPin className="w-4 h-4" /> : s.kind === "genre" ? <Music className="w-4 h-4" /> : <Search className="w-4 h-4" />}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[#241608]">
+                      <span className="block truncate text-theme-text">
                         <Highlighted text={s.label} query={query} />
                       </span>
-                      {s.meta && <span className="block truncate text-xs text-[#8a7a63]">{s.meta}</span>}
+                      {s.meta && <span className="block truncate text-xs text-theme-text-light">{s.meta}</span>}
                     </span>
-                    <span className="shrink-0 rounded-full bg-[#f1e6d0] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#8a7a63]">
+                    <span className="shrink-0 rounded-full bg-theme-card-hover px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-theme-text-light">
                       {s.kind === "city" ? "Kota" : s.kind === "genre" ? "Kategori" : "Acara"}
                     </span>
                   </button>
@@ -307,13 +307,13 @@ export function SearchHero(props: {
           className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 font-medium transition-all ${
             activeFilterCount > 0
               ? "border-[#d9691f] bg-[#d9691f] text-white shadow-xs hover:bg-[#c15f1b]"
-              : "cursor-default border-[#e6d9bf] bg-white/70 text-[#4a3a26]"
+              : "cursor-default border-theme-border bg-theme-card/70 text-theme-text-muted"
           }`}
         >
           <Filter className="w-3.5 h-3.5" />
           <span>Filter</span>
           {activeFilterCount > 0 && (
-            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-[#d9691f]">
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-theme-card px-1 text-[10px] font-bold text-[#d9691f]">
               {activeFilterCount}
             </span>
           )}
@@ -322,7 +322,7 @@ export function SearchHero(props: {
         <select
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
-          className="rounded-full border border-[#e6d9bf] bg-white/80 px-3.5 py-1.5 text-[#4a3a26] transition-colors focus:border-[#d9691f] focus:outline-hidden"
+          className="rounded-full border border-theme-border bg-theme-card/80 px-3.5 py-1.5 text-theme-text-muted transition-colors focus:border-[#d9691f] focus:outline-hidden"
         >
           <option>Semua Genre</option>
           {availableGenres.map((g) => (
@@ -333,7 +333,7 @@ export function SearchHero(props: {
         <select
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className="rounded-full border border-[#e6d9bf] bg-white/80 px-3.5 py-1.5 text-[#4a3a26] transition-colors focus:border-[#d9691f] focus:outline-hidden"
+          className="rounded-full border border-theme-border bg-theme-card/80 px-3.5 py-1.5 text-theme-text-muted transition-colors focus:border-[#d9691f] focus:outline-hidden"
         >
           <option>Semua Kota</option>
           {availableCities.map((c) => (
@@ -344,7 +344,7 @@ export function SearchHero(props: {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="rounded-full border border-[#e6d9bf] bg-white/80 px-3.5 py-1.5 text-[#4a3a26] transition-colors focus:border-[#d9691f] focus:outline-hidden"
+          className="rounded-full border border-theme-border bg-theme-card/80 px-3.5 py-1.5 text-theme-text-muted transition-colors focus:border-[#d9691f] focus:outline-hidden"
         >
           <option>Tanggal terdekat</option>
           <option>Harga terendah</option>
@@ -352,8 +352,8 @@ export function SearchHero(props: {
         </select>
       </div>
 
-      <p className="mt-3 text-xs text-[#8a7a63]">
-        Menampilkan <span className="font-semibold text-[#241608]">{resultCount}</span> dari {totalInCategory} {meta.unit} tersedia
+      <p className="mt-3 text-xs text-theme-text-light">
+        Menampilkan <span className="font-semibold text-theme-text">{resultCount}</span> dari {totalInCategory} {meta.unit} tersedia
       </p>
     </motion.section>
   );

@@ -10,17 +10,17 @@ export function WelcomeBar({ profile, pendingApprovalCount }: { profile: AdminPr
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="rounded-3xl border border-[#e6d9bf] bg-gradient-to-r from-[#f1e6d0] via-[#efe3cc] to-[#ebdcc2] p-6 shadow-sm sm:p-7"
+      className="rounded-3xl border border-theme-border bg-gradient-to-r from-theme-card-hover via-[#efe3cc] to-[#ebdcc2] p-6 shadow-sm sm:p-7"
     >
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <span className="rounded-full bg-[#d9691f] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
             {profile.role}
           </span>
-          <h2 className="mt-2 font-[var(--font-display,serif)] text-2xl font-bold text-[#241608] sm:text-3xl">
+          <h2 className="mt-2 font-[var(--font-display,serif)] text-2xl font-bold text-theme-text sm:text-3xl">
             Selamat datang kembali, {profile.name.split(" ")[0]}
           </h2>
-          <p className="mt-1 max-w-xl text-xs text-[#5a4a35] sm:text-sm">
+          <p className="mt-1 max-w-xl text-xs text-theme-text-muted sm:text-sm">
             {pendingApprovalCount > 0
               ? `Ada ${pendingApprovalCount} acara baru dari promotor yang menunggu tinjauanmu hari ini.`
               : "Semua acara sudah ditinjau. Platform berjalan lancar hari ini."}
@@ -28,7 +28,7 @@ export function WelcomeBar({ profile, pendingApprovalCount }: { profile: AdminPr
         </div>
         <a
           href="#persetujuan"
-          className="inline-flex items-center gap-2 self-start rounded-full bg-[#241608] px-5 py-2.5 text-xs font-semibold text-[#f6efe1] shadow-md transition-all hover:scale-105 hover:bg-[#3a2010] active:scale-95 sm:self-auto"
+          className="inline-flex items-center gap-2 self-start rounded-full bg-theme-button px-5 py-2.5 text-xs font-semibold text-[#f6efe1] shadow-md transition-all hover:scale-105 hover:bg-[#3a2010] active:scale-95 sm:self-auto"
         >
           <ClipboardList className="w-4 h-4" /> Tinjau Persetujuan
         </a>
@@ -121,10 +121,10 @@ export function StatCardsGrid({
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: idx * 0.06 }}
-          className="rounded-3xl border border-[#e6d9bf] bg-white p-5 shadow-xs"
+          className="rounded-3xl border border-theme-border bg-theme-card p-5 shadow-xs"
         >
           <div className="flex items-center justify-between">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#efe4cf] text-[#d9691f]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-theme-card-hover text-[#d9691f]">
               {s.icon}
             </span>
             <span
@@ -135,11 +135,11 @@ export function StatCardsGrid({
               {s.trend === "warn" ? "Perhatian" : "Naik"}
             </span>
           </div>
-          <p className="mt-3 text-xs font-medium text-[#8a7a63]">{s.label}</p>
-          <p className="mt-1 font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+          <p className="mt-3 text-xs font-medium text-theme-text-light">{s.label}</p>
+          <p className="mt-1 font-[var(--font-display,serif)] text-2xl font-bold text-theme-text">
             {s.value}
           </p>
-          <p className="mt-1 text-[11px] text-[#8a7a63]">{s.delta}</p>
+          <p className="mt-1 text-[11px] text-theme-text-light">{s.delta}</p>
         </motion.div>
       ))}
     </div>
@@ -154,16 +154,16 @@ export function RevenueChartCard() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="rounded-3xl border border-[#e6d9bf] bg-white p-6 shadow-xs xl:col-span-2"
+      className="rounded-3xl border border-theme-border bg-theme-card p-6 shadow-xs xl:col-span-2"
     >
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-wider text-[#d9691f]">Tren Pendapatan</p>
-          <h3 className="mt-1 font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
+          <h3 className="mt-1 font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
             7 Bulan Terakhir
           </h3>
         </div>
-        <span className="rounded-full bg-[#efe4cf] px-3 py-1 text-xs font-semibold text-[#4a3a26]">
+        <span className="rounded-full bg-theme-card-hover px-3 py-1 text-xs font-semibold text-theme-text-muted">
           Dalam Juta Rupiah
         </span>
       </div>
@@ -179,18 +179,18 @@ export function RevenueChartCard() {
                   initial={{ height: 0 }}
                   animate={{ height: `${heightPct}%` }}
                   transition={{ duration: 0.5, delay: idx * 0.06, ease: "easeOut" }}
-                  className={`w-full max-w-9 rounded-t-lg ${isLast ? "bg-[#d9691f]" : "bg-[#efe4cf]"}`}
+                  className={`w-full max-w-9 rounded-t-lg ${isLast ? "bg-[#d9691f]" : "bg-theme-card-hover"}`}
                 />
                 <span
                   className={`absolute -top-5 text-[10px] font-bold ${
-                    isLast ? "text-[#d9691f]" : "text-[#8a7a63]"
+                    isLast ? "text-[#d9691f]" : "text-theme-text-light"
                   }`}
                   style={{ bottom: `calc(${heightPct}% + 4px)` }}
                 >
                   {formatJuta(r.value)}
                 </span>
               </div>
-              <span className="text-[11px] font-semibold text-[#8a7a63]">{r.month}</span>
+              <span className="text-[11px] font-semibold text-theme-text-light">{r.month}</span>
             </div>
           );
         })}
@@ -212,7 +212,7 @@ export function QuickActionsPanel() {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.08 }}
-      className="rounded-3xl border border-[#e6d9bf] bg-[#241608] p-6 text-[#f6efe1] shadow-xs"
+      className="rounded-3xl border border-theme-border bg-theme-button p-6 text-[#f6efe1] shadow-xs"
     >
       <p className="text-xs font-bold uppercase tracking-wider text-[#d9a26a]">Aksi Cepat</p>
       <h3 className="mt-1 font-[var(--font-display,serif)] text-xl font-bold">Kelola Platform</h3>
@@ -222,7 +222,7 @@ export function QuickActionsPanel() {
           <Link
             key={a.label}
             href={a.href}
-            className="group flex items-center gap-3 rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold transition-colors hover:border-[#d9691f] hover:bg-white/10"
+            className="group flex items-center gap-3 rounded-2xl border border-theme-card/15 bg-theme-card/5 px-4 py-3 text-sm font-semibold transition-colors hover:border-[#d9691f] hover:bg-theme-card/10"
           >
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#d9691f] text-white">
               {a.icon}

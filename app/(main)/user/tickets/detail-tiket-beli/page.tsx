@@ -92,7 +92,7 @@ export default function DetailTiketBeliPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white print:bg-white print:p-0">
+    <div className="min-h-screen bg-theme-bg font-[var(--font-body,ui-sans-serif)] text-theme-text selection:bg-[#d9691f] selection:text-white print:bg-theme-card print:p-0">
       {/* Top Header Navbar Terpadu */}
       <div className="print:hidden">
         <UserNavbar
@@ -101,7 +101,7 @@ export default function DetailTiketBeliPage() {
             <button
               type="button"
               onClick={handlePrintTicket}
-              className="rounded-full bg-[#241608] px-4 py-1.5 text-white shadow-xs transition hover:bg-[#d9691f] cursor-pointer text-xs font-semibold"
+              className="rounded-full bg-theme-button px-4 py-1.5 text-white shadow-xs transition hover:bg-[#d9691f] cursor-pointer text-xs font-semibold"
             >
               🖨️ Cetak E-Tiket
             </button>
@@ -117,15 +117,15 @@ export default function DetailTiketBeliPage() {
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#d9691f]">
               E-Tiket Resmi Terverifikasi
             </span>
-            <h1 className="font-[var(--font-display,serif)] text-2xl sm:text-3xl font-bold text-[#241608]">
+            <h1 className="font-[var(--font-display,serif)] text-2xl sm:text-3xl font-bold text-theme-text">
               Detail Tiket & Barcode Masuk
             </h1>
           </div>
 
           {PURCHASED_TICKETS.length > 1 && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#8a7a63] hidden sm:inline">Pilih Tiket:</span>
-              <div className="flex rounded-full border border-[#e6d9bf] bg-white/80 p-1">
+              <span className="text-xs text-theme-text-light hidden sm:inline">Pilih Tiket:</span>
+              <div className="flex rounded-full border border-theme-border bg-theme-card/80 p-1">
                 {PURCHASED_TICKETS.map((t, idx) => (
                   <button
                     key={t.id}
@@ -133,7 +133,7 @@ export default function DetailTiketBeliPage() {
                     className={`rounded-full px-3 py-1 text-xs font-bold transition-colors cursor-pointer ${
                       selectedTicketIndex === idx
                         ? "bg-[#d9691f] text-white"
-                        : "text-[#5a4a35] hover:text-[#241608]"
+                        : "text-theme-text-muted hover:text-theme-text"
                     }`}
                   >
                     Tiket #{idx + 1}
@@ -147,9 +147,9 @@ export default function DetailTiketBeliPage() {
         {/* ============================================================ */}
         {/* VISUAL BOARDING PASS TICKET CARD                             */}
         {/* ============================================================ */}
-        <div className="relative overflow-hidden rounded-3xl border-2 border-[#e6d9bf] bg-white shadow-xl">
+        <div className="relative overflow-hidden rounded-3xl border-2 border-theme-border bg-theme-card shadow-xl">
           {/* Top colored strip with event visual */}
-          <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-gradient-to-r from-[#241209] to-[#3a1c0f]">
+          <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-gradient-to-r from-theme-dark to-[#3a1c0f]">
             <img
               src={ev.image}
               alt={ev.title}
@@ -159,11 +159,11 @@ export default function DetailTiketBeliPage() {
 
             {/* Header tags */}
             <div className="absolute left-6 right-6 top-5 flex items-center justify-between">
-              <span className="rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
+              <span className="rounded-full bg-theme-card/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
                 {ev.category}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/90 px-3 py-1 text-xs font-bold text-white backdrop-blur-md shadow-xs">
-                <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
+                <span className="h-2 w-2 rounded-full bg-theme-card animate-pulse" />
                 {currentTicket.status}
               </span>
             </div>
@@ -181,50 +181,50 @@ export default function DetailTiketBeliPage() {
 
           {/* Ticket Information Body */}
           <div className="p-6 sm:p-8">
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 pb-6 border-b border-[#e6d9bf]">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 pb-6 border-b border-theme-border">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a7a63]">Tanggal Acara</span>
-                <p className="mt-1 font-bold text-sm sm:text-base text-[#241608]">📅 {ev.date}</p>
-                <p className="text-[11px] text-[#5a4a35]">{ev.time}</p>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-theme-text-light">Tanggal Acara</span>
+                <p className="mt-1 font-bold text-sm sm:text-base text-theme-text">📅 {ev.date}</p>
+                <p className="text-[11px] text-theme-text-muted">{ev.time}</p>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a7a63]">Kategori / Tier</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-theme-text-light">Kategori / Tier</span>
                 <p className="mt-1 font-bold text-sm sm:text-base text-[#d9691f]">👑 {currentTicket.tierName}</p>
-                <p className="text-[11px] text-[#5a4a35]">Akses Fast-Track</p>
+                <p className="text-[11px] text-theme-text-muted">Akses Fast-Track</p>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a7a63]">Gate & Masuk</span>
-                <p className="mt-1 font-bold text-sm sm:text-base text-[#241608]">🚪 {currentTicket.gate}</p>
-                <p className="text-[11px] text-[#5a4a35]">Buka 16:00 WIB</p>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-theme-text-light">Gate & Masuk</span>
+                <p className="mt-1 font-bold text-sm sm:text-base text-theme-text">🚪 {currentTicket.gate}</p>
+                <p className="text-[11px] text-theme-text-muted">Buka 16:00 WIB</p>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a7a63]">Posisi Tempat Duduk</span>
-                <p className="mt-1 font-bold text-sm sm:text-base text-[#241608]">💺 {currentTicket.seat}</p>
-                <p className="text-[11px] text-[#5a4a35]">Bernomor Resmi</p>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-theme-text-light">Posisi Tempat Duduk</span>
+                <p className="mt-1 font-bold text-sm sm:text-base text-theme-text">💺 {currentTicket.seat}</p>
+                <p className="text-[11px] text-theme-text-muted">Bernomor Resmi</p>
               </div>
             </div>
 
             {/* Venue & Buyer Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-b border-[#e6d9bf] text-xs">
-              <div className="rounded-2xl bg-[#f6efe1]/70 p-4 border border-[#e6d9bf]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-b border-theme-border text-xs">
+              <div className="rounded-2xl bg-theme-bg/70 p-4 border border-theme-border">
                 <span className="font-bold text-[#d9691f]">📍 Lokasi & Alamat Venue:</span>
-                <p className="mt-1 font-bold text-sm text-[#241608]">{ev.venue}</p>
-                <p className="mt-0.5 text-[#5a4a35]">{ev.address}</p>
-                <p className="mt-2 text-[11px] font-semibold text-[#8a7a63]">
+                <p className="mt-1 font-bold text-sm text-theme-text">{ev.venue}</p>
+                <p className="mt-0.5 text-theme-text-muted">{ev.address}</p>
+                <p className="mt-2 text-[11px] font-semibold text-theme-text-light">
                   Penukaran Gelang: {currentTicket.wristbandLocation}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-[#f6efe1]/70 p-4 border border-[#e6d9bf]">
+              <div className="rounded-2xl bg-theme-bg/70 p-4 border border-theme-border">
                 <span className="font-bold text-[#d9691f]">👤 Identitas Pemegang Tiket:</span>
-                <p className="mt-1 font-bold text-sm text-[#241608]">{profile?.name || "Raka Pratama"}</p>
-                <p className="mt-0.5 text-[#5a4a35]">{profile?.email || "raka.pratama@email.com"}</p>
+                <p className="mt-1 font-bold text-sm text-theme-text">{profile?.name || "Raka Pratama"}</p>
+                <p className="mt-0.5 text-theme-text-muted">{profile?.email || "raka.pratama@email.com"}</p>
                 <div className="mt-2 flex items-center justify-between text-[11px]">
-                  <span className="text-[#8a7a63]">Metode Pembayaran:</span>
-                  <span className="font-semibold text-[#241608]">{currentTicket.paymentMethod}</span>
+                  <span className="text-theme-text-light">Metode Pembayaran:</span>
+                  <span className="font-semibold text-theme-text">{currentTicket.paymentMethod}</span>
                 </div>
               </div>
             </div>
@@ -235,15 +235,15 @@ export default function DetailTiketBeliPage() {
                 <span className="rounded-full bg-orange-100 px-3 py-1 text-[11px] font-bold text-[#d9691f]">
                   ⚡ SCAN SAAT MASUK GATE
                 </span>
-                <h3 className="mt-3 font-[var(--font-display,serif)] text-lg sm:text-xl font-bold text-[#241608]">
+                <h3 className="mt-3 font-[var(--font-display,serif)] text-lg sm:text-xl font-bold text-theme-text">
                   Tunjukkan Barcode atau QR Code Ini
                 </h3>
-                <p className="mt-1 text-xs text-[#5a4a35]">
+                <p className="mt-1 text-xs text-theme-text-muted">
                   Tingkatkan kecerahan layar HP kamu saat scanner tiket di pintu gerbang.
                 </p>
 
                 {/* Simulated QR Code Visual */}
-                <div className="mx-auto mt-5 flex h-48 w-48 items-center justify-center rounded-2xl bg-white p-3 shadow-inner border border-[#e6d9bf]">
+                <div className="mx-auto mt-5 flex h-48 w-48 items-center justify-center rounded-2xl bg-theme-card p-3 shadow-inner border border-theme-border">
                   <svg viewBox="0 0 100 100" className="h-full w-full">
                     {/* Top-left position detection pattern */}
                     <rect x="5" y="5" width="30" height="30" rx="3" fill="#241608" />
@@ -282,31 +282,31 @@ export default function DetailTiketBeliPage() {
                 </div>
 
                 {/* Simulated Barcode */}
-                <div className="mx-auto mt-5 max-w-xs rounded-xl bg-white p-3 border border-[#e6d9bf]">
+                <div className="mx-auto mt-5 max-w-xs rounded-xl bg-theme-card p-3 border border-theme-border">
                   <div className="flex h-12 items-center justify-center gap-[3px] overflow-hidden px-2">
                     {[3, 1, 4, 2, 1, 3, 2, 4, 1, 2, 3, 1, 4, 2, 1, 2, 4, 3, 1, 2, 4, 1, 3, 2, 4, 1, 3, 2, 1, 4, 2].map(
                       (w, i) => (
                         <span
                           key={i}
-                          className="h-full bg-[#241608]"
+                          className="h-full bg-theme-button"
                           style={{ width: `${w * 1.6}px` }}
                         />
                       )
                     )}
                   </div>
-                  <p className="mt-2 font-mono text-xs font-bold tracking-widest text-[#241608]">
+                  <p className="mt-2 font-mono text-xs font-bold tracking-widest text-theme-text">
                     {currentTicket.barcodeString}
                   </p>
                 </div>
 
                 {/* Booking Code with Copy Button */}
                 <div className="mt-4 flex items-center justify-center gap-2">
-                  <span className="font-mono text-xs text-[#5a4a35]">Kode Pesanan:</span>
-                  <span className="font-mono font-bold text-xs text-[#241608]">{currentTicket.orderId}</span>
+                  <span className="font-mono text-xs text-theme-text-muted">Kode Pesanan:</span>
+                  <span className="font-mono font-bold text-xs text-theme-text">{currentTicket.orderId}</span>
                   <button
                     type="button"
                     onClick={handleCopyBookingCode}
-                    className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-[#d9691f] border border-[#e6d9bf] shadow-2xs hover:bg-orange-50 cursor-pointer"
+                    className="rounded-full bg-theme-card px-2.5 py-1 text-[11px] font-semibold text-[#d9691f] border border-theme-border shadow-2xs hover:bg-orange-50 cursor-pointer"
                   >
                     {copiedCode ? "✓ Tersalin" : "Salin"}
                   </button>
@@ -315,14 +315,14 @@ export default function DetailTiketBeliPage() {
             </div>
 
             {/* Bottom Notch Perforation Cutout Decorations */}
-            <div className="relative mt-8 pt-6 border-t-2 border-dashed border-[#e6d9bf] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-              <div className="text-[#8a7a63] text-center sm:text-left">
+            <div className="relative mt-8 pt-6 border-t-2 border-dashed border-theme-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+              <div className="text-theme-text-light text-center sm:text-left">
                 <p>E-tiket ini sah dan dilindungi hak cipta ConcertGo Indonesia.</p>
                 <p className="text-[11px]">Waktu transaksi: {currentTicket.paidAt}</p>
               </div>
 
               <div className="text-right">
-                <span className="text-[10px] text-[#8a7a63] uppercase">Total Pembayaran Lunas</span>
+                <span className="text-[10px] text-theme-text-light uppercase">Total Pembayaran Lunas</span>
                 <p className="font-mono text-lg font-bold text-[#d9691f]">
                   Rp {currentTicket.total.toLocaleString("id-ID")}
                 </p>
@@ -332,12 +332,12 @@ export default function DetailTiketBeliPage() {
         </div>
 
         {/* Tab Informasi Tambahan: Syarat & Rundown */}
-        <div className="mt-8 rounded-3xl border border-[#e6d9bf] bg-white/70 p-6 sm:p-8 backdrop-blur-sm shadow-sm print:hidden">
-          <div className="flex items-center gap-3 border-b border-[#e6d9bf] pb-4">
+        <div className="mt-8 rounded-3xl border border-theme-border bg-theme-card/70 p-6 sm:p-8 backdrop-blur-sm shadow-sm print:hidden">
+          <div className="flex items-center gap-3 border-b border-theme-border pb-4">
             <button
               onClick={() => setActiveTab("pass")}
               className={`rounded-2xl px-4 py-2 text-xs font-bold transition-colors cursor-pointer ${
-                activeTab === "pass" ? "bg-[#241608] text-white" : "bg-white text-[#5a4a35] hover:bg-white"
+                activeTab === "pass" ? "bg-theme-button text-white" : "bg-theme-card text-theme-text-muted hover:bg-theme-card"
               }`}
             >
               📋 Tata Cara Penukaran Gelang
@@ -345,17 +345,17 @@ export default function DetailTiketBeliPage() {
             <button
               onClick={() => setActiveTab("rundown")}
               className={`rounded-2xl px-4 py-2 text-xs font-bold transition-colors cursor-pointer ${
-                activeTab === "rundown" ? "bg-[#241608] text-white" : "bg-white text-[#5a4a35] hover:bg-white"
+                activeTab === "rundown" ? "bg-theme-button text-white" : "bg-theme-card text-theme-text-muted hover:bg-theme-card"
               }`}
             >
               ⏱️ Rundown Acara
             </button>
           </div>
 
-          <div className="mt-5 text-xs sm:text-sm text-[#5a4a35]">
+          <div className="mt-5 text-xs sm:text-sm text-theme-text-muted">
             {activeTab === "pass" ? (
               <div className="space-y-3 leading-relaxed">
-                <p className="font-bold text-[#241608]">Harap perhatikan syarat & tata cara masuk venue:</p>
+                <p className="font-bold text-theme-text">Harap perhatikan syarat & tata cara masuk venue:</p>
                 <ul className="list-disc pl-5 space-y-1.5">
                   <li>Bawa identitas asli (KTP / Paspor / SIM) yang sesuai dengan nama pemesan: <strong>{profile?.name || "Raka Pratama"}</strong>.</li>
                   <li>Tunjukkan e-tiket ini dalam bentuk barcode digital dari smartphone atau cetakan fisik PDF.</li>
@@ -366,14 +366,14 @@ export default function DetailTiketBeliPage() {
               </div>
             ) : (
               <div className="space-y-3">
-                <p className="font-bold text-[#241608]">Jadwal Panggung & Rundown Acara:</p>
+                <p className="font-bold text-theme-text">Jadwal Panggung & Rundown Acara:</p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {ev.rundown.map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 rounded-xl bg-white p-3 border border-[#e6d9bf]">
+                    <div key={i} className="flex items-center gap-3 rounded-xl bg-theme-card p-3 border border-theme-border">
                       <span className="font-mono font-bold text-xs text-[#d9691f] bg-orange-50 px-2 py-1 rounded-lg">
                         {item.time}
                       </span>
-                      <span className="text-xs font-semibold text-[#241608]">{item.act}</span>
+                      <span className="text-xs font-semibold text-theme-text">{item.act}</span>
                     </div>
                   ))}
                 </div>

@@ -217,7 +217,7 @@ export default function TiketSayaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white">
+    <div className="min-h-screen bg-theme-bg font-[var(--font-body,ui-sans-serif)] text-theme-text selection:bg-[#d9691f] selection:text-white">
       {/* Background Subtle Ambience */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute -left-40 top-10 h-96 w-96 rounded-full bg-[#d9691f]/5 blur-3xl" />
@@ -231,22 +231,22 @@ export default function TiketSayaPage() {
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
 
         {/* Hero Banner Status Tiket */}
-        <div className="relative overflow-hidden rounded-3xl border border-[#e6d9bf] bg-white/70 p-6 sm:p-8 backdrop-blur-md shadow-sm">
+        <div className="relative overflow-hidden rounded-3xl border border-theme-border bg-theme-card/70 p-6 sm:p-8 backdrop-blur-md shadow-sm">
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#d9691f]/30 bg-[#efe4cf] px-3 py-1 text-xs font-bold text-[#d9691f]">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#d9691f]/30 bg-theme-card-hover px-3 py-1 text-xs font-bold text-[#d9691f]">
                   🎟️ Dompet E-Tiket Resmi
                 </span>
                 <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-900 border border-amber-200">
                   {profile?.badge || "VIP Member"}
                 </span>
               </div>
-              <h1 className="mt-3 font-[var(--font-display,serif)] text-2xl sm:text-4xl font-bold text-[#241608]">
+              <h1 className="mt-3 font-[var(--font-display,serif)] text-2xl sm:text-4xl font-bold text-theme-text">
                 E-Tiket & Riwayat Pesanan
               </h1>
-              <p className="mt-1.5 text-xs sm:text-sm text-[#5a4a35] max-w-xl leading-relaxed">
-                Halo, <span className="font-bold text-[#241608]">{profile?.name || "Raka Pratama"}</span>! Semua tiket konser, festival, dan acara pilihanmu tersimpan aman di sini. Tunjukkan barcode saat check-in tanpa perlu antre tiket fisik.
+              <p className="mt-1.5 text-xs sm:text-sm text-theme-text-muted max-w-xl leading-relaxed">
+                Halo, <span className="font-bold text-theme-text">{profile?.name || "Raka Pratama"}</span>! Semua tiket konser, festival, dan acara pilihanmu tersimpan aman di sini. Tunjukkan barcode saat check-in tanpa perlu antre tiket fisik.
               </p>
             </div>
 
@@ -265,15 +265,15 @@ export default function TiketSayaPage() {
                 <p className="mt-0.5 font-mono text-2xl font-bold text-amber-700">{counts["Menunggu Pembayaran"]}</p>
               </div>
 
-              <div className="rounded-2xl border border-[#e6d9bf] bg-[#efe4cf]/60 px-4 py-3 text-center shadow-2xs min-w-[100px]">
+              <div className="rounded-2xl border border-theme-border bg-theme-card-hover/60 px-4 py-3 text-center shadow-2xs min-w-[100px]">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-[#6a5943]">Selesai</span>
-                <p className="mt-0.5 font-mono text-2xl font-bold text-[#4a3a26]">{counts.Selesai}</p>
+                <p className="mt-0.5 font-mono text-2xl font-bold text-theme-text-muted">{counts.Selesai}</p>
               </div>
             </div>
           </div>
 
           {/* Filter Tabs, Search & Sort Row */}
-          <div className="mt-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-6 border-t border-[#e6d9bf]/70">
+          <div className="mt-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-6 border-t border-theme-border/70">
             {/* Filter Tabs */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
               {(["Semua", "Aktif", "Menunggu Pembayaran", "Selesai"] as FilterTab[]).map((tab) => {
@@ -284,14 +284,14 @@ export default function TiketSayaPage() {
                     onClick={() => setFilter(tab)}
                     className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                       isActive
-                        ? "bg-[#241608] text-white shadow-md shadow-[#241608]/15 scale-102"
-                        : "bg-white/80 text-[#5a4a35] hover:bg-white hover:text-[#241608] border border-[#e6d9bf]"
+                        ? "bg-theme-button text-white shadow-md shadow-black/15 scale-102"
+                        : "bg-theme-card/80 text-theme-text-muted hover:bg-theme-card hover:text-theme-text border border-theme-border"
                     }`}
                   >
                     <span>{tab}</span>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-mono ${
-                        isActive ? "bg-[#d9691f] text-white" : "bg-[#efe4cf] text-[#4a3a26]"
+                        isActive ? "bg-[#d9691f] text-white" : "bg-theme-card-hover text-theme-text-muted"
                       }`}
                     >
                       {counts[tab]}
@@ -309,15 +309,15 @@ export default function TiketSayaPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Cari konser, venue, no. pesanan..."
-                  className="w-full rounded-full border border-[#e6d9bf] bg-white py-2 pl-9 pr-8 text-xs font-medium text-[#241608] placeholder-[#8a7a63] focus:border-[#d9691f] focus:outline-hidden shadow-2xs"
+                  className="w-full rounded-full border border-theme-border bg-theme-card py-2 pl-9 pr-8 text-xs font-medium text-theme-text placeholder-[#8a7a63] focus:border-[#d9691f] focus:outline-hidden shadow-2xs"
                 />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#8a7a63]">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-theme-text-light">
                   🔍
                 </span>
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8a7a63] hover:text-[#241608] cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-theme-text-light hover:text-theme-text cursor-pointer"
                   >
                     ✕
                   </button>
@@ -327,7 +327,7 @@ export default function TiketSayaPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOrder)}
-                className="rounded-full border border-[#e6d9bf] bg-white px-3 py-2 text-xs font-semibold text-[#4a3a26] focus:border-[#d9691f] focus:outline-hidden cursor-pointer"
+                className="rounded-full border border-theme-border bg-theme-card px-3 py-2 text-xs font-semibold text-theme-text-muted focus:border-[#d9691f] focus:outline-hidden cursor-pointer"
               >
                 <option value="terdekat">📅 Terdekat</option>
                 <option value="terbaru">✨ Terbaru Dibeli</option>
@@ -340,14 +340,14 @@ export default function TiketSayaPage() {
         {/* List Tiket */}
         <div className="mt-8 space-y-6">
           {filteredTickets.length === 0 ? (
-            <div className="mx-auto max-w-md rounded-3xl border border-[#e6d9bf] bg-white/80 p-10 text-center shadow-sm backdrop-blur-sm">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#efe4cf] text-3xl">
+            <div className="mx-auto max-w-md rounded-3xl border border-theme-border bg-theme-card/80 p-10 text-center shadow-sm backdrop-blur-sm">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-theme-card-hover text-3xl">
                 🎫
               </div>
-              <h3 className="mt-4 font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
+              <h3 className="mt-4 font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
                 {searchQuery ? "Tiket Tidak Ditemukan" : "Belum Ada Tiket di Kategori Ini"}
               </h3>
-              <p className="mt-2 text-xs sm:text-sm text-[#8a7a63]">
+              <p className="mt-2 text-xs sm:text-sm text-theme-text-light">
                 {searchQuery
                   ? `Tidak ada tiket yang cocok dengan "${searchQuery}". Coba kata kunci lainnya.`
                   : "Yuk temukan konser atau festival musik terbaru yang siap kamu nikmati!"}
@@ -356,7 +356,7 @@ export default function TiketSayaPage() {
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="rounded-full border border-[#e6d9bf] bg-white px-5 py-2.5 text-xs font-bold text-[#241608] hover:bg-[#efe4cf] transition"
+                    className="rounded-full border border-theme-border bg-theme-card px-5 py-2.5 text-xs font-bold text-theme-text hover:bg-theme-card-hover transition"
                   >
                     Reset Pencarian
                   </button>
@@ -376,10 +376,10 @@ export default function TiketSayaPage() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05, duration: 0.3 }}
-                className="group relative flex flex-col lg:flex-row overflow-hidden rounded-3xl border border-[#e6d9bf] bg-white shadow-sm transition-all hover:border-[#d9691f]/50 hover:shadow-xl"
+                className="group relative flex flex-col lg:flex-row overflow-hidden rounded-3xl border border-theme-border bg-theme-card shadow-sm transition-all hover:border-[#d9691f]/50 hover:shadow-xl"
               >
                 {/* Visual Poster Thumbnail (Left) */}
-                <div className="relative h-52 lg:h-auto lg:w-72 overflow-hidden bg-[#241209] shrink-0">
+                <div className="relative h-52 lg:h-auto lg:w-72 overflow-hidden bg-theme-dark shrink-0">
                   <img
                     src={ticket.image}
                     alt={ticket.eventTitle}
@@ -388,7 +388,7 @@ export default function TiketSayaPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-black/60" />
 
                   {/* Category tag */}
-                  <span className="absolute left-3 top-3 rounded-full bg-[#241608]/85 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm border border-white/20">
+                  <span className="absolute left-3 top-3 rounded-full bg-theme-button/85 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm border border-theme-card/20">
                     {ticket.category}
                   </span>
 
@@ -401,9 +401,9 @@ export default function TiketSayaPage() {
 
                 {/* Perforated vertical line divider with cutouts (Desktop) */}
                 <div className="hidden lg:flex flex-col justify-between items-center py-2 relative -mx-3 z-10 pointer-events-none">
-                  <span className="h-6 w-6 rounded-full bg-[#f6efe1] border border-[#e6d9bf] -mt-5" />
-                  <div className="h-full w-[2px] border-l-2 border-dashed border-[#e6d9bf]" />
-                  <span className="h-6 w-6 rounded-full bg-[#f6efe1] border border-[#e6d9bf] -mb-5" />
+                  <span className="h-6 w-6 rounded-full bg-theme-bg border border-theme-border -mt-5" />
+                  <div className="h-full w-[2px] border-l-2 border-dashed border-theme-border" />
+                  <span className="h-6 w-6 rounded-full bg-theme-bg border border-theme-border -mb-5" />
                 </div>
 
                 {/* Body Details (Middle) */}
@@ -412,16 +412,16 @@ export default function TiketSayaPage() {
                     {/* Top Row: Status badge & Order ID with copy button */}
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-semibold text-[#8a7a63]">
+                        <span className="font-mono text-xs font-semibold text-theme-text-light">
                           No. Pesanan:
                         </span>
-                        <span className="font-mono text-xs font-bold text-[#241608]">
+                        <span className="font-mono text-xs font-bold text-theme-text">
                           {ticket.orderId}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleCopyOrderId(ticket.orderId)}
-                          className="rounded-md border border-[#e6d9bf] bg-[#fbf8f2] px-2 py-0.5 text-[10px] font-semibold text-[#5a4a35] hover:border-[#d9691f] hover:text-[#d9691f] cursor-pointer"
+                          className="rounded-md border border-theme-border bg-[#fbf8f2] px-2 py-0.5 text-[10px] font-semibold text-theme-text-muted hover:border-[#d9691f] hover:text-[#d9691f] cursor-pointer"
                           title="Salin nomor pesanan"
                         >
                           {copiedOrderId === ticket.orderId ? "✓ Disalin" : "Salin"}
@@ -445,42 +445,42 @@ export default function TiketSayaPage() {
                     </div>
 
                     {/* Event Title & Artist */}
-                    <h2 className="mt-3 font-[var(--font-display,serif)] text-xl sm:text-2xl font-bold text-[#241608] group-hover:text-[#d9691f] transition-colors">
+                    <h2 className="mt-3 font-[var(--font-display,serif)] text-xl sm:text-2xl font-bold text-theme-text group-hover:text-[#d9691f] transition-colors">
                       {ticket.eventTitle}
                     </h2>
-                    <p className="text-xs sm:text-sm text-[#5a4a35] font-semibold">{ticket.artist}</p>
+                    <p className="text-xs sm:text-sm text-theme-text-muted font-semibold">{ticket.artist}</p>
 
                     {/* Key Specifications Grid */}
-                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-2xl bg-[#f6efe1]/70 p-3.5 border border-[#e6d9bf] text-xs">
+                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-2xl bg-theme-bg/70 p-3.5 border border-theme-border text-xs">
                       <div>
-                        <span className="text-[10px] text-[#8a7a63] font-bold uppercase">Tanggal & Jam</span>
-                        <p className="font-bold text-[#241608]">{ticket.date}</p>
-                        <p className="text-[11px] text-[#5a4a35]">{ticket.time}</p>
+                        <span className="text-[10px] text-theme-text-light font-bold uppercase">Tanggal & Jam</span>
+                        <p className="font-bold text-theme-text">{ticket.date}</p>
+                        <p className="text-[11px] text-theme-text-muted">{ticket.time}</p>
                       </div>
                       <div>
-                        <span className="text-[10px] text-[#8a7a63] font-bold uppercase">Tier Tiket</span>
+                        <span className="text-[10px] text-theme-text-light font-bold uppercase">Tier Tiket</span>
                         <p className="font-bold text-[#d9691f]">{ticket.tierName}</p>
-                        <p className="text-[11px] text-[#5a4a35]">{ticket.qty} Tiket</p>
+                        <p className="text-[11px] text-theme-text-muted">{ticket.qty} Tiket</p>
                       </div>
                       <div>
-                        <span className="text-[10px] text-[#8a7a63] font-bold uppercase">Pintu Masuk</span>
-                        <p className="font-bold text-[#241608]">{ticket.gate}</p>
+                        <span className="text-[10px] text-theme-text-light font-bold uppercase">Pintu Masuk</span>
+                        <p className="font-bold text-theme-text">{ticket.gate}</p>
                       </div>
                       <div>
-                        <span className="text-[10px] text-[#8a7a63] font-bold uppercase">Nomor Kursi</span>
-                        <p className="font-bold text-[#241608]">{ticket.seat}</p>
+                        <span className="text-[10px] text-theme-text-light font-bold uppercase">Nomor Kursi</span>
+                        <p className="font-bold text-theme-text">{ticket.seat}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Bottom Row: Total & Action Buttons */}
-                  <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-[#e6d9bf]/70 pt-4">
+                  <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-theme-border/70 pt-4">
                     <div>
-                      <span className="text-[10px] text-[#8a7a63] uppercase font-semibold">Total Pembayaran</span>
-                      <p className="font-mono text-lg font-bold text-[#241608]">
+                      <span className="text-[10px] text-theme-text-light uppercase font-semibold">Total Pembayaran</span>
+                      <p className="font-mono text-lg font-bold text-theme-text">
                         Rp {ticket.total.toLocaleString("id-ID")}
                       </p>
-                      <span className="text-[10px] text-[#8a7a63]">{ticket.paymentMethod}</span>
+                      <span className="text-[10px] text-theme-text-light">{ticket.paymentMethod}</span>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
@@ -489,7 +489,7 @@ export default function TiketSayaPage() {
                           <button
                             type="button"
                             onClick={() => setSelectedTicketForModal(ticket)}
-                            className="inline-flex items-center gap-1.5 rounded-full border border-[#e6d9bf] bg-white px-4 py-2 text-xs font-semibold text-[#241608] shadow-2xs hover:border-[#d9691f] hover:text-[#d9691f] transition cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-full border border-theme-border bg-theme-card px-4 py-2 text-xs font-semibold text-theme-text shadow-2xs hover:border-[#d9691f] hover:text-[#d9691f] transition cursor-pointer"
                           >
                             <span>📱</span> Barcode QR
                           </button>
@@ -514,7 +514,7 @@ export default function TiketSayaPage() {
                           <button
                             type="button"
                             onClick={() => setPaymentTicket(ticket)}
-                            className="rounded-full bg-[#241608] px-5 py-2 text-xs font-bold text-white shadow-md transition hover:bg-[#d9691f] hover:scale-102 cursor-pointer"
+                            className="rounded-full bg-theme-button px-5 py-2 text-xs font-bold text-white shadow-md transition hover:bg-[#d9691f] hover:scale-102 cursor-pointer"
                           >
                             💳 Bayar Sekarang
                           </button>
@@ -523,13 +523,13 @@ export default function TiketSayaPage() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/user/tickets/detail-tiket-beli?orderId=${ticket.orderId}`}
-                            className="rounded-full border border-[#e6d9bf] bg-white px-4 py-2 text-xs font-semibold text-[#4a3a26] hover:border-[#d9691f] hover:text-[#d9691f] transition"
+                            className="rounded-full border border-theme-border bg-theme-card px-4 py-2 text-xs font-semibold text-theme-text-muted hover:border-[#d9691f] hover:text-[#d9691f] transition"
                           >
                             Lihat E-Tiket
                           </Link>
                           <Link
                             href="/user/homepage#konser"
-                            className="rounded-full bg-[#241608] px-4 py-2 text-xs font-bold text-white hover:bg-[#d9691f] transition"
+                            className="rounded-full bg-theme-button px-4 py-2 text-xs font-bold text-white hover:bg-[#d9691f] transition"
                           >
                             Beli Lagi
                           </Link>
@@ -552,11 +552,11 @@ export default function TiketSayaPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-sm rounded-3xl border border-[#e6d9bf] bg-white p-6 sm:p-8 text-center shadow-2xl"
+              className="relative w-full max-w-sm rounded-3xl border border-theme-border bg-theme-card p-6 sm:p-8 text-center shadow-2xl"
             >
               <button
                 onClick={() => setSelectedTicketForModal(null)}
-                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-[#f6efe1] text-xs font-bold text-[#241608] hover:bg-[#efe4cf] cursor-pointer"
+                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-theme-bg text-xs font-bold text-theme-text hover:bg-theme-card-hover cursor-pointer"
               >
                 ✕
               </button>
@@ -565,13 +565,13 @@ export default function TiketSayaPage() {
                 ✓ TIKET RESMI AKTIF
               </span>
 
-              <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold text-[#241608]">
+              <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold text-theme-text">
                 {selectedTicketForModal.eventTitle}
               </h3>
-              <p className="text-xs text-[#5a4a35]">{selectedTicketForModal.tierName} · {selectedTicketForModal.seat}</p>
+              <p className="text-xs text-theme-text-muted">{selectedTicketForModal.tierName} · {selectedTicketForModal.seat}</p>
 
               {/* QR Code SVG */}
-              <div className="mx-auto mt-5 flex h-44 w-44 items-center justify-center rounded-2xl bg-[#fbf8f2] p-4 border border-[#e6d9bf]">
+              <div className="mx-auto mt-5 flex h-44 w-44 items-center justify-center rounded-2xl bg-[#fbf8f2] p-4 border border-theme-border">
                 <svg viewBox="0 0 100 100" className="h-full w-full">
                   <rect x="5" y="5" width="28" height="28" rx="2" fill="#241608" />
                   <rect x="11" y="11" width="16" height="16" fill="white" />
@@ -591,10 +591,10 @@ export default function TiketSayaPage() {
               </div>
 
               {/* Barcode code */}
-              <p className="mt-3 font-mono text-xs font-bold tracking-wider text-[#241608]">
+              <p className="mt-3 font-mono text-xs font-bold tracking-wider text-theme-text">
                 {selectedTicketForModal.barcodeString}
               </p>
-              <p className="text-[11px] text-[#8a7a63] mt-1">
+              <p className="text-[11px] text-theme-text-light mt-1">
                 Tunjukkan barcode ini ke petugas scanner di pintu masuk
               </p>
 
@@ -607,7 +607,7 @@ export default function TiketSayaPage() {
                 </Link>
                 <button
                   onClick={() => setSelectedTicketForModal(null)}
-                  className="rounded-full border border-[#e6d9bf] py-2 text-xs font-semibold text-[#5a4a35] hover:bg-[#efe4cf] transition cursor-pointer"
+                  className="rounded-full border border-theme-border py-2 text-xs font-semibold text-theme-text-muted hover:bg-theme-card-hover transition cursor-pointer"
                 >
                   Tutup
                 </button>
@@ -625,30 +625,30 @@ export default function TiketSayaPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-md rounded-3xl border border-[#e6d9bf] bg-white p-6 sm:p-8 shadow-2xl text-center"
+              className="relative w-full max-w-md rounded-3xl border border-theme-border bg-theme-card p-6 sm:p-8 shadow-2xl text-center"
             >
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-2xl">
                 💳
               </div>
-              <h3 className="mt-4 font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
+              <h3 className="mt-4 font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
                 Selesaikan Pembayaran
               </h3>
-              <p className="text-xs text-[#5a4a35] mt-1">
+              <p className="text-xs text-theme-text-muted mt-1">
                 Lakukan transfer sebelum batas waktu 24 jam agar pesanan tiket tidak otomatis dibatalkan sistem.
               </p>
 
-              <div className="mt-5 rounded-2xl bg-[#f6efe1] p-4 text-left border border-[#e6d9bf] space-y-2.5 text-xs">
+              <div className="mt-5 rounded-2xl bg-theme-bg p-4 text-left border border-theme-border space-y-2.5 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-[#8a7a63]">Acara:</span>
-                  <span className="font-bold text-[#241608]">{paymentTicket.eventTitle}</span>
+                  <span className="text-theme-text-light">Acara:</span>
+                  <span className="font-bold text-theme-text">{paymentTicket.eventTitle}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#8a7a63]">Metode Pembayaran:</span>
-                  <span className="font-semibold text-[#241608]">{paymentTicket.paymentMethod}</span>
+                  <span className="text-theme-text-light">Metode Pembayaran:</span>
+                  <span className="font-semibold text-theme-text">{paymentTicket.paymentMethod}</span>
                 </div>
-                <div className="flex justify-between items-center pt-2 border-t border-[#e6d9bf]">
+                <div className="flex justify-between items-center pt-2 border-t border-theme-border">
                   <div>
-                    <span className="text-[#8a7a63]">No. Virtual Account BCA:</span>
+                    <span className="text-theme-text-light">No. Virtual Account BCA:</span>
                     <p className="font-mono font-bold text-sm text-[#d9691f]">8920-1081-2345-6789</p>
                   </div>
                   <button
@@ -657,14 +657,14 @@ export default function TiketSayaPage() {
                       navigator.clipboard?.writeText("8920108123456789");
                       showToast("Nomor Virtual Account disalin ke clipboard!");
                     }}
-                    className="rounded-full bg-white border border-[#e6d9bf] px-3 py-1 text-[11px] font-bold text-[#241608] hover:border-[#d9691f] hover:text-[#d9691f] cursor-pointer"
+                    className="rounded-full bg-theme-card border border-theme-border px-3 py-1 text-[11px] font-bold text-theme-text hover:border-[#d9691f] hover:text-[#d9691f] cursor-pointer"
                   >
                     Salin VA
                   </button>
                 </div>
-                <div className="flex justify-between pt-1 border-t border-[#e6d9bf]">
-                  <span className="text-[#8a7a63]">Total Tagihan:</span>
-                  <span className="font-mono font-bold text-base text-[#241608]">
+                <div className="flex justify-between pt-1 border-t border-theme-border">
+                  <span className="text-theme-text-light">Total Tagihan:</span>
+                  <span className="font-mono font-bold text-base text-theme-text">
                     Rp {paymentTicket.total.toLocaleString("id-ID")}
                   </span>
                 </div>
@@ -674,7 +674,7 @@ export default function TiketSayaPage() {
                 <button
                   type="button"
                   onClick={() => setPaymentTicket(null)}
-                  className="rounded-full border border-[#e6d9bf] px-5 py-2 text-xs font-semibold text-[#5a4a35] hover:bg-[#efe4cf] transition cursor-pointer"
+                  className="rounded-full border border-theme-border px-5 py-2 text-xs font-semibold text-theme-text-muted hover:bg-theme-card-hover transition cursor-pointer"
                 >
                   Bayar Nanti
                 </button>
@@ -698,7 +698,7 @@ export default function TiketSayaPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
-            className="fixed bottom-6 right-6 z-50 rounded-2xl border border-[#e6d9bf] bg-[#241608] px-5 py-3 text-xs font-semibold text-white shadow-xl"
+            className="fixed bottom-6 right-6 z-50 rounded-2xl border border-theme-border bg-theme-button px-5 py-3 text-xs font-semibold text-white shadow-xl"
           >
             {toastMessage}
           </motion.div>

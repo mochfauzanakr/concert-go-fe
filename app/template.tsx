@@ -36,7 +36,7 @@ export default function GlobalTemplate({ children }: { children: React.ReactNode
     // Solusi Layar Hitam: 
     // Mengembalikan div kosong dengan warna cream bawaan ConcertGo
     // daripada null (yang menyebabkan background hitam default browser).
-    return <div className="min-h-screen bg-[#f6efe1] w-full" />;
+    return <div className="min-h-screen bg-theme-bg w-full" />;
   }
 
   return (

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/hooks/useTranslation";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -22,6 +23,7 @@ export default function EventDetailModal({
   onClose: () => void;
   onBuyClick: (event: EventItem) => void;
 }) {
+  const { language } = useTranslation();
   const [selectedTier, setSelectedTier] = useState<TicketTier>(event.ticketTiers[0]);
   const [activeTab, setActiveTab] = useState<"tiket" | "lineup" | "rundown" | "lokasi">("tiket");
 
@@ -42,7 +44,7 @@ export default function EventDetailModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 30 }}
         transition={{ type: "spring", damping: 26, stiffness: 340 }}
-        className="relative z-10 w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-3xl border border-[#e6d9bf] bg-[#f6efe1] text-[#241608] shadow-2xl"
+        className="relative z-10 w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-3xl border border-theme-border bg-theme-bg text-theme-text shadow-2xl"
       >
         {/* Close Button */}
         <button
@@ -63,13 +65,13 @@ export default function EventDetailModal({
             <span className="rounded-full bg-[#d9691f] px-3 py-1 text-xs font-bold text-white uppercase tracking-wider shadow-md">
               {event.genre}
             </span>
-            <span className="rounded-full bg-black/40 px-3 py-1 text-xs font-medium text-white backdrop-blur-md border border-white/20">
+            <span className="rounded-full bg-black/40 px-3 py-1 text-xs font-medium text-white backdrop-blur-md border border-theme-card/20">
               Promotor: {event.promoter}
             </span>
           </div>
 
           <div className="absolute bottom-4 left-6 right-6">
-            <h2 className="font-[var(--font-display,serif)] text-2xl font-bold leading-tight text-[#241608] md:text-4xl">
+            <h2 className="font-[var(--font-display,serif)] text-2xl font-bold leading-tight text-theme-text md:text-4xl">
               {event.title}
             </h2>
             <p className="text-sm font-semibold text-[#d9691f] md:text-base">
@@ -79,27 +81,27 @@ export default function EventDetailModal({
         </div>
 
         {/* Event Quick Meta Bar */}
-        <div className="mx-6 mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-[#e6d9bf] bg-[#efe4cf]/70 p-4 text-xs md:grid-cols-4 md:text-sm">
+        <div className="mx-6 mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-theme-border bg-theme-card-hover/70 p-4 text-xs md:grid-cols-4 md:text-sm">
           <div>
-            <p className="text-[#8a7a63] text-[11px] uppercase tracking-wider font-semibold">Tanggal</p>
-            <p className="font-bold text-[#241608] mt-0.5">{event.date}</p>
+            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">Tanggal</p>
+            <p className="font-bold text-theme-text mt-0.5">{event.date}</p>
           </div>
           <div>
-            <p className="text-[#8a7a63] text-[11px] uppercase tracking-wider font-semibold">Waktu</p>
-            <p className="font-bold text-[#241608] mt-0.5">{event.time}</p>
+            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">Waktu</p>
+            <p className="font-bold text-theme-text mt-0.5">{event.time}</p>
           </div>
           <div>
-            <p className="text-[#8a7a63] text-[11px] uppercase tracking-wider font-semibold">Venue</p>
-            <p className="font-bold text-[#241608] mt-0.5 truncate">{event.venue}</p>
+            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">Venue</p>
+            <p className="font-bold text-theme-text mt-0.5 truncate">{event.venue}</p>
           </div>
           <div>
-            <p className="text-[#8a7a63] text-[11px] uppercase tracking-wider font-semibold">Status Tiket</p>
-            <p className="font-bold text-[#d9691f] mt-0.5">{event.soldPercentage}% Terjual</p>
+            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">Status Tiket</p>
+            <p className="font-bold text-[#d9691f] mt-0.5">{event.soldPercentage}% {language === "en" ? "Sold" : "Terjual"}</p>
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-[#e6d9bf] px-6 mt-6 gap-6 text-sm font-semibold">
+        <div className="flex border-b border-theme-border px-6 mt-6 gap-6 text-sm font-semibold">
           {[
             { id: "tiket", label: "Pilihan Tiket" },
             { id: "lineup", label: "Lineup & Artis" },
@@ -110,7 +112,7 @@ export default function EventDetailModal({
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`pb-3 relative transition-colors cursor-pointer ${
-                activeTab === tab.id ? "text-[#d9691f]" : "text-[#5a4a35] hover:text-[#241608]"
+                activeTab === tab.id ? "text-[#d9691f]" : "text-theme-text-muted hover:text-theme-text"
               }`}
             >
               {tab.label}
@@ -128,7 +130,7 @@ export default function EventDetailModal({
         <div className="p-6">
           {activeTab === "tiket" && (
             <div className="space-y-4">
-              <p className="text-xs text-[#5a4a35]">
+              <p className="text-xs text-theme-text-muted">
                 Pilih kategori tiket yang ingin kamu pesan. Akun terverifikasi dapat memesan hingga 4 tiket resmi.
               </p>
 
@@ -144,13 +146,13 @@ export default function EventDetailModal({
                         isSoldOut
                           ? "opacity-50 cursor-not-allowed bg-neutral-200 border-neutral-300"
                           : isSelected
-                          ? "border-[#d9691f] bg-white ring-2 ring-[#d9691f]/30 shadow-md cursor-pointer"
-                          : "border-[#e6d9bf] bg-white/70 hover:bg-white cursor-pointer"
+                          ? "border-[#d9691f] bg-theme-card ring-2 ring-[#d9691f]/30 shadow-md cursor-pointer"
+                          : "border-theme-border bg-theme-card/70 hover:bg-theme-card cursor-pointer"
                       }`}
                     >
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm text-[#241608]">{tier.name}</span>
+                          <span className="font-bold text-sm text-theme-text">{tier.name}</span>
                           <span
                             className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                               tier.status === "Habis"
@@ -163,7 +165,7 @@ export default function EventDetailModal({
                             {tier.status}
                           </span>
                         </div>
-                        <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#5a4a35]">
+                        <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-theme-text-muted">
                           {tier.perks.map((p) => (
                             <li key={p} className="flex items-center gap-1">
                               <span className="text-[#d9691f]">✓</span> {p}
@@ -174,7 +176,7 @@ export default function EventDetailModal({
 
                       <div className="sm:text-right shrink-0">
                         <p className="text-base font-bold text-[#d9691f]">{formatIDR(tier.price)}</p>
-                        <span className="text-[11px] text-[#8a7a63]">per tiket</span>
+                        <span className="text-[11px] text-theme-text-light">per tiket</span>
                       </div>
                     </div>
                   );
@@ -182,12 +184,12 @@ export default function EventDetailModal({
               </div>
 
               {/* Stage layout graphic */}
-              <div className="mt-6 rounded-2xl border border-[#e6d9bf] bg-[#efe4cf] p-4 text-center">
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#8a7a63]">
+              <div className="mt-6 rounded-2xl border border-theme-border bg-theme-card-hover p-4 text-center">
+                <p className="text-xs font-semibold uppercase tracking-wider text-theme-text-light">
                   Denah Panggung & Tata Kursi (Ilustrasi)
                 </p>
-                <div className="mx-auto mt-3 max-w-sm rounded-xl border border-dashed border-[#bfae8f] bg-white/80 p-4">
-                  <div className="rounded-lg bg-[#241209] py-2 text-xs font-bold text-white tracking-widest uppercase">
+                <div className="mx-auto mt-3 max-w-sm rounded-xl border border-dashed border-[#bfae8f] bg-theme-card/80 p-4">
+                  <div className="rounded-lg bg-theme-dark py-2 text-xs font-bold text-white tracking-widest uppercase">
                     [ PANGGUNG UTAMA / STAGE ]
                   </div>
                   <div className="mt-2 rounded-lg bg-amber-100 py-1.5 text-[11px] font-semibold text-amber-900">
@@ -206,22 +208,22 @@ export default function EventDetailModal({
 
           {activeTab === "lineup" && (
             <div className="space-y-4">
-              <h4 className="font-bold text-sm text-[#241608]">Deretan Musisi & Bintang Tamu</h4>
+              <h4 className="font-bold text-sm text-theme-text">Deretan Musisi & Bintang Tamu</h4>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {event.lineup.map((artistName) => (
                   <div
                     key={artistName}
-                    className="flex flex-col items-center rounded-2xl border border-[#e6d9bf] bg-white p-4 text-center shadow-xs"
+                    className="flex flex-col items-center rounded-2xl border border-theme-border bg-theme-card p-4 text-center shadow-xs"
                   >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#efe4cf] text-lg font-bold text-[#d9691f]">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-theme-card-hover text-lg font-bold text-[#d9691f]">
                       {artistName[0]}
                     </div>
-                    <p className="mt-2 text-xs font-bold text-[#241608] line-clamp-1">{artistName}</p>
-                    <span className="text-[10px] text-[#8a7a63]">Confirmed Performer</span>
+                    <p className="mt-2 text-xs font-bold text-theme-text line-clamp-1">{artistName}</p>
+                    <span className="text-[10px] text-theme-text-light">Confirmed Performer</span>
                   </div>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-[#5a4a35] leading-relaxed">
+              <p className="mt-3 text-xs text-theme-text-muted leading-relaxed">
                 *Lineup terkonfirmasi oleh promotor dan dapat bertambah sesuai pengumuman jadwal fase lanjutan.
               </p>
             </div>
@@ -229,17 +231,17 @@ export default function EventDetailModal({
 
           {activeTab === "rundown" && (
             <div className="space-y-3">
-              <h4 className="font-bold text-sm text-[#241608]">Rundown Jadwal Acara</h4>
+              <h4 className="font-bold text-sm text-theme-text">Rundown Jadwal Acara</h4>
               <div className="space-y-2 border-l-2 border-[#d9691f] pl-4 ml-2">
                 {event.rundown.map((item, i) => (
                   <div key={i} className="relative py-1">
                     <span className="absolute -left-[21px] top-2 h-2.5 w-2.5 rounded-full bg-[#d9691f]" />
                     <span className="text-xs font-bold text-[#d9691f]">{item.time}</span>
-                    <p className="text-xs font-medium text-[#241608]">{item.act}</p>
+                    <p className="text-xs font-medium text-theme-text">{item.act}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-[11px] text-[#8a7a63] mt-2">
+              <p className="text-[11px] text-theme-text-light mt-2">
                 *Waktu dapat disesuaikan dengan kondisi di lokasi oleh pihak penyelenggara acara.
               </p>
             </div>
@@ -248,9 +250,9 @@ export default function EventDetailModal({
           {activeTab === "lokasi" && (
             <div className="space-y-4">
               <div>
-                <h4 className="font-bold text-sm text-[#241608]">Lokasi Venue Acara</h4>
-                <p className="text-xs font-medium text-[#241608] mt-1">{event.venue}</p>
-                <p className="text-xs text-[#5a4a35]">{event.address}</p>
+                <h4 className="font-bold text-sm text-theme-text">Lokasi Venue Acara</h4>
+                <p className="text-xs font-medium text-theme-text mt-1">{event.venue}</p>
+                <p className="text-xs text-theme-text-muted">{event.address}</p>
 
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -258,15 +260,15 @@ export default function EventDetailModal({
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[#e6d9bf] bg-white px-4 py-1.5 text-xs font-semibold text-[#241608] hover:bg-[#efe4cf] transition-colors"
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-theme-border bg-theme-card px-4 py-1.5 text-xs font-semibold text-theme-text hover:bg-theme-card-hover transition-colors"
                 >
                   <MapPin size={14} /> Buka Petunjuk di Google Maps
                 </a>
               </div>
 
-              <div className="border-t border-[#e6d9bf] pt-4">
-                <h4 className="font-bold text-sm text-[#241608]">Aturan & Ketentuan Penonton</h4>
-                <ul className="mt-2 space-y-1.5 text-xs text-[#5a4a35]">
+              <div className="border-t border-theme-border pt-4">
+                <h4 className="font-bold text-sm text-theme-text">Aturan & Ketentuan Penonton</h4>
+                <ul className="mt-2 space-y-1.5 text-xs text-theme-text-muted">
                   <li className="flex items-start gap-2">
                     <span className="text-[#d9691f]">•</span> E-tiket resmi di akunmu wajib ditunjukkan saat penukaran gelang wristband.
                   </li>
@@ -286,10 +288,10 @@ export default function EventDetailModal({
         </div>
 
         {/* Bottom Booking Sticky Bar */}
-        <div className="sticky bottom-0 z-20 flex items-center justify-between border-t border-[#e6d9bf] bg-[#f6efe1]/98 px-6 py-4 backdrop-blur-md">
+        <div className="sticky bottom-0 z-20 flex items-center justify-between border-t border-theme-border bg-theme-bg/98 px-6 py-4 backdrop-blur-md">
           <div>
-            <span className="text-[10px] uppercase font-semibold text-[#8a7a63]">Kategori Dipilih</span>
-            <p className="text-sm font-bold text-[#241608]">
+            <span className="text-[10px] uppercase font-semibold text-theme-text-light">Kategori Dipilih</span>
+            <p className="text-sm font-bold text-theme-text">
               {selectedTier ? `${selectedTier.name} — ${formatIDR(selectedTier.price)}` : formatIDR(event.priceFrom)}
             </p>
           </div>

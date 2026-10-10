@@ -14,10 +14,10 @@ const DUMMY_CATEGORIES = [
 export default function KategoriGenrePage() {
   return (
     <div className="space-y-6">
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="flex justify-between items-center bg-[#f1e6d0] p-6 rounded-2xl shadow-sm border border-[#e6d9bf]">
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="flex justify-between items-center bg-theme-card-hover p-6 rounded-2xl shadow-sm border border-theme-border">
         <div>
-          <h2 className="text-xl font-bold font-[var(--font-display,serif)] text-[#241608]">Kategori & Genre</h2>
-          <p className="text-sm text-[#8a7a63] mt-1">Kelola kategori dan genre acara yang tersedia di platform.</p>
+          <h2 className="text-xl font-bold font-[var(--font-display,serif)] text-theme-text">Kategori & Genre</h2>
+          <p className="text-sm text-theme-text-light mt-1">Kelola kategori dan genre acara yang tersedia di platform.</p>
         </div>
         <button className="bg-[#d9691f] hover:bg-[#c45c16] text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition-all flex items-center gap-2">
           <span>➕</span> Tambah Kategori
@@ -31,7 +31,7 @@ export default function KategoriGenrePage() {
             initial={{ opacity: 0, y: 15 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.35, delay: 0.1 + (i * 0.05) }} 
-            className="bg-[#f1e6d0] rounded-2xl shadow-sm border border-[#e6d9bf] p-6 hover:shadow-md transition-shadow group relative"
+            className="bg-theme-card-hover rounded-2xl shadow-sm border border-theme-border p-6 hover:shadow-md transition-shadow group relative"
           >
             <div className="flex justify-between items-start mb-4">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg ${cat.color}`}>
@@ -44,11 +44,11 @@ export default function KategoriGenrePage() {
               </span>
             </div>
             
-            <h3 className="text-xl font-bold text-[#241608] mb-1">{cat.name}</h3>
-            <p className="text-sm text-[#8a7a63]">{cat.count} Acara Aktif</p>
+            <h3 className="text-xl font-bold text-theme-text mb-1">{cat.name}</h3>
+            <p className="text-sm text-theme-text-light">{cat.count} Acara Aktif</p>
 
             <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button className="p-2 bg-white text-[#8a7a63] hover:text-[#d9691f] rounded-lg shadow-sm transition-colors" title="Edit">
+              <button className="p-2 bg-theme-card text-theme-text-light hover:text-[#d9691f] rounded-lg shadow-sm transition-colors" title="Edit">
                 ✏️
               </button>
             </div>

@@ -1,19 +1,10 @@
 "use client";
 
-/**
- * ConcertGo — Unified Site Footer
- * File: components/SiteFooter.tsx
- *
- * Footer resmi yang diselaraskan 100% dengan Beranda (app/user/homepage/page.tsx):
- * - 4 Kolom: Pakai ConcertGo, Informasi Event, Kategori Populer, Tentang ConcertGo
- * - Brand Logo ConcertGo & Ikon Sosial Media (Instagram, TikTok, X)
- * - Teks Hak Cipta resmi ConcertGo Indonesia
- */
-
 import Link from "next/link";
+import { useTranslation } from "@/hooks/useTranslation";
 import Image from "next/image";
 
-const FOOTER_COLUMNS: { heading: string; links: { label: string; href: string }[] }[] = [
+const FOOTER_COLUMNS_ID = [
   {
     heading: "Pakai ConcertGo",
     links: [
@@ -58,46 +49,94 @@ const FOOTER_COLUMNS: { heading: string; links: { label: string; href: string }[
   },
 ];
 
+const FOOTER_COLUMNS_EN = [
+  {
+    heading: "Use ConcertGo",
+    links: [
+      { label: "Best Offers", href: "/user/homepage#rekomendasi" },
+      { label: "Places with Best Promos", href: "/user/homepage#rekomendasi" },
+      { label: "Ticket Promos", href: "/user/homepage#rekomendasi" },
+      { label: "Help Center", href: "/user/settings" },
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms & Conditions", href: "#" },
+    ],
+  },
+  {
+    heading: "Event Information",
+    links: [
+      { label: "Publish Event on ConcertGo", href: "#" },
+      { label: "Promoter & Venue Solutions", href: "#" },
+      { label: "Download Brochure", href: "#" },
+      { label: "ConcertGo Experience Manager", href: "#" },
+      { label: "Point of Sales System", href: "#" },
+      { label: "Ticket Scanner App", href: "#" },
+    ],
+  },
+  {
+    heading: "Popular Categories",
+    links: [
+      { label: "Pop & Rock Music Concerts", href: "/user/homepage#kategori" },
+      { label: "Beach & Outdoor Festivals", href: "/user/homepage#kategori" },
+      { label: "Jazz & Orchestra", href: "/user/homepage#kategori" },
+      { label: "Stand-up Comedy Shows", href: "/user/homepage#kategori" },
+      { label: "Modern Koplo & Dangdut", href: "/user/homepage#kategori" },
+      { label: "E-Sport Championships", href: "/user/homepage#kategori" },
+    ],
+  },
+  {
+    heading: "About ConcertGo",
+    links: [
+      { label: "About Us", href: "#" },
+      { label: "Blog & Music News", href: "#" },
+      { label: "Careers at ConcertGo", href: "#" },
+      { label: "Press Kit & Media", href: "#" },
+    ],
+  },
+];
+
 function IconInstagram() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    <svg xmlns="http://www.000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
     </svg>
   );
 }
 
 function IconTikTok() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M14 4v9.5a3.5 3.5 0 1 1-3-3.46" strokeLinecap="round" />
-      <path d="M14 4c.5 2.5 2.2 4 4.5 4.2" strokeLinecap="round" />
+    <svg xmlns="http://www.000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
     </svg>
   );
 }
 
 function IconX() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M5 5l14 14M19 5 5 19" strokeLinecap="round" />
+    <svg xmlns="http://www.000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4l11.733 16h4.267l-11.733 -16z"></path>
+      <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path>
     </svg>
   );
 }
 
 export default function SiteFooter() {
+  const { language } = useTranslation();
+  const FOOTER_COLUMNS = language === "en" ? FOOTER_COLUMNS_EN : FOOTER_COLUMNS_ID;
+
   return (
-    <footer className="border-t border-[#e6d9bf] bg-[#f1e6d0] mt-16 sm:mt-24">
+    <footer className="border-t border-theme-border bg-theme-card-hover mt-16 sm:mt-24">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-12 sm:grid-cols-2 md:grid-cols-4">
         {FOOTER_COLUMNS.map((col) => (
           <div key={col.heading}>
-            <p className="mb-4 text-sm font-semibold text-[#241608]">{col.heading}</p>
+            <p className="mb-4 text-sm font-semibold text-theme-text">{col.heading}</p>
             <ul className="space-y-2.5">
               {col.links.map((l) => (
                 <li key={l.label}>
                   <Link
                     href={l.href}
-                    className="text-sm text-[#5a4a35] transition-colors hover:text-[#d9691f]"
+                    className="text-sm text-theme-text-muted transition-colors hover:text-[#d9691f]"
                   >
                     {l.label}
                   </Link>
@@ -108,16 +147,16 @@ export default function SiteFooter() {
         ))}
       </div>
 
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-[#e6d9bf] px-6 py-6 text-sm text-[#5a4a35] md:flex-row">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-theme-border px-6 py-6 text-sm text-theme-text-muted md:flex-row">
         <Link
           href="/user/homepage"
-          className="flex items-center gap-2 font-[var(--font-display,serif)] text-base font-bold text-[#241608]"
+          className="flex items-center gap-2 font-[var(--font-display,serif)] text-base font-bold text-theme-text"
         >
           <Image src="/image/Logo.png" alt="ConcertGo" width={28} height={28} className="h-7 w-auto" />
           <span>Concert<span className="text-[#d9691f]">Go</span></span>
         </Link>
 
-        <div className="flex gap-3 text-[#5a4a35]">
+        <div className="flex gap-3 text-theme-text-muted">
           <a href="#" aria-label="Instagram" className="opacity-70 transition-opacity hover:opacity-100 hover:text-[#d9691f]">
             <IconInstagram />
           </a>
@@ -129,8 +168,10 @@ export default function SiteFooter() {
           </a>
         </div>
       </div>
-      <p className="border-t border-[#e6d9bf] py-4 text-center text-xs text-[#8a7a63]">
-        © 2026 ConcertGo Indonesia. Semua tiket terverifikasi resmi & dilindungi hak cipta.
+      <p className="border-t border-theme-border py-4 text-center text-xs text-theme-text-light">
+        {language === "en" 
+          ? "© 2026 ConcertGo Indonesia. All official tickets verified & copyrighted." 
+          : "© 2026 ConcertGo Indonesia. Semua tiket terverifikasi resmi & dilindungi hak cipta."}
       </p>
     </footer>
   );

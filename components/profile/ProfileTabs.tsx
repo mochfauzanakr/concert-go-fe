@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { type UserProfile, PRESET_BACKGROUNDS, PRESET_AVATARS, compressImageFile } from "@/lib/userProfile";
 
@@ -15,13 +15,25 @@ export function AccountInfoTab({
     name: profile.name,
     username: profile.username,
     email: profile.email,
-    phone: profile.phone,
     city: profile.city,
     birthdate: profile.birthdate,
     bio: profile.bio,
   });
 
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setFormData({
+        name: profile.name,
+        username: profile.username,
+        email: profile.email,
+        city: profile.city,
+        birthdate: profile.birthdate,
+        bio: profile.bio,
+      });
+    }
+  }, [profile, isEditing]);
 
   function handleChange(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -36,19 +48,19 @@ export function AccountInfoTab({
   function inputStyling(isEditing: boolean) {
     return `mt-1 w-full rounded-2xl border px-3.5 py-2 text-xs font-medium transition-all ${
       isEditing
-        ? "border-[#e6d9bf] bg-[#fdfaf5] text-[#241608] focus:border-[#d9691f] focus:ring-1 focus:ring-[#d9691f]"
-        : "border-transparent bg-[#f6efe1]/50 text-[#5a4a35] cursor-not-allowed"
+        ? "border-theme-border bg-theme-bg-soft text-theme-text focus:border-[#d9691f] focus:ring-1 focus:ring-[#d9691f]"
+        : "border-transparent bg-theme-bg/50 text-theme-text-muted cursor-not-allowed"
     }`;
   }
 
   return (
-    <div className="rounded-3xl border border-[#e6d9bf] bg-white p-6 shadow-xs md:p-8">
-      <div className="flex items-center justify-between border-b border-[#e6d9bf] pb-4">
+    <div className="rounded-3xl border border-theme-border bg-theme-card p-6 shadow-xs md:p-8">
+      <div className="flex items-center justify-between border-b border-theme-border pb-4">
         <div>
-          <h2 className="font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
+          <h2 className="font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
             Informasi Akun & Data Diri
           </h2>
-          <p className="mt-0.5 text-xs text-[#8a7a63]">
+          <p className="mt-0.5 text-xs text-theme-text-light">
             Data ini digunakan untuk konfirmasi e-tiket resmi dan penukaran wristband di pintu venue.
           </p>
         </div>
@@ -56,7 +68,7 @@ export function AccountInfoTab({
         <button
           type="button"
           onClick={() => setIsEditing(!isEditing)}
-          className="rounded-full border border-[#e6d9bf] bg-[#f6efe1] px-4 py-2 text-xs font-semibold text-[#241608] hover:border-[#d9691f] hover:bg-white transition-colors"
+          className="rounded-full border border-theme-border bg-theme-bg px-4 py-2 text-xs font-semibold text-theme-text hover:border-[#d9691f] hover:bg-theme-card transition-colors"
         >
           {isEditing ? "Batal Ubah" : "Edit Informasi"}
         </button>
@@ -65,7 +77,7 @@ export function AccountInfoTab({
       <form onSubmit={handleFormSubmit} className="mt-6 space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-bold text-[#241608]">Nama Lengkap</label>
+            <label className="block text-xs font-bold text-theme-text">Nama Lengkap</label>
             <input
               type="text"
               value={formData.name}
@@ -76,21 +88,20 @@ export function AccountInfoTab({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#241608]">Username</label>
+            <label className="block text-xs font-bold text-theme-text">Username (Tidak bisa diubah)</label>
             <div className="flex items-center">
-              <span className="mr-1 text-sm font-bold text-[#8a7a63]">@</span>
+              <span className="mr-1 text-sm font-bold text-theme-text-light">@</span>
               <input
                 type="text"
                 value={formData.username}
-                disabled={!isEditing}
-                onChange={(e) => handleChange("username", e.target.value.replace(/\s+/g, ""))}
-                className={inputStyling(isEditing)}
+                disabled={true}
+                className={inputStyling(false)}
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#241608]">Alamat Email</label>
+            <label className="block text-xs font-bold text-theme-text">Alamat Email</label>
             <input
               type="email"
               value={formData.email}
@@ -100,19 +111,10 @@ export function AccountInfoTab({
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-[#241608]">Nomor WhatsApp / HP</label>
-            <input
-              type="tel"
-              value={formData.phone}
-              disabled={!isEditing}
-              onChange={(e) => handleChange("phone", e.target.value)}
-              className={inputStyling(isEditing)}
-            />
-          </div>
+
 
           <div>
-            <label className="block text-xs font-bold text-[#241608]">Kota Domisili</label>
+            <label className="block text-xs font-bold text-theme-text">Kota Domisili</label>
             <input
               type="text"
               value={formData.city}
@@ -123,19 +125,25 @@ export function AccountInfoTab({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#241608]">Tanggal Lahir</label>
-            <input
-              type="date"
-              value={formData.birthdate}
-              disabled={!isEditing}
-              onChange={(e) => handleChange("birthdate", e.target.value)}
-              className={inputStyling(isEditing)}
-            />
+            <label className="block text-xs font-bold text-theme-text">Tanggal Lahir</label>
+            {!isEditing && !formData.birthdate ? (
+              <div className="mt-1 w-full rounded-2xl border border-transparent bg-theme-bg/50 px-3.5 py-2 text-xs font-medium text-theme-text-light italic">
+                Belum diisi
+              </div>
+            ) : (
+              <input
+                type="date"
+                value={formData.birthdate}
+                disabled={!isEditing}
+                onChange={(e) => handleChange("birthdate", e.target.value)}
+                className={inputStyling(isEditing)}
+              />
+            )}
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#241608]">Bio Singkat</label>
+          <label className="block text-xs font-bold text-theme-text">Bio Singkat</label>
           <textarea
             rows={3}
             value={formData.bio}
@@ -146,7 +154,7 @@ export function AccountInfoTab({
         </div>
 
         {isEditing && (
-          <div className="flex justify-end gap-3 pt-4 border-t border-[#e6d9bf]">
+          <div className="flex justify-end gap-3 pt-4 border-t border-theme-border">
             <button
               type="button"
               onClick={() => {
@@ -154,14 +162,13 @@ export function AccountInfoTab({
                   name: profile.name,
                   username: profile.username,
                   email: profile.email,
-                  phone: profile.phone,
                   city: profile.city,
                   birthdate: profile.birthdate,
                   bio: profile.bio,
                 });
                 setIsEditing(false);
               }}
-              className="rounded-full border border-[#e6d9bf] px-5 py-2 text-xs font-semibold text-[#5a4a35] hover:bg-[#f6efe1]"
+              className="rounded-full border border-theme-border px-5 py-2 text-xs font-semibold text-theme-text-muted hover:bg-theme-bg"
             >
               Batal
             </button>
@@ -205,13 +212,13 @@ export function BackgroundCustomizerTab({
   }
 
   return (
-    <div className="rounded-3xl border border-[#e6d9bf] bg-white p-6 shadow-xs md:p-8 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e6d9bf] pb-4">
+    <div className="rounded-3xl border border-theme-border bg-theme-card p-6 shadow-xs md:p-8 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-theme-border pb-4">
         <div>
-          <h2 className="font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
+          <h2 className="font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
             Kustomisasi Background & Tema Beranda
           </h2>
-          <p className="mt-0.5 text-xs text-[#8a7a63]">
+          <p className="mt-0.5 text-xs text-theme-text-light">
             Pilih wallpaper panggung konser favoritmu. Background ini akan otomatis muncul pada banner Beranda Pengguna!
           </p>
         </div>
@@ -219,7 +226,7 @@ export function BackgroundCustomizerTab({
         <div className="flex items-center gap-2">
           <button
             onClick={() => customFileRef.current?.click()}
-            className="rounded-full bg-[#241608] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#d9691f] transition-colors"
+            className="rounded-full bg-theme-button px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#d9691f] transition-colors"
           >
             + Upload Gambar Sendiri
           </button>
@@ -246,7 +253,7 @@ export function BackgroundCustomizerTab({
               className={`group relative overflow-hidden rounded-2xl border-2 transition-all cursor-pointer ${
                 isSelected
                   ? "border-[#d9691f] ring-4 ring-[#d9691f]/20 shadow-lg"
-                  : "border-[#e6d9bf] hover:border-[#d9691f]/50 shadow-xs"
+                  : "border-theme-border hover:border-[#d9691f]/50 shadow-xs"
               }`}
             >
               <div className="relative h-36 w-full overflow-hidden bg-black">
@@ -274,7 +281,7 @@ export function BackgroundCustomizerTab({
         })}
       </div>
 
-      <div className="rounded-2xl border border-dashed border-[#d9691f]/40 bg-[#fdf8f2] p-4 text-xs text-[#5a4a35]">
+      <div className="rounded-2xl border border-dashed border-[#d9691f]/40 bg-[#fdf8f2] p-4 text-xs text-theme-text-muted">
         <p className="font-bold text-[#d9691f]">💡 Bebas Ubah & Hapus Kapan Saja</p>
         <p className="mt-1 leading-relaxed">
           Kamu bebas memilih background panggung di atas atau mengunggah foto pribadimu saat menonton konser.
@@ -312,13 +319,13 @@ export function AvatarCustomizerTab({
   }
 
   return (
-    <div className="rounded-3xl border border-[#e6d9bf] bg-white p-6 shadow-xs md:p-8 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e6d9bf] pb-4">
+    <div className="rounded-3xl border border-theme-border bg-theme-card p-6 shadow-xs md:p-8 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-theme-border pb-4">
         <div>
-          <h2 className="font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
+          <h2 className="font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
             Pilihan Foto Profil & Avatar
           </h2>
-          <p className="mt-0.5 text-xs text-[#8a7a63]">
+          <p className="mt-0.5 text-xs text-theme-text-light">
             Pilih avatar karakter penonton konser atau upload foto aslimu.
           </p>
         </div>
@@ -326,7 +333,7 @@ export function AvatarCustomizerTab({
         <div className="flex items-center gap-2">
           <button
             onClick={() => avatarUploadRef.current?.click()}
-            className="rounded-full bg-[#241608] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#d9691f] transition-colors"
+            className="rounded-full bg-theme-button px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#d9691f] transition-colors"
           >
             + Upload Foto Pribadi
           </button>
@@ -344,7 +351,7 @@ export function AvatarCustomizerTab({
       </div>
 
       <div>
-        <h3 className="text-xs font-bold text-[#241608] mb-3 uppercase tracking-wider">
+        <h3 className="text-xs font-bold text-theme-text mb-3 uppercase tracking-wider">
           Pilihan Karakter Concert-Goer
         </h3>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -357,10 +364,10 @@ export function AvatarCustomizerTab({
                 className={`flex flex-col items-center rounded-2xl border p-4 text-center transition-all cursor-pointer ${
                   isSelected
                     ? "border-[#d9691f] bg-orange-50/50 ring-2 ring-[#d9691f] shadow-md"
-                    : "border-[#e6d9bf] hover:border-[#d9691f]/40 hover:bg-[#fdfaf5]"
+                    : "border-theme-border hover:border-[#d9691f]/40 hover:bg-theme-bg-soft"
                 }`}
               >
-                <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-white shadow-md">
+                <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-theme-card shadow-md">
                   <Image src={av.url} alt={av.label} fill className="object-cover" />
                   {isSelected && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#d9691f]/60 text-white font-bold text-lg">
@@ -368,8 +375,8 @@ export function AvatarCustomizerTab({
                     </div>
                   )}
                 </div>
-                <p className="mt-2 text-xs font-bold text-[#241608]">{av.label}</p>
-                <span className="text-[10px] text-[#8a7a63]">Preset Avatar</span>
+                <p className="mt-2 text-xs font-bold text-theme-text">{av.label}</p>
+                <span className="text-[10px] text-theme-text-light">Preset Avatar</span>
               </div>
             );
           })}
@@ -403,18 +410,18 @@ export function GenrePreferencesTab({
   const [selectedCity, setSelectedCity] = useState(profile.city);
 
   return (
-    <div className="rounded-3xl border border-[#e6d9bf] bg-white p-6 shadow-xs md:p-8 space-y-6">
-      <div className="border-b border-[#e6d9bf] pb-4">
-        <h2 className="font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
+    <div className="rounded-3xl border border-theme-border bg-theme-card p-6 shadow-xs md:p-8 space-y-6">
+      <div className="border-b border-theme-border pb-4">
+        <h2 className="font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
           Preferensi Konser & Notifikasi
         </h2>
-        <p className="mt-0.5 text-xs text-[#8a7a63]">
+        <p className="mt-0.5 text-xs text-theme-text-light">
           Rekomendasi konser di Beranda akan disesuaikan dengan genre dan kota pilihanmu.
         </p>
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-[#241608] mb-2.5">
+        <label className="block text-xs font-bold text-theme-text mb-2.5">
           Genre Musik Kesukaan
         </label>
         <div className="flex flex-wrap gap-2">
@@ -426,7 +433,7 @@ export function GenrePreferencesTab({
               className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                 selectedGenre === g
                   ? "bg-[#d9691f] text-white shadow-md shadow-[#d9691f]/30"
-                  : "border border-[#e6d9bf] bg-[#f6efe1] text-[#4a3a26] hover:bg-white"
+                  : "border border-theme-border bg-theme-bg text-theme-text-muted hover:bg-theme-card"
               }`}
             >
               {g}
@@ -436,7 +443,7 @@ export function GenrePreferencesTab({
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-[#241608] mb-2.5">
+        <label className="block text-xs font-bold text-theme-text mb-2.5">
           Kota Utama Berburu Tiket
         </label>
         <div className="flex flex-wrap gap-2">
@@ -447,8 +454,8 @@ export function GenrePreferencesTab({
               onClick={() => setSelectedCity(c)}
               className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                 selectedCity === c
-                  ? "bg-[#241608] text-white shadow-md shadow-[#241608]/20"
-                  : "border border-[#e6d9bf] bg-[#f6efe1] text-[#4a3a26] hover:bg-white"
+                  ? "bg-theme-button text-white shadow-md shadow-black/20"
+                  : "border border-theme-border bg-theme-bg text-theme-text-muted hover:bg-theme-card"
               }`}
             >
               📍 {c}
@@ -457,7 +464,7 @@ export function GenrePreferencesTab({
         </div>
       </div>
 
-      <div className="pt-4 border-t border-[#e6d9bf] flex justify-end">
+      <div className="pt-4 border-t border-theme-border flex justify-end">
         <button
           type="button"
           onClick={() => onSaveGenre(selectedGenre, selectedCity)}

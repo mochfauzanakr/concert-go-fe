@@ -1,18 +1,20 @@
 "use client";
+import { useTranslation } from "@/hooks/useTranslation";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AnnouncementBanner() {
+  const { t, language } = useTranslation();
   const [index, setIndex] = useState(0);
   const [copied, setCopied] = useState(false);
 
   const promos = [
     {
       code: "CONCERTGO20",
-      title: "Diskon 20% Khusus Tiket Festival & Reguler",
-      sub: "Gunakan kode promo saat checkout tiket konser pilihanmu sebelum kuota harian habis.",
-      tag: "KODE VOUCHER EKSKLUSIF",
+      title: t.home.promo_t_1,
+      sub: t.home.promo_s_1,
+      tag: t.home.promo_tag_1,
     },
     {
       code: "BEBASADMIN",
@@ -38,7 +40,7 @@ export default function AnnouncementBanner() {
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-10">
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#241209] via-[#3a1c0f] to-[#241209] p-8 text-[#f6efe1] shadow-xl md:p-12">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-theme-dark via-[#3a1c0f] to-[#241209] p-8 text-[#f6efe1] shadow-xl md:p-12">
         <div className="relative z-10 max-w-2xl">
           <span className="rounded-full bg-[#d9691f] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
             {currentPromo.tag}
@@ -64,14 +66,14 @@ export default function AnnouncementBanner() {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
               onClick={copyCode}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-mono text-xs font-bold text-[#241608] shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full bg-theme-card px-4 py-2 font-mono text-xs font-bold text-theme-text shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer"
             >
               <span>{currentPromo.code}</span>
               <span className="text-[10px] text-[#d9691f]">
-                {copied ? "✓ Tersalin!" : "Salin Kode"}
+                {copied ? (language === "en" ? "✓ Copied!" : "✓ Tersalin!") : (language === "en" ? "Copy Code" : "Salin Kode")}
               </span>
             </button>
-            <span className="text-xs text-white/70">Klik kode untuk menyalin ke clipboard</span>
+            <span className="text-xs text-white/70">{language === "en" ? "Click the code to copy to clipboard" : "Klik kode untuk menyalin ke clipboard"}</span>
           </div>
         </div>
 
@@ -80,14 +82,14 @@ export default function AnnouncementBanner() {
           <button
             aria-label="Sebelumnya"
             onClick={() => setIndex((i) => (i - 1 + promos.length) % promos.length)}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/30 cursor-pointer"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-theme-card/20 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-theme-card/30 cursor-pointer"
           >
             ‹
           </button>
           <button
             aria-label="Selanjutnya"
             onClick={() => setIndex((i) => (i + 1) % promos.length)}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-white/30 cursor-pointer"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-theme-card/20 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-theme-card/30 cursor-pointer"
           >
             ›
           </button>

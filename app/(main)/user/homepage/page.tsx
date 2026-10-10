@@ -9,7 +9,7 @@
  * namun diadaptasi khusus untuk akun yang sudah login:
  *  - Header interaktif dengan User Account Dropdown (Raka Pratama)
  *  - Strip sapaan personal "Halo, Raka Pratama! 👋"
- *  - Widget "Tiket Saya Mendatang" dengan akses langsung ke e-tiket & pembayaran
+ *  - Widget "{t.home.ticket_title}" dengan akses langsung ke e-tiket & pembayaran
  *  - Alur Checkout / Pemesanan Tiket langsung (CheckoutModal) tanpa meminta login ulang
  *  - Modal Detail Konser interaktif (Lineup, Rundown, Denah Panggung, Tier Tiket)
  *  - Semua 12 data konser visual lengkap dengan foto poster Unsplash & kuota
@@ -20,6 +20,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useUserProfile, type UserProfile } from "@/lib/userProfile";
 import { useFavoritesStore } from "@/lib/store";
 import { EVENTS, type Category, type TicketTier, type EventItem } from "@/lib/eventsData";
@@ -119,10 +120,26 @@ type CategoryMeta = {
   unit: string;
 };
 
-const CATEGORY_META: Record<Category, CategoryMeta> = {
+
+function getCategoryMeta(t: any, cat: Category) {
+  const map: Record<Category, any> = {
+    "Musik & Konser": { tag: t.cat.music_tag, title: (n: string) => t.cat.music_title.replace("{name}", n), subtitle: t.cat.music_sub, placeholder: t.cat.music_ph, unit: t.cat.music_unit },
+    "Festival Musik": { tag: t.cat.fest_tag, title: (n: string) => t.cat.fest_title.replace("{name}", n), subtitle: t.cat.fest_sub, placeholder: t.cat.fest_ph, unit: t.cat.fest_unit },
+    "Hiburan & Pertunjukan": { tag: t.cat.show_tag, title: (n: string) => t.cat.show_title.replace("{name}", n), subtitle: t.cat.show_sub, placeholder: t.cat.show_ph, unit: t.cat.show_unit },
+    "Wisata & Outdoor": { tag: t.cat.out_tag, title: (n: string) => t.cat.out_title.replace("{name}", n), subtitle: t.cat.out_sub, placeholder: t.cat.out_ph, unit: t.cat.out_unit },
+    "Olahraga & E-Sport": { tag: t.cat.sport_tag, title: (n: string) => t.cat.sport_title.replace("{name}", n), subtitle: t.cat.sport_sub, placeholder: t.cat.sport_ph, unit: t.cat.sport_unit },
+    "Amal & Charity": { tag: t.cat.char_tag, title: (n: string) => t.cat.char_title.replace("{name}", n), subtitle: t.cat.char_sub, placeholder: t.cat.char_ph, unit: t.cat.char_unit },
+    "Seni & Budaya": { tag: t.cat.art_tag, title: (n: string) => t.cat.art_title.replace("{name}", n), subtitle: t.cat.art_sub, placeholder: t.cat.art_ph, unit: t.cat.art_unit },
+    "Stand-up Comedy": { tag: t.cat.com_tag, title: (n: string) => t.cat.com_title.replace("{name}", n), subtitle: t.cat.com_sub, placeholder: t.cat.com_ph, unit: t.cat.com_unit },
+    "Atraksi & Wahana": { tag: t.cat.attr_tag, title: (n: string) => t.cat.attr_title.replace("{name}", n), subtitle: t.cat.attr_sub, placeholder: t.cat.attr_ph, unit: t.cat.attr_unit },
+  };
+  return map[cat] || map["Festival Musik"];
+}
+
+const CATEGORY_META_OLD: Record<Category, CategoryMeta> = {
   "Musik & Konser": {
     tag: "Katalog Tiket Terlengkap & Resmi",
-    title: (name) => `Cari Konser Favoritmu, ${name}.`,
+    title: (name) => `{t.home.search_btn} Favoritmu, ${name}.`,
     subtitle:
       "Jelajahi konser artis favoritmu dan dapatkan tiket resmi dengan kemudahan pembayaran instan tanpa perlu antre tiket fisik.",
     placeholder: "Cari artis, venue, atau kota (contoh: Jakarta, Tulus, Senayan)...",
@@ -148,7 +165,7 @@ const CATEGORY_META: Record<Category, CategoryMeta> = {
     tag: "Petualangan Alam & Eksplorasi Outdoor",
     title: (name) => `Cari Wisata & Outdoor Favoritmu, ${name}.`,
     subtitle:
-      "Temukan tiket open trip eksklusif, sunrise camp di pegunungan berkabut, festival alam bebas, dan eksplorasi alam nusantara.",
+      "{t.home.search_find} tiket open trip eksklusif, sunrise camp di pegunungan berkabut, festival alam bebas, dan eksplorasi alam nusantara.",
     placeholder: "Cari destinasi wisata, camping ground, gunung, atau kota (contoh: Bromo, Dieng, Rinjani)...",
     unit: "kegiatan wisata",
   },
@@ -248,13 +265,29 @@ function Highlighted({ text, query }: { text: string; query: string }) {
 /*  Halaman Utama Home User (ConcertGo Beranda)                       */
 /* ------------------------------------------------------------------ */
 
+export const getCategoryTranslation = (label: string, t: any) => {
+  const map: Record<string, string> = {
+    "Musik & Konser": t.home.cat_music,
+    "Festival Musik": t.home.cat_fest,
+    "Hiburan & Pertunjukan": t.home.cat_show,
+    "Wisata & Outdoor": t.home.cat_out,
+    "Olahraga & E-Sport": t.home.cat_sport,
+    "Amal & Charity": t.home.cat_charity,
+    "Seni & Budaya": t.home.cat_art,
+    "Stand-up Comedy": t.home.cat_comedy,
+    "Atraksi & Wahana": t.home.cat_attr,
+  };
+  return map[label] || label;
+};
+
 export default function UserHomePage() {
+  const { t } = useTranslation();
   const { profile } = useUserProfile();
   const [selectedCategory, setSelectedCategory] = useState<Category>("Festival Musik");
   const [query, setQuery] = useState("");
-  const [genre, setGenre] = useState<string>("Semua Genre");
-  const [city, setCity] = useState<string>("Semua Kota");
-  const [sort, setSort] = useState<string>("Tanggal terdekat");
+  const [genre, setGenre] = useState<string>("ALL");
+  const [city, setCity] = useState<string>("ALL");
+  const [sort, setSort] = useState<string>("DATE_ASC");
   
   const { favoriteIds, toggleFavorite: storeToggleFavorite } = useFavoritesStore();
   const favorites = useMemo(() => new Set(favoriteIds), [favoriteIds]);
@@ -296,13 +329,13 @@ export default function UserHomePage() {
         e.venue.toLowerCase().includes(q) ||
         e.genre.toLowerCase().includes(q);
 
-      const matchesGenre = genre === "Semua Genre" || e.genre === genre;
-      const matchesCity = city === "Semua Kota" || e.city === city;
+      const matchesGenre = genre === "ALL" || e.genre === genre;
+      const matchesCity = city === "ALL" || e.city === city;
 
       return matchesCategory && matchesQuery && matchesGenre && matchesCity;
     }).sort((a, b) => {
-      if (sort === "Harga terendah") return a.priceFrom - b.priceFrom;
-      if (sort === "Harga tertinggi") return b.priceFrom - a.priceFrom;
+      if (sort === "PRICE_ASC") return a.priceFrom - b.priceFrom;
+      if (sort === "PRICE_DESC") return b.priceFrom - a.priceFrom;
       return parseEventDate(a.date) - parseEventDate(b.date);
     });
   }, [selectedCategory, query, genre, city, sort]);
@@ -324,14 +357,14 @@ export default function UserHomePage() {
 
   function handleSelectCategory(cat: Category) {
     setSelectedCategory(cat);
-    setGenre("Semua Genre");
+    setGenre("ALL");
   }
 
   function resetAllFilters() {
     setQuery("");
-    setGenre("Semua Genre");
-    setCity("Semua Kota");
-    setSort("Tanggal terdekat");
+    setGenre("ALL");
+    setCity("ALL");
+    setSort("DATE_ASC");
     setSelectedCategory("Festival Musik");
   }
 
@@ -349,7 +382,7 @@ export default function UserHomePage() {
   }
 
   return (
-    <div id="top" className="min-h-screen bg-[#f6efe1] font-[var(--font-body,ui-sans-serif)] text-[#241608] selection:bg-[#d9691f] selection:text-white">
+    <div id="top" className="min-h-screen bg-theme-bg font-[var(--font-body,ui-sans-serif)] text-theme-text selection:bg-[#d9691f] selection:text-white">
       {/* Header Versi Pengguna Login */}
       <UserHeader profile={profile} />
 
@@ -357,7 +390,7 @@ export default function UserHomePage() {
         {/* Sapaan Personal & Ringkasan Status Akun dengan Background Kustom */}
         <WelcomeStrip myTickets={myTickets} profile={profile} />
 
-        {/* Section Tiket Saya Mendatang (Khusus Akun Login) */}
+        {/* Section {t.home.ticket_title} (Khusus Akun Login) */}
         <MyTicketsSection myTickets={myTickets} />
 
         {/* Hero Carousel Visual Konser (Poster Panggung Unsplash) */}
@@ -393,22 +426,22 @@ export default function UserHomePage() {
         <div id="konser" className="space-y-12 sm:space-y-16">
           {filtered.length === 0 ? (
             <section className="mx-auto max-w-7xl scroll-mt-24 px-6 py-12 text-center">
-              <div className="mx-auto max-w-md rounded-3xl border border-[#e6d9bf] bg-white/70 p-8 shadow-sm">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#efe4cf] text-2xl text-[#d9691f]">
+              <div className="mx-auto max-w-md rounded-3xl border border-theme-border bg-theme-card/70 p-8 shadow-sm">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-theme-card-hover text-2xl text-[#d9691f]">
                   🔍
                 </div>
-                <h3 className="mt-4 font-[var(--font-display,serif)] text-xl font-bold text-[#241608]">
-                  Tidak Ada Acara Ditemukan
+                <h3 className="mt-4 font-[var(--font-display,serif)] text-xl font-bold text-theme-text">
+                  {t.home.no_event}
                 </h3>
-                <p className="mt-2 text-sm text-[#8a7a63]">
-                  Belum ada acara yang cocok dengan kombinasi filter atau kata kunci pencarianmu saat ini.
+                <p className="mt-2 text-sm text-theme-text-light">
+                  {t.home.no_event_desc}
                 </p>
                 <button
                   type="button"
                   onClick={resetAllFilters}
                   className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#d9691f] px-5 py-2 text-xs font-semibold text-white shadow-md transition hover:bg-[#c45c16] cursor-pointer"
                 >
-                  Reset Semua Filter
+                  {t.home.reset_filter}
                 </button>
               </div>
             </section>
@@ -417,9 +450,9 @@ export default function UserHomePage() {
               {/* Section 1: Rekomendasi */}
               <CarouselEventSection
                 id="rekomendasi"
-                badge="⭐ Rekomendasi Pilihan"
-                title={`Rekomendasi ${selectedCategory}`}
-                subtitle={`Pilihan acara ${selectedCategory.toLowerCase()} terbaik dan paling pas untukmu.`}
+                badge={`⭐ ${t.home.badge_recommend || "Rekomendasi Pilihan"}`}
+                title={(t.home.recommend_title || "Rekomendasi {category}").replace("{category}", getCategoryTranslation(selectedCategory, t))}
+                subtitle={(t.home.recommend_desc || "Pilihan acara {category} terbaik dan paling pas untukmu.").replace("{category}", getCategoryTranslation(selectedCategory, t).toLowerCase())}
                 events={rekomendasiEvents}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
@@ -430,9 +463,9 @@ export default function UserHomePage() {
               {/* Section 2: Paling Populer */}
               <CarouselEventSection
                 id="populer"
-                badge="🔥 Paling Populer & Sedang Tren"
-                title={`${selectedCategory} Paling Populer`}
-                subtitle={`Tiket ${selectedCategory.toLowerCase()} dengan penjualan tertinggi yang paling cepat ludes minggu ini.`}
+                badge={`🔥 ${t.home.badge_popular || "Paling Populer & Sedang Tren"}`}
+                title={(t.home.popular_title || "{category} Paling Populer").replace("{category}", getCategoryTranslation(selectedCategory, t))}
+                subtitle={(t.home.popular_desc || "Tiket {category} dengan penjualan tertinggi yang paling cepat ludes minggu ini.").replace("{category}", getCategoryTranslation(selectedCategory, t).toLowerCase())}
                 events={populerEvents}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
@@ -443,9 +476,9 @@ export default function UserHomePage() {
               {/* Section 3: Paling Banyak Difavoritkan */}
               <CarouselEventSection
                 id="difavoritkan"
-                badge="❤️ Paling Banyak Difavoritkan"
-                title={`${selectedCategory} Terfavorit`}
-                subtitle={`Disukai ribuan penikmat ${selectedCategory.toLowerCase()} dan masuk ke dalam wishlist terbanyak.`}
+                badge={`❤️ ${t.home.badge_favorite || "Paling Banyak Difavoritkan"}`}
+                title={(t.home.favorite_title || "{category} Terfavorit").replace("{category}", getCategoryTranslation(selectedCategory, t))}
+                subtitle={(t.home.favorite_desc || "Disukai ribuan penikmat {category} dan masuk ke dalam wishlist terbanyak.").replace("{category}", getCategoryTranslation(selectedCategory, t).toLowerCase())}
                 events={favoritEvents}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
@@ -501,16 +534,17 @@ export default function UserHomePage() {
 /*  User Header (Versi Pengguna Login dengan Profil Dropdown)         */
 /* ------------------------------------------------------------------ */
 
-const NAV_LINKS = [
-  { label: "Home", targetId: "top" },
-  { label: "Tiket Saya", targetId: "tickets" },
-  { label: "Konser", targetId: "konser" },
-  { label: "Rekomendasi", targetId: "rekomendasi" },
-  { label: "Komentar", targetId: "komentar" },
-  { label: "Keunggulan", targetId: "keunggulan" },
+const getNavLinks = (t: any) => [
+  { label: t.menu.nav_home, targetId: "top" },
+  { label: t.menu.nav_tickets, targetId: "tickets" },
+  { label: t.menu.nav_concerts, targetId: "konser" },
+  { label: t.menu.nav_rec, targetId: "rekomendasi" },
+  { label: t.menu.nav_comments, targetId: "komentar" },
+  { label: t.menu.nav_features, targetId: "keunggulan" },
 ];
 
 function UserHeader({ profile }: { profile: UserProfile }) {
+  const { t } = useTranslation();
   const [active, setActive] = useState("Home");
 
   function handleNavClick(label: string, targetId: string) {
@@ -528,7 +562,7 @@ function UserHeader({ profile }: { profile: UserProfile }) {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="sticky top-0 z-30 border-b border-[#e6d9bf] bg-[#f6efe1]/95 backdrop-blur shadow-xs"
+      className="sticky top-0 z-30 border-b border-theme-border bg-theme-bg/95 backdrop-blur shadow-xs"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Brand Logo */}
@@ -541,15 +575,15 @@ function UserHeader({ profile }: { profile: UserProfile }) {
           className="group flex items-center gap-2.5 transition-transform hover:scale-105"
         >
           <Image src="/image/Logo.png" alt="ConcertGo" width={32} height={32} className="h-8 w-auto" />
-          <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-[#241608]">
+          <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-theme-text">
             <span>Concert</span>
             <span className="text-[#d9691f]">Go</span>
           </span>
         </a>
 
         {/* Desktop Nav */}
-        <nav className="hidden items-center gap-8 text-sm font-medium text-[#4a3a26] md:flex">
-          {NAV_LINKS.map(({ label, targetId }) => (
+        <nav className="hidden items-center gap-8 text-sm font-medium text-theme-text-muted md:flex">
+          {getNavLinks(t).map(({ label, targetId }) => (
             <a
               key={label}
               href={`#${targetId}`}
@@ -558,7 +592,7 @@ function UserHeader({ profile }: { profile: UserProfile }) {
                 handleNavClick(label, targetId);
               }}
               className={`relative py-1 transition-colors hover:text-[#d9691f] ${
-                active === label ? "text-[#241608] font-semibold" : ""
+                active === label ? "text-theme-text font-semibold" : ""
               }`}
             >
               {label}
@@ -581,6 +615,7 @@ function UserHeader({ profile }: { profile: UserProfile }) {
 }
 
 function UserAccountMenu({ profile }: { profile: UserProfile }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -598,7 +633,7 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
     <div ref={menuRef} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2.5 rounded-full border border-[#e6d9bf] bg-white/80 py-1.5 pl-1.5 pr-3.5 shadow-xs transition-all hover:border-[#d9691f] hover:bg-white focus:outline-hidden"
+        className="flex items-center gap-2.5 rounded-full border border-theme-border bg-theme-card/80 py-1.5 pl-1.5 pr-3.5 shadow-xs transition-all hover:border-[#d9691f] hover:bg-theme-card focus:outline-hidden"
       >
         <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-sm font-bold text-white shadow-xs">
           {profile.avatar ? (
@@ -608,14 +643,14 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
           )}
         </span>
         <div className="hidden text-left sm:block">
-          <p className="text-xs font-bold leading-none text-[#241608]">
+          <p className="text-xs font-bold leading-none text-theme-text">
             {profile.name.split(" ")[0]}
           </p>
           <span className="text-[10px] font-semibold text-[#d9691f] leading-none">
-            {profile.badge || "VIP Member"}
+            {profile.badge || t.home.vip_badge}
           </span>
         </div>
-        <IconChevronDown className={`transition-transform duration-200 ${open ? "rotate-180 text-[#d9691f]" : "text-[#8a7a63]"}`} />
+        <IconChevronDown className={`transition-transform duration-200 ${open ? "rotate-180 text-[#d9691f]" : "text-theme-text-light"}`} />
       </button>
 
       {open && (
@@ -624,13 +659,13 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 8, scale: 0.96 }}
           transition={{ duration: 0.18 }}
-          className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#f6efe1] p-2.5 shadow-2xl"
+          className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-3xl border border-theme-border bg-theme-bg p-2.5 shadow-2xl"
         >
           {/* User info card */}
           <Link
             href="/user/profile"
             onClick={() => setOpen(false)}
-            className="group block rounded-2xl bg-white p-3.5 border border-[#e6d9bf] transition-colors hover:border-[#d9691f]/40 hover:bg-orange-50/40"
+            className="group block rounded-2xl bg-theme-card p-3.5 border border-theme-border transition-colors hover:border-[#d9691f]/40 hover:bg-orange-50/40"
           >
             <div className="flex items-center gap-3">
               <span className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-base font-bold text-white shadow-md transition-transform group-hover:scale-105">
@@ -641,10 +676,10 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
                 )}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold text-[#241608] group-hover:text-[#d9691f] transition-colors">
+                <p className="truncate text-sm font-bold text-theme-text group-hover:text-[#d9691f] transition-colors">
                   {profile.name}
                 </p>
-                <p className="truncate text-xs text-[#8a7a63]">{profile.email}</p>
+                <p className="truncate text-xs text-theme-text-light">{profile.email}</p>
                 <span className="mt-1 inline-block rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-[#d9691f]">
                   {profile.badge || "VIP Member"}
                 </span>
@@ -654,18 +689,18 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
 
           {/* Section: Tiket & Acara */}
           <div className="mt-2.5 px-2 py-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a7a63]">
-              Aktivitas Tiket & Acara
+            <span className="text-[10px] font-bold uppercase tracking-wider text-theme-text-light">
+              {t.menu.act_title}
             </span>
           </div>
-          <nav className="space-y-0.5 text-xs font-semibold text-[#4a3a26]">
+          <nav className="space-y-0.5 text-xs font-semibold text-theme-text-muted">
             <Link
               href="/user/tickets"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-theme-card hover:text-[#d9691f]"
             >
               <span className="flex items-center gap-2.5">
-                <IconTicket /> E-Tiket Saya
+                <IconTicket /> {t.menu.act_tickets}
               </span>
               <span className="rounded-full bg-[#d9691f]/10 px-2 py-0.5 text-[10px] font-bold text-[#d9691f]">
                 Aktif
@@ -675,13 +710,13 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
             <Link
               href="/user/wishlist"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-theme-card hover:text-[#d9691f]"
             >
               <span className="flex items-center gap-2.5">
-                <IconHeartSmall /> Wishlist Acara Favorit
+                <IconHeartSmall /> {t.menu.act_wishlist}
               </span>
               <span className="text-[10px] font-bold text-rose-600">
-                ❤️ Tersimpan
+                {t.menu.act_saved}
               </span>
             </Link>
 
@@ -691,42 +726,42 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
                 setOpen(false);
                 document.getElementById("tickets")?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-theme-card hover:text-[#d9691f]"
             >
-              <IconRefreshCwSmall /> Ringkasan Tiket Mendatang
+              <IconRefreshCwSmall /> {t.menu.act_upcoming}
             </a>
           </nav>
 
-          {/* Section: Pengaturan & Bantuan */}
-          <div className="mt-2.5 border-t border-[#e6d9bf]/70 pt-2 px-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#8a7a63]">
+          {/* Section: {t.menu.set_title} */}
+          <div className="mt-2.5 border-t border-theme-border/70 pt-2 px-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-theme-text-light">
               Pengaturan & Bantuan
             </span>
           </div>
-          <nav className="mt-1 space-y-0.5 text-xs font-semibold text-[#4a3a26]">
+          <nav className="mt-1 space-y-0.5 text-xs font-semibold text-theme-text-muted">
             <Link
               href="/user/profile"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-theme-card hover:text-[#d9691f]"
             >
-              <IconUser /> Profil & Pengaturan Tema
+              <IconUser /> {t.menu.set_profile}
             </Link>
 
             <Link
               href="/user/settings"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+              className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-theme-card hover:text-[#d9691f]"
             >
-              <IconSettings /> Pengaturan & Keamanan
+              <IconSettings /> {t.menu.set_security}
             </Link>
 
             <Link
               href="/user/settings?tab=feedback"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-white hover:text-[#d9691f]"
+              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-theme-card hover:text-[#d9691f]"
             >
               <span className="flex items-center gap-2.5">
-                <IconMessageSquare /> Beri Masukan / Feedback
+                <IconMessageSquare /> {t.menu.set_feedback}
               </span>
               <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-800">
                 Saran
@@ -735,12 +770,12 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
           </nav>
 
           {/* Logout */}
-          <div className="mt-2.5 border-t border-[#e6d9bf] pt-2">
+          <div className="mt-2.5 border-t border-theme-border pt-2">
             <Link
               href="/sign-in"
               className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-red-600 transition-colors hover:bg-red-50"
             >
-              <IconLogout /> Keluar dari Akun
+              <IconLogout /> {t.menu.set_logout}
             </Link>
           </div>
         </motion.div>
@@ -760,6 +795,7 @@ function WelcomeStrip({
   myTickets: MyTicket[];
   profile: UserProfile;
 }) {
+  const { t } = useTranslation();
   const activeTicketsCount = myTickets.filter((t) => t.status === "Aktif").length;
   const pendingCount = myTickets.filter((t) => t.status === "Menunggu Pembayaran").length;
   const hasCustomBg = Boolean(profile.bgCover);
@@ -773,7 +809,7 @@ function WelcomeStrip({
         className={`relative overflow-hidden rounded-3xl border shadow-sm transition-all duration-300 p-6 sm:p-7 ${
           hasCustomBg
             ? "border-[#d9691f]/40 text-white shadow-xl shadow-black/20"
-            : "border-[#e6d9bf] bg-gradient-to-r from-[#f1e6d0] via-[#efe3cc] to-[#ebdcc2] text-[#241608]"
+            : "border-theme-border bg-gradient-to-r from-theme-card-hover via-theme-border to-theme-bg text-theme-text"
         }`}
       >
         {/* Background Image Layer jika pengguna memilih custom background */}
@@ -816,45 +852,45 @@ function WelcomeStrip({
                   {profile.initial}
                 </span>
               )}
-              <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-emerald-500 shadow-xs" />
+              <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-theme-card bg-emerald-500 shadow-xs" />
             </div>
 
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-[#d9691f] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
-                  {profile.badge || "Akun Terverifikasi"}
+                  {profile.badge || "{t.home.profile_verified}"}
                 </span>
                 {hasCustomBg ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/20 backdrop-blur px-2.5 py-0.5 text-[10px] font-semibold text-amber-200 border border-white/20">
-                    ✨ Tema Konser Khusus Aktif
+                  <span className="inline-flex items-center gap-1 rounded-full bg-theme-card/20 backdrop-blur px-2.5 py-0.5 text-[10px] font-semibold text-amber-200 border border-theme-card/20">
+                    ✨ {t.home.theme_active}
                   </span>
                 ) : (
-                  <span className="text-xs text-[#8a7a63] font-medium">ConcertGo VIP</span>
+                  <span className="text-xs text-theme-text-light font-medium">{t.home.vip_badge}</span>
                 )}
               </div>
 
               <h1
                 className={`mt-1.5 font-[var(--font-display,serif)] text-2xl font-bold sm:text-3xl ${
-                  hasCustomBg ? "text-white drop-shadow-sm" : "text-[#241608]"
+                  hasCustomBg ? "text-white drop-shadow-sm" : "text-theme-text"
                 }`}
               >
-                Halo, {profile.name}! 👋
+                {t.home.welcome} {profile.name}! 👋
               </h1>
 
               <p
                 className={`mt-1 max-w-2xl text-xs sm:text-sm leading-relaxed ${
-                  hasCustomBg ? "text-white/85" : "text-[#5a4a35]"
+                  hasCustomBg ? "text-white/85" : "text-theme-text-muted"
                 }`}
               >
-                Kamu punya{" "}
-                <strong className={hasCustomBg ? "text-amber-300 font-bold" : "text-[#241608]"}>
-                  {activeTicketsCount} e-tiket aktif
+                {t.home.active_tickets_prefix}{" "}
+                <strong className={hasCustomBg ? "text-amber-300 font-bold" : "text-theme-text"}>
+                  {activeTicketsCount} {t.home.active_tickets}
                 </strong>{" "}
-                dan{" "}
-                <strong className={hasCustomBg ? "text-amber-300 font-bold" : "text-[#241608]"}>
-                  {pendingCount} pesanan
+                {t.home.and}{" "}
+                <strong className={hasCustomBg ? "text-amber-300 font-bold" : "text-theme-text"}>
+                  {pendingCount} {t.home.pending_tickets}
                 </strong>{" "}
-                menunggu pembayaran. Temukan 12 konser baru minggu ini!
+                {t.home.pending_suffix}
               </p>
             </div>
           </div>
@@ -866,11 +902,11 @@ function WelcomeStrip({
               className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold shadow-md transition-all hover:scale-105 active:scale-95 ${
                 hasCustomBg
                   ? "bg-[#d9691f] text-white hover:bg-[#c45c16] shadow-[#d9691f]/40"
-                  : "bg-[#241608] text-[#f6efe1] hover:bg-[#3a2010]"
+                  : "bg-theme-button text-[#f6efe1] hover:bg-[#3a2010]"
               }`}
             >
               <IconTicketSmall />
-              <span>Lihat Tiket Saya ({myTickets.length})</span>
+              <span>{t.home.view_tickets} ({myTickets.length})</span>
             </a>
           </div>
         </div>
@@ -884,22 +920,23 @@ function WelcomeStrip({
 /* ------------------------------------------------------------------ */
 
 function MyTicketsSection({ myTickets }: { myTickets: MyTicket[] }) {
+  const { t } = useTranslation();
   return (
     <section id="tickets" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-8">
       <div className="mb-6 flex flex-col justify-between gap-1 sm:flex-row sm:items-end">
         <div>
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#d9691f]">
-            Koleksi E-Tiket Anda
+            {t.home.ticket_col}
           </span>
-          <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-[#241608] md:text-3xl">
-            Tiket Saya Mendatang
+          <h2 className="font-[var(--font-display,serif)] text-2xl font-bold text-theme-text md:text-3xl">
+            {t.home.ticket_title}
           </h2>
         </div>
         <Link
           href="/user/tickets"
           className="inline-flex items-center gap-1 text-xs font-bold text-[#d9691f] hover:underline"
         >
-          Buka Halaman Tiket Saya Lengkap →
+          {t.home.ticket_link_all} →
         </Link>
       </div>
 
@@ -911,10 +948,10 @@ function MyTicketsSection({ myTickets }: { myTickets: MyTicket[] }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: idx * 0.08 }}
             whileHover={{ y: -4 }}
-            className="flex flex-col justify-between overflow-hidden rounded-3xl border border-[#e6d9bf] bg-white p-5 shadow-xs transition-shadow hover:shadow-lg"
+            className="flex flex-col justify-between overflow-hidden rounded-3xl border border-theme-border bg-theme-card p-5 shadow-xs transition-shadow hover:shadow-lg"
           >
             <div>
-              <div className="flex items-center justify-between border-b border-[#e6d9bf]/70 pb-3">
+              <div className="flex items-center justify-between border-b border-theme-border/70 pb-3">
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
                     ticket.status === "Aktif"
@@ -922,21 +959,21 @@ function MyTicketsSection({ myTickets }: { myTickets: MyTicket[] }) {
                       : "bg-amber-100 text-amber-800"
                   }`}
                 >
-                  ● {ticket.status}
+                  ● {ticket.status === "Aktif" ? t.home.status_active : t.home.status_pending}
                 </span>
-                <span className="font-mono text-[11px] font-bold text-[#8a7a63]">
+                <span className="font-mono text-[11px] font-bold text-theme-text-light">
                   {ticket.bookingCode}
                 </span>
               </div>
 
-              <h3 className="mt-3 font-[var(--font-display,serif)] text-base font-bold text-[#241608] line-clamp-1">
+              <h3 className="mt-3 font-[var(--font-display,serif)] text-base font-bold text-theme-text line-clamp-1">
                 {ticket.eventTitle}
               </h3>
               <p className="text-xs font-semibold text-[#d9691f] mt-0.5">
-                {ticket.tierName} × {ticket.qty} Tiket
+                {ticket.tierName} × {ticket.qty} {t.home.ticket_qty}
               </p>
 
-              <div className="mt-3 space-y-1 text-[11px] text-[#8a7a63]">
+              <div className="mt-3 space-y-1 text-[11px] text-theme-text-light">
                 <p className="flex items-center gap-1.5 truncate">
                   <IconPinSmall /> {ticket.venue}
                 </p>
@@ -946,19 +983,19 @@ function MyTicketsSection({ myTickets }: { myTickets: MyTicket[] }) {
               </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between border-t border-[#e6d9bf] pt-3">
+            <div className="mt-4 flex items-center justify-between border-t border-theme-border pt-3">
               <div>
-                <p className="text-[10px] text-[#8a7a63] uppercase">Total Biaya</p>
-                <p className="text-sm font-bold text-[#241608]">
+                <p className="text-[10px] text-theme-text-light uppercase">{t.home.total_cost}</p>
+                <p className="text-sm font-bold text-theme-text">
                   {formatIDR(ticket.totalPrice)}
                 </p>
               </div>
 
               <Link
                 href="/user/tickets/detail-tiket-beli"
-                className="rounded-full bg-[#241608] px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-[#d9691f]"
+                className="rounded-full bg-theme-button px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-[#d9691f]"
               >
-                {ticket.status === "Aktif" ? "Buka E-Tiket" : "Bayar Sekarang"}
+                {ticket.status === "Aktif" ? t.home.btn_open_ticket : t.home.btn_pay_now}
               </Link>
             </div>
           </motion.div>
@@ -985,6 +1022,8 @@ function CategoryRail({
   active: Category;
   onSelect: (cat: Category) => void;
 }) {
+  const { t } = useTranslation();
+  
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
@@ -1000,24 +1039,24 @@ function CategoryRail({
               whileTap={{ scale: 0.95 }}
               onClick={() => onSelect(c.label)}
               className={`group flex flex-col items-center gap-1.5 sm:gap-2 rounded-2xl p-2 sm:p-2.5 transition-all focus:outline-hidden cursor-pointer ${
-                isSelected ? "bg-white shadow-md shadow-[#241608]/8 ring-2 ring-[#d9691f]/35" : "hover:bg-white/40"
+                isSelected ? "bg-theme-card shadow-md shadow-black/10 ring-2 ring-[#d9691f]/35" : "hover:bg-theme-card/40"
               }`}
             >
               <span
                 className={`flex h-11 w-11 sm:h-13 sm:w-13 items-center justify-center rounded-2xl border transition-all ${
                   isSelected
                     ? "border-[#d9691f] bg-[#d9691f] text-[#f6efe1] shadow-md shadow-[#d9691f]/25 scale-105"
-                    : "border-[#e6d9bf] bg-[#efe4cf] text-[#4a3a26] group-hover:border-[#d9691f] group-hover:bg-[#f6efe1]"
+                    : "border-theme-border bg-theme-card-hover text-theme-text-muted group-hover:border-[#d9691f] group-hover:bg-theme-bg"
                 }`}
               >
                 {c.icon}
               </span>
               <span
                 className={`text-[11px] sm:text-[12px] font-medium leading-tight whitespace-nowrap transition-colors ${
-                  isSelected ? "font-bold text-[#d9691f]" : "text-[#4a3a26]"
+                  isSelected ? "font-bold text-[#d9691f]" : "text-theme-text-muted"
                 }`}
               >
-                {c.label}
+                {getCategoryTranslation(c.label, t)}
               </span>
             </motion.button>
           );
@@ -1128,8 +1167,9 @@ function SearchHero(props: {
     totalInCategory,
     onSubmit,
   } = props;
+  const { t } = useTranslation();
 
-  const meta = CATEGORY_META[selectedCategory] ?? CATEGORY_META["Festival Musik"];
+  const meta = getCategoryMeta(t, selectedCategory);
   const firstName = profile?.name?.trim() ? profile.name.trim().split(" ")[0] : "Sobat";
 
   const [isOpen, setIsOpen] = useState(false);
@@ -1158,15 +1198,15 @@ function SearchHero(props: {
   const showDropdown = isOpen && query.trim().length > 0 && suggestions.length > 0;
 
   const activeFilterCount = [
-    genre !== "Semua Genre",
-    city !== "Semua Kota",
-    sort !== "Tanggal terdekat",
+    genre !== "ALL",
+    city !== "ALL",
+    sort !== "DATE_ASC",
   ].filter(Boolean).length;
 
   function resetFilters() {
-    setGenre("Semua Genre");
-    setCity("Semua Kota");
-    setSort("Tanggal terdekat");
+    setGenre("ALL");
+    setCity("ALL");
+    setSort("DATE_ASC");
   }
 
   function applySuggestion(s: Suggestion) {
@@ -1210,20 +1250,20 @@ function SearchHero(props: {
       transition={{ duration: 0.35 }}
       className="mx-auto max-w-3xl px-6 pb-12 pt-4 text-center"
     >
-      <span className="inline-flex items-center gap-2 rounded-full border border-[#d9691f]/30 bg-[#efe4cf]/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#b5772f]">
+      <span className="inline-flex items-center gap-2 rounded-full border border-[#d9691f]/30 bg-theme-card-hover/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#b5772f]">
         <IconSparklesSmall /> {meta.tag}
       </span>
 
-      <h2 className="mt-4 font-[var(--font-display,serif)] text-3xl font-bold leading-tight text-[#241608] md:text-5xl">
+      <h2 className="mt-4 font-[var(--font-display,serif)] text-3xl font-bold leading-tight text-theme-text md:text-5xl">
         {meta.title(firstName)}
       </h2>
-      <p className="mx-auto mt-3 max-w-lg text-sm text-[#5a4a35] md:text-base">
+      <p className="mx-auto mt-3 max-w-lg text-sm text-theme-text-muted md:text-base">
         {meta.subtitle}
       </p>
 
       {/* Input Search Box */}
       <div ref={containerRef} className="relative mx-auto mt-8 max-w-xl">
-        <div className="flex items-center gap-2 rounded-full border border-[#e6d9bf] bg-white p-2 pl-5 shadow-md shadow-[#241608]/5 transition-all focus-within:border-[#d9691f] focus-within:ring-2 focus-within:ring-[#d9691f]/20">
+        <div className="flex items-center gap-2 rounded-full border border-theme-border bg-theme-card p-2 pl-5 shadow-md shadow-black/5 transition-all focus-within:border-[#d9691f] focus-within:ring-2 focus-within:ring-[#d9691f]/20">
           <IconSearch />
           <input
             value={query}
@@ -1237,7 +1277,7 @@ function SearchHero(props: {
             role="combobox"
             aria-expanded={showDropdown}
             aria-controls="search-suggestions"
-            className="flex-1 bg-transparent text-sm text-[#241608] placeholder:text-[#8a7a63] focus:outline-hidden"
+            className="flex-1 bg-transparent text-sm text-theme-text placeholder:text-theme-text-light focus:outline-hidden"
           />
           {query && (
             <button
@@ -1247,7 +1287,7 @@ function SearchHero(props: {
                 setQuery("");
                 setIsOpen(false);
               }}
-              className="shrink-0 rounded-full px-2 py-1 text-xs text-[#8a7a63] hover:text-[#241608]"
+              className="shrink-0 rounded-full px-2 py-1 text-xs text-theme-text-light hover:text-theme-text"
             >
               ✕
             </button>
@@ -1256,7 +1296,7 @@ function SearchHero(props: {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             onClick={onSubmit}
-            className="rounded-full bg-[#241608] px-5 py-2.5 text-xs font-semibold text-[#f6efe1] transition-colors hover:bg-[#3a2010] sm:text-sm"
+            className="rounded-full bg-theme-button px-5 py-2.5 text-xs font-semibold text-[#f6efe1] transition-colors hover:bg-[#3a2010] sm:text-sm"
           >
             Temukan
           </motion.button>
@@ -1272,7 +1312,7 @@ function SearchHero(props: {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 5, scale: 0.98 }}
               transition={{ duration: 0.2 }}
-              className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-2xl border border-[#e6d9bf] bg-white text-left shadow-2xl"
+              className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-2xl border border-theme-border bg-theme-card text-left shadow-2xl"
             >
               {suggestions.map((s, i) => (
                 <li key={s.key} role="option" aria-selected={i === highlightIndex}>
@@ -1282,19 +1322,19 @@ function SearchHero(props: {
                     onMouseEnter={() => setHighlightIndex(i)}
                     onClick={() => applySuggestion(s)}
                     className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors ${
-                      i === highlightIndex ? "bg-[#f6efe1]" : "bg-white hover:bg-[#f6efe1]/50"
+                      i === highlightIndex ? "bg-theme-bg" : "bg-theme-card hover:bg-theme-bg/50"
                     }`}
                   >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#efe4cf] text-[#8a7a63]">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-theme-card-hover text-theme-text-light">
                       {s.kind === "city" ? <IconPinSmall /> : s.kind === "genre" ? <IconMusicSmall /> : <IconSearchSmall />}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[#241608]">
+                      <span className="block truncate text-theme-text">
                         <Highlighted text={s.label} query={query} />
                       </span>
-                      {s.meta && <span className="block truncate text-xs text-[#8a7a63]">{s.meta}</span>}
+                      {s.meta && <span className="block truncate text-xs text-theme-text-light">{s.meta}</span>}
                     </span>
-                    <span className="shrink-0 rounded-full bg-[#f1e6d0] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#8a7a63]">
+                    <span className="shrink-0 rounded-full bg-theme-card-hover px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-theme-text-light">
                       {s.kind === "city" ? "Kota" : s.kind === "genre" ? "Genre" : "Acara"}
                     </span>
                   </button>
@@ -1314,13 +1354,13 @@ function SearchHero(props: {
           className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 font-medium transition-all ${
             activeFilterCount > 0
               ? "border-[#d9691f] bg-[#d9691f] text-white shadow-xs hover:bg-[#c15f1b]"
-              : "cursor-default border-[#e6d9bf] bg-white/70 text-[#4a3a26]"
+              : "cursor-default border-theme-border bg-theme-card/70 text-theme-text-muted"
           }`}
         >
           <IconFilter />
           <span>Filter</span>
           {activeFilterCount > 0 && (
-            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-[#d9691f]">
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-theme-card px-1 text-[10px] font-bold text-[#d9691f]">
               {activeFilterCount}
             </span>
           )}
@@ -1329,9 +1369,9 @@ function SearchHero(props: {
         <select
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
-          className="rounded-full border border-[#e6d9bf] bg-white/80 px-3.5 py-1.5 text-[#4a3a26] transition-colors focus:border-[#d9691f] focus:outline-hidden"
+          className="rounded-full border border-theme-border bg-theme-card/80 px-3.5 py-1.5 text-theme-text-muted transition-colors focus:border-[#d9691f] focus:outline-hidden"
         >
-          <option>Semua Genre</option>
+          <option value="ALL">{t.home.filter_all_genre}</option>
           {availableGenres.map((g) => (
             <option key={g}>{g}</option>
           ))}
@@ -1340,9 +1380,9 @@ function SearchHero(props: {
         <select
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className="rounded-full border border-[#e6d9bf] bg-white/80 px-3.5 py-1.5 text-[#4a3a26] transition-colors focus:border-[#d9691f] focus:outline-hidden"
+          className="rounded-full border border-theme-border bg-theme-card/80 px-3.5 py-1.5 text-theme-text-muted transition-colors focus:border-[#d9691f] focus:outline-hidden"
         >
-          <option>Semua Kota</option>
+          <option value="ALL">{t.home.filter_all_city}</option>
           {availableCities.map((c) => (
             <option key={c}>{c}</option>
           ))}
@@ -1351,17 +1391,17 @@ function SearchHero(props: {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="rounded-full border border-[#e6d9bf] bg-white/80 px-3.5 py-1.5 text-[#4a3a26] transition-colors focus:border-[#d9691f] focus:outline-hidden"
+          className="rounded-full border border-theme-border bg-theme-card/80 px-3.5 py-1.5 text-theme-text-muted transition-colors focus:border-[#d9691f] focus:outline-hidden"
         >
-          <option>Tanggal terdekat</option>
-          <option>Harga terendah</option>
-          <option>Harga tertinggi</option>
+          <option value="DATE_ASC">{t.home.sort_date}</option>
+          <option value="PRICE_ASC">{t.home.sort_price_low}</option>
+          <option value="PRICE_DESC">{t.home.sort_price_high}</option>
         </select>
       </div>
 
-      <p className="mt-3 text-xs text-[#8a7a63]">
-        Menampilkan <span className="font-semibold text-[#241608]">{resultCount}</span> dari{" "}
-        <span className="font-semibold text-[#241608]">{totalInCategory}</span> {meta.unit} tersedia
+      <p className="mt-3 text-xs text-theme-text-light">
+        {t.home.showing} <span className="font-semibold text-theme-text">{resultCount}</span> {t.home.from}{" "}
+        <span className="font-semibold text-theme-text">{totalInCategory}</span> {meta.unit} {t.home.available}
       </p>
     </motion.section>
   );

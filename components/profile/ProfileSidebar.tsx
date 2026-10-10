@@ -4,8 +4,8 @@ import { type UserProfile } from "@/types/user";
 
 export function LiveBerandaPreview({ profile }: { profile: UserProfile }) {
   return (
-    <div className="overflow-hidden rounded-3xl border border-[#e6d9bf] bg-white p-5 shadow-sm">
-      <div className="flex items-center justify-between border-b border-[#e6d9bf] pb-3">
+    <div className="overflow-hidden rounded-3xl border border-theme-border bg-theme-card p-5 shadow-sm">
+      <div className="flex items-center justify-between border-b border-theme-border pb-3">
         <p className="text-xs font-bold uppercase tracking-wider text-[#d9691f]">
           👁️ Live Preview di Beranda
         </p>
@@ -14,12 +14,12 @@ export function LiveBerandaPreview({ profile }: { profile: UserProfile }) {
         </span>
       </div>
 
-      <p className="mt-2 text-xs text-[#8a7a63] leading-relaxed">
+      <p className="mt-2 text-xs text-theme-text-light leading-relaxed">
         Berikut adalah simulasi bagaimana banner berandamu tampil saat membuka halaman utama:
       </p>
 
       {/* Mini Welcome Strip Simulation */}
-      <div className="relative mt-3 overflow-hidden rounded-2xl border border-[#e6d9bf] p-4 text-[#241608] shadow-inner min-h-[140px] flex flex-col justify-between">
+      <div className="relative mt-3 overflow-hidden rounded-2xl border border-theme-border p-4 text-theme-text shadow-inner min-h-[140px] flex flex-col justify-between">
         {profile.bgCover ? (
           <>
             <Image
@@ -51,14 +51,14 @@ export function LiveBerandaPreview({ profile }: { profile: UserProfile }) {
             <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
               Akun Terverifikasi
             </span>
-            <p className="mt-1 font-[var(--font-display,serif)] text-base font-bold text-[#241608]">
+            <p className="mt-1 font-[var(--font-display,serif)] text-base font-bold text-theme-text">
               Halo, {profile.name}! 👋
             </p>
-            <p className="text-[11px] text-[#5a4a35] mt-0.5">
+            <p className="text-[11px] text-theme-text-muted mt-0.5">
               Tampilan standar warm cream. Kamu punya 2 e-tiket aktif.
             </p>
             <div className="mt-3">
-              <span className="rounded-full bg-[#241608] px-3 py-1 text-[10px] text-white">
+              <span className="rounded-full bg-theme-button px-3 py-1 text-[10px] text-white">
                 Lihat Tiket Saya
               </span>
             </div>
@@ -66,7 +66,7 @@ export function LiveBerandaPreview({ profile }: { profile: UserProfile }) {
         )}
       </div>
 
-      <div className="mt-4 pt-3 border-t border-[#e6d9bf] text-center">
+      <div className="mt-4 pt-3 border-t border-theme-border text-center">
         <Link
           href="/user/homepage"
           className="inline-flex items-center gap-1 text-xs font-bold text-[#d9691f] hover:underline"
@@ -80,23 +80,23 @@ export function LiveBerandaPreview({ profile }: { profile: UserProfile }) {
 
 export function QuickActionCard() {
   return (
-    <div className="rounded-3xl border border-[#e6d9bf] bg-[#efe4cf]/60 p-5 text-xs text-[#5a4a35] space-y-3">
-      <p className="font-bold text-[#241608] text-sm">Akses Cepat Pengguna</p>
+    <div className="rounded-3xl border border-theme-border bg-theme-card-hover/60 p-5 text-xs text-theme-text-muted space-y-3">
+      <p className="font-bold text-theme-text text-sm">Akses Cepat Pengguna</p>
       <ul className="space-y-2 font-medium">
         <li>
-          <Link href="/user/tickets" className="flex items-center justify-between text-[#241608] hover:text-[#d9691f]">
+          <Link href="/user/tickets" className="flex items-center justify-between text-theme-text hover:text-[#d9691f]">
             <span>🎫 Daftar E-Tiket Saya</span>
             <span>→</span>
           </Link>
         </li>
         <li>
-          <Link href="/user/tickets/detail-tiket-beli" className="flex items-center justify-between text-[#241608] hover:text-[#d9691f]">
+          <Link href="/user/tickets/detail-tiket-beli" className="flex items-center justify-between text-theme-text hover:text-[#d9691f]">
             <span>📲 QR Barcode & Bukti Bayar</span>
             <span>→</span>
           </Link>
         </li>
         <li>
-          <Link href="/user/homepage#rekomendasi" className="flex items-center justify-between text-[#241608] hover:text-[#d9691f]">
+          <Link href="/user/homepage#rekomendasi" className="flex items-center justify-between text-theme-text hover:text-[#d9691f]">
             <span>🎵 Rekomendasi Konser Baru</span>
             <span>→</span>
           </Link>

@@ -1,3 +1,4 @@
+import { useTranslation } from "@/hooks/useTranslation";
 import { useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,6 +15,7 @@ export function HeroCarousel({
   setIndex: React.Dispatch<React.SetStateAction<number>>;
   onOpenDetail: (event: EventItem) => void;
 }) {
+  const { t, language } = useTranslation();
   const currentSlide = HERO_SLIDES[index % HERO_SLIDES.length];
 
   useEffect(() => {
@@ -52,12 +54,12 @@ export function HeroCarousel({
 
           {/* Top meta */}
           <div className="relative z-10 flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-black/40 px-3.5 py-1 text-xs font-semibold tracking-wider text-[#d9a26a] backdrop-blur-md border border-white/10">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-black/40 px-3.5 py-1 text-xs font-semibold tracking-wider text-[#d9a26a] backdrop-blur-md border border-theme-card/10">
               <span className="h-2 w-2 animate-pulse rounded-full bg-[#d9691f]" />
               {currentSlide.tag}
             </span>
-            <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
-              Mulai {formatIDR(currentSlide.price)}
+            <span className="rounded-full bg-theme-card/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
+              {t.home.start_from} {formatIDR(currentSlide.price)}
             </span>
           </div>
 
@@ -90,7 +92,7 @@ export function HeroCarousel({
           </div>
 
           {/* Bottom actions & indicators */}
-          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/20">
+          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-theme-card/20">
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -117,7 +119,7 @@ export function HeroCarousel({
                     onClick={() => setIndex(i)}
                     aria-label={`Slide ${i + 1}`}
                     className={`h-2 rounded-full transition-all duration-300 ${
-                      i === index % HERO_SLIDES.length ? "w-8 bg-[#d9691f]" : "w-2 bg-white/40 hover:bg-white/60"
+                      i === index % HERO_SLIDES.length ? "w-8 bg-[#d9691f]" : "w-2 bg-theme-card/40 hover:bg-theme-card/60"
                     }`}
                   />
                 ))}
@@ -130,7 +132,7 @@ export function HeroCarousel({
               onClick={() => onOpenDetail(activeEvent)}
               className="inline-flex items-center gap-2 rounded-full bg-[#d9691f] px-5 py-2.5 text-xs font-semibold text-white shadow-lg shadow-[#d9691f]/30 transition-colors hover:bg-[#c45c16] sm:text-sm"
             >
-              <Ticket className="w-3.5 h-3.5" /> Lihat Detail & Tiket
+              <Ticket className="w-3.5 h-3.5" /> {t.home.btn_detail_ticket}
             </motion.button>
           </div>
         </div>
@@ -140,39 +142,37 @@ export function HeroCarousel({
           <motion.div
             whileHover={{ y: -3 }}
             transition={{ duration: 0.2 }}
-            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#241209] p-6 text-white shadow-md"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-theme-border bg-theme-dark p-6 text-white shadow-md"
           >
             <Image
               src={EVENTS[2].image}
-              alt={EVENTS[2].title}
+              alt={language === "en" ? "Surabaya Rock Revival" : EVENTS[2].title}
               fill
               className="object-cover opacity-35 transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#241209] via-[#241209]/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-theme-dark via-[#241209]/80 to-transparent" />
 
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <span className="rounded-full bg-[#d9691f] px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
-                  🔥 Trending Pekan Ini
+                  🔥 {t.home.trending_title}
                 </span>
                 <span className="text-xs font-bold text-[#f6efe1]">Rp 150.000</span>
               </div>
               <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold">
-                {EVENTS[2].title}
+                {language === "en" ? "Surabaya Rock Revival" : EVENTS[2].title}
               </h3>
-              <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">
-                Suasana syahdu gedung tua ditemani aransemen jazz romantis musisi ibukota.
-              </p>
+              <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">{language === "en" ? "A serene atmosphere in an old building accompanied by romantic jazz arrangements from capital musicians." : "Suasana syahdu gedung tua ditemani aransemen jazz romantis musisi ibukota."}</p>
             </div>
 
-            <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-white/20 text-xs text-[#c4b59d]">
+            <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-theme-card/20 text-xs text-[#c4b59d]">
               <span>Taman Fatahillah · Jakarta</span>
               <button
                 type="button"
                 onClick={() => onOpenDetail(EVENTS[2])}
                 className="font-semibold text-white hover:text-[#d9a26a] hover:underline"
               >
-                Lihat Acara →
+                {t.home.btn_view_event} →
               </button>
             </div>
           </motion.div>
@@ -180,11 +180,11 @@ export function HeroCarousel({
           <motion.div
             whileHover={{ y: -3 }}
             transition={{ duration: 0.2 }}
-            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#e6d9bf] bg-[#1a1208] p-6 text-white shadow-md"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-theme-border bg-[#1a1208] p-6 text-white shadow-md"
           >
             <Image
               src={EVENTS[7].image}
-              alt={EVENTS[7].title}
+              alt={language === "en" ? "Neon Dangdut Koplo Party" : EVENTS[7].title}
               fill
               className="object-cover opacity-35 transition-transform duration-500 group-hover:scale-105"
             />
@@ -195,24 +195,24 @@ export function HeroCarousel({
                 <span className="rounded-full bg-amber-600 px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
                   ⚡ Flash Sale H-30
                 </span>
-                <span className="text-xs font-mono text-amber-300">Hemat 25%</span>
+                <span className="text-xs font-mono text-amber-300">{t.home.save_25}</span>
               </div>
               <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold">
-                {EVENTS[7].title}
+                {language === "en" ? "Neon Dangdut Koplo Party" : EVENTS[7].title}
               </h3>
               <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">
                 Konser akustik intim 200 penonton di Rooftop Kopi Manja dengan pemandangan lampu malam kota.
               </p>
             </div>
 
-            <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-white/20 text-xs text-[#c4b59d]">
+            <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-theme-card/20 text-xs text-[#c4b59d]">
               <span>1 Nov 2026 · Jogja</span>
               <button
                 type="button"
                 onClick={() => onOpenDetail(EVENTS[7])}
                 className="font-semibold text-white hover:text-[#d9a26a] hover:underline"
               >
-                Lihat Acara →
+                {t.home.btn_view_event} →
               </button>
             </div>
           </motion.div>

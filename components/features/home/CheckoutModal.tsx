@@ -109,11 +109,11 @@ export default function CheckoutModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 350 }}
-        className="relative z-10 w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-3xl border border-[#e6d9bf] bg-[#f6efe1] p-6 shadow-2xl text-[#241608]"
+        className="relative z-10 w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-3xl border border-theme-border bg-theme-bg p-6 shadow-2xl text-theme-text"
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-[#4a3a26] hover:bg-white transition-colors cursor-pointer"
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-theme-card/70 text-theme-text-muted hover:bg-theme-card transition-colors cursor-pointer"
         >
           ✕
         </button>
@@ -131,49 +131,49 @@ export default function CheckoutModal({
             <h3 className="mt-1 font-[var(--font-display,serif)] text-2xl font-bold">
               Konfirmasi Pemesanan Tiket
             </h3>
-            <p className="mt-1 text-xs text-[#5a4a35]">
+            <p className="mt-1 text-xs text-theme-text-muted">
               Data pemesan otomatis terisi sesuai profil aktif akun Anda.
             </p>
 
             {/* Event Summary */}
-            <div className="mt-4 flex items-center gap-3 rounded-2xl border border-[#e6d9bf] bg-white p-3 shadow-xs">
+            <div className="mt-4 flex items-center gap-3 rounded-2xl border border-theme-border bg-theme-card p-3 shadow-xs">
               <img
                 src={event.image}
                 alt={event.title}
                 className="h-16 w-20 rounded-xl object-cover"
               />
               <div className="min-w-0 flex-1">
-                <p className="font-bold text-sm text-[#241608] line-clamp-1">{event.title}</p>
+                <p className="font-bold text-sm text-theme-text line-clamp-1">{event.title}</p>
                 <p className="text-xs font-semibold text-[#d9691f]">{event.artist}</p>
-                <p className="text-[11px] text-[#8a7a63] mt-0.5">
+                <p className="text-[11px] text-theme-text-light mt-0.5">
                   {event.venue} · {event.date}, {event.time}
                 </p>
               </div>
             </div>
 
             {/* Buyer Info Form (Auto-filled) */}
-            <div className="rounded-2xl border border-[#e6d9bf] bg-[#efe4cf]/70 p-4 text-xs space-y-2">
+            <div className="rounded-2xl border border-theme-border bg-theme-card-hover/70 p-4 text-xs space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-[#241608]">Data Pemesan Tiket (Terverifikasi)</span>
+                <span className="font-bold text-theme-text">Data Pemesan Tiket (Terverifikasi)</span>
                 <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">
                   Akun Aktif
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <div>
-                  <span className="text-[#8a7a63]">Nama Lengkap:</span>
-                  <p className="font-semibold text-[#241608]">{userProfile.name}</p>
+                  <span className="text-theme-text-light">Nama Lengkap:</span>
+                  <p className="font-semibold text-theme-text">{userProfile.name}</p>
                 </div>
                 <div>
-                  <span className="text-[#8a7a63]">Email Penerima:</span>
-                  <p className="font-semibold text-[#241608] truncate">{userProfile.email}</p>
+                  <span className="text-theme-text-light">Email Penerima:</span>
+                  <p className="font-semibold text-theme-text truncate">{userProfile.email}</p>
                 </div>
               </div>
             </div>
 
             {/* Tier & Quantity Selector */}
             <div className="mt-4 space-y-3">
-              <label className="block text-xs font-bold text-[#241608]">Pilih Kategori Tiket</label>
+              <label className="block text-xs font-bold text-theme-text">Pilih Kategori Tiket</label>
               <div className="space-y-2">
                 {event.ticketTiers.map((tier) => {
                   const isSelected = selectedTier.name === tier.name;
@@ -186,8 +186,8 @@ export default function CheckoutModal({
                         isSoldOut
                           ? "opacity-40 cursor-not-allowed bg-neutral-100"
                           : isSelected
-                          ? "border-[#d9691f] bg-white ring-1 ring-[#d9691f] shadow-xs cursor-pointer"
-                          : "border-[#e6d9bf] bg-white/70 hover:bg-white cursor-pointer"
+                          ? "border-[#d9691f] bg-theme-card ring-1 ring-[#d9691f] shadow-xs cursor-pointer"
+                          : "border-theme-border bg-theme-card/70 hover:bg-theme-card cursor-pointer"
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -198,7 +198,7 @@ export default function CheckoutModal({
                           disabled={isSoldOut}
                           className="accent-[#d9691f]"
                         />
-                        <span className="font-bold text-[#241608]">{tier.name}</span>
+                        <span className="font-bold text-theme-text">{tier.name}</span>
                       </div>
                       <span className="font-bold text-[#d9691f]">{formatIDR(tier.price)}</span>
                     </div>
@@ -208,42 +208,42 @@ export default function CheckoutModal({
 
               {/* Quantity */}
               <div className="flex items-center justify-between pt-1">
-                <span className="text-xs font-bold text-[#241608]">Jumlah Tiket</span>
+                <span className="text-xs font-bold text-theme-text">Jumlah Tiket</span>
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#e6d9bf] bg-white font-bold text-sm hover:bg-[#efe4cf] cursor-pointer"
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-theme-border bg-theme-card font-bold text-sm hover:bg-theme-card-hover cursor-pointer"
                   >
                     -
                   </button>
-                  <span className="font-bold text-sm text-[#241608]">{qty}</span>
+                  <span className="font-bold text-sm text-theme-text">{qty}</span>
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.min(4, q + 1))}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#e6d9bf] bg-white font-bold text-sm hover:bg-[#efe4cf] cursor-pointer"
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-theme-border bg-theme-card font-bold text-sm hover:bg-theme-card-hover cursor-pointer"
                   >
                     +
                   </button>
-                  <span className="text-[10px] text-[#8a7a63]">(Maks. 4)</span>
+                  <span className="text-[10px] text-theme-text-light">(Maks. 4)</span>
                 </div>
               </div>
             </div>
 
             {/* Promo Voucher Code */}
-            <div className="mt-4 rounded-2xl border border-[#e6d9bf] bg-white p-3.5">
-              <label className="block text-xs font-bold text-[#241608]">Kode Kupon Diskon</label>
+            <div className="mt-4 rounded-2xl border border-theme-border bg-theme-card p-3.5">
+              <label className="block text-xs font-bold text-theme-text">Kode Kupon Diskon</label>
               <div className="mt-2 flex gap-2">
                 <input
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
                   placeholder="Gunakan CONCERTGO20 atau BEBASADMIN"
-                  className="flex-1 rounded-xl border border-[#e6d9bf] px-3 py-1.5 text-xs font-mono text-[#241608] focus:border-[#d9691f] focus:outline-hidden"
+                  className="flex-1 rounded-xl border border-theme-border px-3 py-1.5 text-xs font-mono text-theme-text focus:border-[#d9691f] focus:outline-hidden"
                 />
                 <button
                   type="button"
                   onClick={applyVoucher}
-                  className="rounded-xl bg-[#241608] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#3a2010] cursor-pointer"
+                  className="rounded-xl bg-theme-button px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#3a2010] cursor-pointer"
                 >
                   Terapkan
                 </button>
@@ -257,7 +257,7 @@ export default function CheckoutModal({
 
             {/* Payment Method Selector */}
             <div className="mt-4 space-y-2">
-              <label className="block text-xs font-bold text-[#241608]">Metode Pembayaran</label>
+              <label className="block text-xs font-bold text-theme-text">Metode Pembayaran</label>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 {(["QRIS", "BCA", "Mandiri", "GoPay"] as const).map((method) => (
                   <button
@@ -266,22 +266,22 @@ export default function CheckoutModal({
                     onClick={() => setPaymentMethod(method)}
                     className={`flex items-center justify-between rounded-xl border p-2.5 font-semibold transition-all cursor-pointer ${
                       paymentMethod === method
-                        ? "border-[#d9691f] bg-white ring-1 ring-[#d9691f] text-[#d9691f] shadow-xs"
-                        : "border-[#e6d9bf] bg-white/70 text-[#4a3a26] hover:bg-white"
+                        ? "border-[#d9691f] bg-theme-card ring-1 ring-[#d9691f] text-[#d9691f] shadow-xs"
+                        : "border-theme-border bg-theme-card/70 text-theme-text-muted hover:bg-theme-card"
                     }`}
                   >
                     <span>{method}</span>
-                    <span className="text-[10px] text-[#8a7a63]">Instant</span>
+                    <span className="text-[10px] text-theme-text-light">Instant</span>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Price Breakdown */}
-            <div className="mt-5 space-y-1.5 border-t border-[#e6d9bf] pt-3 text-xs text-[#5a4a35]">
+            <div className="mt-5 space-y-1.5 border-t border-theme-border pt-3 text-xs text-theme-text-muted">
               <div className="flex justify-between">
                 <span>Harga Tiket ({qty}x)</span>
-                <span className="font-semibold text-[#241608]">{formatIDR(subtotal)}</span>
+                <span className="font-semibold text-theme-text">{formatIDR(subtotal)}</span>
               </div>
               {promoDiscount > 0 && (
                 <div className="flex justify-between text-emerald-700 font-semibold">
@@ -291,9 +291,9 @@ export default function CheckoutModal({
               )}
               <div className="flex justify-between">
                 <span>Biaya Layanan & Pajak</span>
-                <span className="font-semibold text-[#241608]">{formatIDR(adminFee)}</span>
+                <span className="font-semibold text-theme-text">{formatIDR(adminFee)}</span>
               </div>
-              <div className="flex justify-between border-t border-[#e6d9bf] pt-2 text-sm font-bold text-[#241608]">
+              <div className="flex justify-between border-t border-theme-border pt-2 text-sm font-bold text-theme-text">
                 <span>Total Tagihan</span>
                 <span className="text-base text-[#d9691f]">{formatIDR(grandTotal)}</span>
               </div>
@@ -313,7 +313,7 @@ export default function CheckoutModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-xs text-[#8a7a63] hover:text-[#241608] py-1 cursor-pointer"
+                className="text-xs text-theme-text-light hover:text-theme-text py-1 cursor-pointer"
               >
                 Batalkan
               </button>
@@ -331,24 +331,24 @@ export default function CheckoutModal({
               ✓
             </motion.div>
 
-            <h3 className="mt-4 font-[var(--font-display,serif)] text-2xl font-bold text-[#241608]">
+            <h3 className="mt-4 font-[var(--font-display,serif)] text-2xl font-bold text-theme-text">
               Pemesanan Tiket Berhasil!
             </h3>
-            <p className="mt-2 text-xs text-[#5a4a35] max-w-sm mx-auto leading-relaxed">
-              E-tiket resmi untuk <strong className="text-[#241608]">{event.title}</strong> telah terbit
-              dan otomatis tersimpan di akun <strong className="text-[#241608]">{userProfile.name}</strong>.
+            <p className="mt-2 text-xs text-theme-text-muted max-w-sm mx-auto leading-relaxed">
+              E-tiket resmi untuk <strong className="text-theme-text">{event.title}</strong> telah terbit
+              dan otomatis tersimpan di akun <strong className="text-theme-text">{userProfile.name}</strong>.
             </p>
 
             {createdTicket && (
-              <div className="my-5 mx-auto max-w-xs rounded-2xl border border-dashed border-[#d9691f] bg-white p-4 text-left shadow-xs">
+              <div className="my-5 mx-auto max-w-xs rounded-2xl border border-dashed border-[#d9691f] bg-theme-card p-4 text-left shadow-xs">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-[#8a7a63]">Kode Booking:</span>
+                  <span className="text-theme-text-light">Kode Booking:</span>
                   <span className="font-mono font-bold text-[#d9691f]">{createdTicket.bookingCode}</span>
                 </div>
-                <div className="mt-2 pt-2 border-t border-[#e6d9bf] text-xs">
-                  <p className="font-bold text-[#241608]">{createdTicket.eventTitle}</p>
-                  <p className="text-[11px] text-[#8a7a63]">{createdTicket.tierName} · {createdTicket.qty} Tiket</p>
-                  <p className="text-[11px] text-[#8a7a63]">{createdTicket.venue}</p>
+                <div className="mt-2 pt-2 border-t border-theme-border text-xs">
+                  <p className="font-bold text-theme-text">{createdTicket.eventTitle}</p>
+                  <p className="text-[11px] text-theme-text-light">{createdTicket.tierName} · {createdTicket.qty} Tiket</p>
+                  <p className="text-[11px] text-theme-text-light">{createdTicket.venue}</p>
                 </div>
               </div>
             )}
@@ -356,13 +356,13 @@ export default function CheckoutModal({
             <div className="flex flex-col gap-2.5 max-w-xs mx-auto">
               <Link
                 href="/user/tickets/detail-tiket-beli"
-                className="flex items-center justify-center rounded-full bg-[#241608] py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#3a2010]"
+                className="flex items-center justify-center rounded-full bg-theme-button py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#3a2010]"
               >
                 Buka E-Tiket & Barcode
               </Link>
               <button
                 onClick={onClose}
-                className="rounded-full border border-[#e6d9bf] bg-white py-2.5 text-xs font-semibold text-[#241608] hover:bg-[#efe4cf] cursor-pointer"
+                className="rounded-full border border-theme-border bg-theme-card py-2.5 text-xs font-semibold text-theme-text hover:bg-theme-card-hover cursor-pointer"
               >
                 Kembali ke Beranda
               </button>

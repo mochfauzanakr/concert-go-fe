@@ -29,7 +29,7 @@ export function SiteHeader() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="sticky top-0 z-30 border-b border-[#e6d9bf] bg-[#f6efe1]/95 backdrop-blur shadow-xs"
+      className="sticky top-0 z-30 border-b border-theme-border bg-theme-bg/95 backdrop-blur shadow-xs"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a
@@ -41,13 +41,13 @@ export function SiteHeader() {
           className="group flex items-center gap-2.5 transition-transform hover:scale-105"
         >
           <Image src="/image/Logo.png" alt="ConcertGo" width={32} height={32} className="h-8 w-auto" />
-          <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-[#241608]">
+          <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-theme-text">
             <span>Concert</span>
             <span className="text-[#d9691f]">Go</span>
           </span>
         </a>
 
-        <nav className="hidden items-center gap-8 text-sm font-medium text-[#4a3a26] md:flex">
+        <nav className="hidden items-center gap-8 text-sm font-medium text-theme-text-muted md:flex">
           {NAV_LINKS.map(({ label, targetId }) => (
             <a
               key={label}
@@ -57,7 +57,7 @@ export function SiteHeader() {
                 handleNavClick(label, targetId);
               }}
               className={`relative py-1 transition-colors hover:text-[#d9691f] ${
-                active === label ? "text-[#241608] font-semibold" : ""
+                active === label ? "text-theme-text font-semibold" : ""
               }`}
             >
               {label}
@@ -75,14 +75,14 @@ export function SiteHeader() {
         <div className="flex items-center gap-3">
           <Link
             href="/sign-in"
-            className="rounded-full border border-[#d9691f]/40 px-4 py-1.5 text-xs font-semibold text-[#4a3a26] transition-all hover:border-[#d9691f] hover:bg-[#efe4cf]/50 sm:text-sm sm:px-5 sm:py-2"
+            className="rounded-full border border-[#d9691f]/40 px-4 py-1.5 text-xs font-semibold text-theme-text-muted transition-all hover:border-[#d9691f] hover:bg-theme-card-hover/50 sm:text-sm sm:px-5 sm:py-2"
           >
             Masuk
           </Link>
 
           <Link
             href="/sign-up"
-            className="rounded-full bg-[#241608] px-4 py-1.5 text-xs font-semibold text-[#f6efe1] shadow-xs transition-transform hover:scale-105 active:scale-95 sm:text-sm sm:px-5 sm:py-2"
+            className="rounded-full bg-theme-button px-4 py-1.5 text-xs font-semibold text-[#f6efe1] shadow-xs transition-transform hover:scale-105 active:scale-95 sm:text-sm sm:px-5 sm:py-2"
           >
             Daftar Akun
           </Link>

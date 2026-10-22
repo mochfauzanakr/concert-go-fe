@@ -1,22 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import type { UserProfile } from "@/types/user";
 
-export type UserProfile = {
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  city: string;
-  birthdate: string;
-  bio: string;
-  initial: string;
-  badge: string;
-  avatar: string | null;
-  bgCover: string | null;
-  favoriteGenre: string;
-  memberSince: string;
-};
+export type { UserProfile };
 
 export const PRESET_BACKGROUNDS = [
   {
@@ -79,24 +67,53 @@ export const PRESET_AVATARS = [
   },
 ];
 
-export const DEFAULT_PROFILE: UserProfile = {
-  name: "Raka Pratama",
-  username: "rakapratama",
-  email: "raka.pratama@email.com",
-  phone: "+62 812-3456-7890",
-  city: "Jakarta",
-  birthdate: "1996-11-03",
-  bio: "Penikmat konser akhir pekan. Selalu berburu tiket festival musik sebelum harganya naik.",
-  initial: "R",
-  badge: "VIP Member",
+/**
+ * Profil tamu. Dipakai sebagai titik awal sebelum sesi backend terbaca, dan
+ * saat logout sehingga tidak ada identitas pengguna lain yang tertinggal.
+ */
+export const GUEST_PROFILE: UserProfile = {
+  name: "Pengguna",
+  username: "",
+  email: "",
+  phone: "",
+  city: "",
+  birthdate: "",
+  bio: "",
+  initial: "P",
+  badge: "Member",
   avatar: null,
   bgCover: null,
-  favoriteGenre: "Indie & Alternative",
-  memberSince: "2022",
+  favoriteGenre: "",
+  memberSince: "",
 };
 
-const STORAGE_KEY = "concertgo_user_profile";
-const EVENT_NAME = "concertgo_profile_changed";
+// Nama lama dipertahankan agar import yang sudah ada tetap valid.
+export const DEFAULT_PROFILE: UserProfile = GUEST_PROFILE;
+
+/** Data user yang dikirim backend (`GET /auth/me`, respons login, OAuth). */
+export type SessionUser = {
+  id: string;
+  name: string;
+  email: string;
+  roleId?: number | null;
+  createdAt?: string;
+};
+
+/** roleId backend: 1 SUPER_ADMIN, 2 ADMIN, 3 ORGANIZER, 4 USER, 5 STAFF. */
+export function roleBadge(roleId?: number | null): string {
+  switch (roleId) {
+    case 1:
+      return "Super Admin";
+    case 2:
+      return "Admin";
+    case 3:
+      return "Organizer";
+    case 5:
+      return "Staff";
+    default:
+      return "Member";
+  }
+}
 
 /**
  * Mengompresi dan mengubah resolusi file foto secara otomatis
@@ -153,77 +170,113 @@ export function compressImageFile(
   });
 }
 
-export function getStoredProfile(): UserProfile {
-  if (typeof window === "undefined") return DEFAULT_PROFILE;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_PROFILE;
-    return { ...DEFAULT_PROFILE, ...JSON.parse(raw) };
-  } catch {
-    return DEFAULT_PROFILE;
-  }
+// -------------------------------------------------------------
+// ZUSTAND STATE MANAGEMENT
+// -------------------------------------------------------------
+
+interface UserProfileState {
+  profile: UserProfile;
+  /** id user pemilik profil saat ini, agar data antar-user tidak tercampur. */
+  ownerId: string | null;
+  /**
+   * Nilai yang sengaja diubah pengguna, disimpan per id akun.
+   * Karena disimpan per akun (bukan per sesi), hasil edit tetap ada
+   * setelah logout lalu login kembali dengan akun yang sama.
+   */
+  overridesByUser: Record<string, Partial<UserProfile>>;
+  /** Menyalin identitas dari backend ke profil lokal (login email/Google). */
+  applyUser: (user: SessionUser) => void;
+  /** Mengembalikan profil ke kondisi tamu (dipakai saat logout). */
+  resetSession: () => void;
+  updateProfile: (updates: Partial<UserProfile>) => UserProfile;
+  removeAvatar: () => UserProfile;
+  removeBgCover: () => UserProfile;
 }
 
-export function saveStoredProfile(profile: UserProfile): void {
-  if (typeof window === "undefined") return;
-  const serialized = JSON.stringify(profile);
+export const useUserProfile = create<UserProfileState>()(
+  persist(
+    (set, get) => ({
+      profile: DEFAULT_PROFILE,
+      ownerId: null,
+      overridesByUser: {},
+      applyUser: (user) => {
+        const { profile, ownerId, overridesByUser } = get();
+        const overrides = overridesByUser[user.id] ?? {};
+        // User berbeda -> mulai dari profil tamu agar sisa data user sebelumnya hilang.
+        const base = ownerId && ownerId === user.id ? profile : GUEST_PROFILE;
+        const name = (overrides.name ?? (user.name || "")).trim() || base.name;
+        const email = (user.email || "").trim();
+        set({
+          ownerId: user.id,
+          profile: {
+            ...base,
+            ...overrides,
+            name,
+            email,
+            username: overrides.username ?? (email ? email.split("@")[0] : base.username),
+            initial: name.charAt(0).toUpperCase() || "U",
+            badge: roleBadge(user.roleId),
+            memberSince: user.createdAt
+              ? String(new Date(user.createdAt).getFullYear())
+              : base.memberSince,
+          },
+        });
+      },
+      // Profil di layar dikosongkan, tetapi overrides per akun tetap disimpan
+      // supaya editan (nama, bio, background) muncul lagi saat login berikutnya.
+      resetSession: () => set({ ownerId: null, profile: GUEST_PROFILE }),
+      updateProfile: (updates) => {
+        const { profile } = get();
+        const updated = { ...profile, ...updates };
 
-  try {
-    localStorage.setItem(STORAGE_KEY, serialized);
-  } catch (err) {
-    console.warn("Penyimpanan localStorage penuh atau quota exceeded:", err);
-    try {
-      sessionStorage.setItem(STORAGE_KEY, serialized);
-    } catch {}
-  }
+        // hitung initial ulang jika nama diubah
+        if (updates.name) {
+          updated.initial = updates.name.trim().charAt(0).toUpperCase() || "U";
+        }
 
-  try {
-    window.dispatchEvent(new Event(EVENT_NAME));
-    window.dispatchEvent(new Event("storage"));
-  } catch {}
-}
+        const { ownerId, overridesByUser } = get();
+        set({
+          profile: updated,
+          overridesByUser: ownerId
+            ? { ...overridesByUser, [ownerId]: { ...(overridesByUser[ownerId] ?? {}), ...updates } }
+            : overridesByUser,
+        });
+        return updated;
+      },
+      removeAvatar: () => {
+        const { profile, ownerId, overridesByUser } = get();
+        const updated = { ...profile, avatar: null };
+        set({
+          profile: updated,
+          overridesByUser: ownerId
+            ? { ...overridesByUser, [ownerId]: { ...(overridesByUser[ownerId] ?? {}), avatar: null } }
+            : overridesByUser,
+        });
+        return updated;
+      },
+      removeBgCover: () => {
+        const { profile, ownerId, overridesByUser } = get();
+        const updated = { ...profile, bgCover: null };
+        set({
+          profile: updated,
+          overridesByUser: ownerId
+            ? { ...overridesByUser, [ownerId]: { ...(overridesByUser[ownerId] ?? {}), bgCover: null } }
+            : overridesByUser,
+        });
+        return updated;
+      },
+    }),
+    {
+      name: "concertgo_user_profile", // Nama key di localStorage
+      storage: createJSONStorage(() => localStorage), // (Opsional) Secara spesifik set ke localStorage
 
-export function useUserProfile() {
-  const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
-
-  useEffect(() => {
-    setProfile(getStoredProfile());
-
-    function handleSync() {
-      setProfile(getStoredProfile());
+      // Fallback manual atau custom serialize (Jika Quota Exceeded)
+      // Namun karena gambar sudah dicompress, kemungkinan kecil terjadi QuotaExceeded
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error("Gagal memuat state dari localStorage:", error);
+        }
+      },
     }
-
-    window.addEventListener(EVENT_NAME, handleSync);
-    window.addEventListener("storage", handleSync);
-    return () => {
-      window.removeEventListener(EVENT_NAME, handleSync);
-      window.removeEventListener("storage", handleSync);
-    };
-  }, []);
-
-  return {
-    profile,
-    updateProfile: (updates: Partial<UserProfile>) => {
-      const updated = { ...profile, ...updates };
-      // hitung initial ulang jika nama diubah
-      if (updates.name) {
-        updated.initial = updates.name.trim().charAt(0).toUpperCase() || "U";
-      }
-      setProfile(updated);
-      saveStoredProfile(updated);
-      return updated;
-    },
-    removeAvatar: () => {
-      const updated = { ...profile, avatar: null };
-      setProfile(updated);
-      saveStoredProfile(updated);
-      return updated;
-    },
-    removeBgCover: () => {
-      const updated = { ...profile, bgCover: null };
-      setProfile(updated);
-      saveStoredProfile(updated);
-      return updated;
-    },
-  };
-}
+  )
+);

@@ -5,14 +5,16 @@ import { useSyncExternalStore } from "react";
 import { initialDemoData } from "./model";
 import type { DemoActions } from "./types";
 import type { DemoData } from "./model";
+import { createUsersActions } from "./actions/users";
 
-export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo">>()(
+export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "setUserStatus">>()(
   persist(
     (set, get) => ({
       ...initialDemoData(),
       resetDemo() {
         set(initialDemoData());
       },
+      ...createUsersActions(set, get),
     }),
     {
       name: "concertgo-interactive-demo-v1",

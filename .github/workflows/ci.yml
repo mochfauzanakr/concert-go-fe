@@ -1,7 +1,9 @@
 name: CI Checks
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev/**" ]
+  push:
+    branches: [ "main" , "dev/**" ]
 
 jobs:
   lint-and-build:

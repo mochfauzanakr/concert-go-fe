@@ -3,19 +3,19 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { useSyncExternalStore } from "react";
 import { initialDemoData } from "./model";
-import type { DemoActions } from "./types";
-import type { DemoData } from "./model";
+import type { DemoStore } from "./types";
 import { createUsersActions } from "./actions/users";
 import { createInvitationsActions } from "./actions/invitations";
 import { createEventApprovalActions } from "./actions/event-approval";
 import { createEventsActions } from "./actions/events";
 import { createCheckoutActions } from "./actions/checkout";
 import { createOrdersActions } from "./actions/orders";
+import { createScannerActions } from "./actions/scanner";
 import { createNotificationsActions } from "./actions/notifications";
 import { createSupportActions } from "./actions/support";
 import { createSecurityActions } from "./actions/security";
 
-export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "setUserStatus" | "invite" | "resendInvite" | "cancelInvite" | "acceptInvite" | "decideEvent" | "updateEvent" | "cancelEvent" | "createOrder" | "payOrder" | "cancelOrder" | "markRead" | "revokeSession" | "createSupport" | "replySupport" | "setSupportStatus">>()(
+export const useDemoStore = create<DemoStore>()(
   persist(
     (set, get) => ({
       ...initialDemoData(),
@@ -28,6 +28,7 @@ export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "s
       ...createEventsActions(set, get),
       ...createCheckoutActions(set, get),
       ...createOrdersActions(set, get),
+      ...createScannerActions(set, get),
       ...createNotificationsActions(set),
       ...createSupportActions(set, get),
       ...createSecurityActions(set, get),

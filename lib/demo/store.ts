@@ -12,9 +12,10 @@ import { createEventsActions } from "./actions/events";
 import { createCheckoutActions } from "./actions/checkout";
 import { createOrdersActions } from "./actions/orders";
 import { createNotificationsActions } from "./actions/notifications";
+import { createSupportActions } from "./actions/support";
 import { createSecurityActions } from "./actions/security";
 
-export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "setUserStatus" | "invite" | "resendInvite" | "cancelInvite" | "acceptInvite" | "decideEvent" | "updateEvent" | "cancelEvent" | "createOrder" | "payOrder" | "cancelOrder" | "markRead" | "revokeSession">>()(
+export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "setUserStatus" | "invite" | "resendInvite" | "cancelInvite" | "acceptInvite" | "decideEvent" | "updateEvent" | "cancelEvent" | "createOrder" | "payOrder" | "cancelOrder" | "markRead" | "revokeSession" | "createSupport" | "replySupport" | "setSupportStatus">>()(
   persist(
     (set, get) => ({
       ...initialDemoData(),
@@ -28,6 +29,7 @@ export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "s
       ...createCheckoutActions(set, get),
       ...createOrdersActions(set, get),
       ...createNotificationsActions(set),
+      ...createSupportActions(set, get),
       ...createSecurityActions(set, get),
     }),
     {

@@ -8,8 +8,9 @@ import type { DemoData } from "./model";
 import { createUsersActions } from "./actions/users";
 import { createInvitationsActions } from "./actions/invitations";
 import { createEventApprovalActions } from "./actions/event-approval";
+import { createEventsActions } from "./actions/events";
 
-export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "setUserStatus" | "invite" | "resendInvite" | "cancelInvite" | "acceptInvite" | "decideEvent">>()(
+export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "setUserStatus" | "invite" | "resendInvite" | "cancelInvite" | "acceptInvite" | "decideEvent" | "updateEvent" | "cancelEvent">>()(
   persist(
     (set, get) => ({
       ...initialDemoData(),
@@ -19,6 +20,7 @@ export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "s
       ...createUsersActions(set, get),
       ...createInvitationsActions(set, get),
       ...createEventApprovalActions(set, get),
+      ...createEventsActions(set, get),
     }),
     {
       name: "concertgo-interactive-demo-v1",

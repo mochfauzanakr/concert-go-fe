@@ -6,8 +6,9 @@ import { initialDemoData } from "./model";
 import type { DemoActions } from "./types";
 import type { DemoData } from "./model";
 import { createUsersActions } from "./actions/users";
+import { createInvitationsActions } from "./actions/invitations";
 
-export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "setUserStatus">>()(
+export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "setUserStatus" | "invite" | "resendInvite" | "cancelInvite" | "acceptInvite">>()(
   persist(
     (set, get) => ({
       ...initialDemoData(),
@@ -15,6 +16,7 @@ export const useDemoStore = create<DemoData & Pick<DemoActions, "resetDemo" | "s
         set(initialDemoData());
       },
       ...createUsersActions(set, get),
+      ...createInvitationsActions(set, get),
     }),
     {
       name: "concertgo-interactive-demo-v1",

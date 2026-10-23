@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root {
   --background: #ffffff;
@@ -6,10 +7,50 @@
 }
 
 @theme inline {
+  --color-theme-bg: var(--theme-bg);
+  --color-theme-text: var(--theme-text);
+  --color-theme-border: var(--theme-border);
+  --color-theme-text-muted: var(--theme-text-muted);
+  --color-theme-text-light: var(--theme-text-light);
+  --color-theme-card-hover: var(--theme-card-hover);
+  --color-theme-bg-soft: var(--theme-bg-soft);
+  --color-theme-card: var(--theme-card);
+  --color-theme-dark: var(--theme-dark);
+  --color-theme-button: var(--theme-button);
+  --color-theme-accent: #d9691f;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  /* Light Theme (Warm Cream & Terracotta) */
+  --theme-bg: #f6efe1;
+  --theme-text: #241608;
+  --theme-border: #e6d9bf;
+  --theme-text-muted: #4a3a26;
+  --theme-text-light: #8a7a63;
+  --theme-card-hover: #efe4cf;
+  --theme-bg-soft: #fdfaf5;
+  --theme-card: #ffffff;
+  --theme-dark: #241209;
+  --theme-button: #241608;
+}
+
+[data-theme="dark"] {
+  /* Dark Theme (Stage Midnight & Neon / Coklat Gelap) */
+  --theme-bg: #18110b;
+  --theme-text: #ffffff;
+  --theme-border: #3a2211;
+  --theme-text-muted: #a39585;
+  --theme-text-light: #b09c87;
+  --theme-card-hover: #2d1808;
+  --theme-bg-soft: #120d08;
+  --theme-card: #241209;
+  --theme-dark: #000000;
+  --theme-button: #d9691f;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +63,48 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Shared interactive demo surfaces follow the existing ConcertGo theme. */
+.demo-card { min-width: 0; border: 1px solid var(--theme-border); border-radius: 1.25rem; background: var(--theme-card); }
+.demo-hero { position: relative; overflow: hidden; border: 1px solid var(--theme-border); border-radius: 1.5rem; background: radial-gradient(ellipse at top right, rgb(217 105 31 / .15), transparent 65%), var(--theme-card); }
+.demo-stat { border-top: 3px solid rgb(217 105 31 / .6); box-shadow: 0 4px 18px rgb(36 22 8 / .025); }
+.demo-event-card { transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .demo-event-card:hover { transform: translateY(-4px); border-color: rgb(217 105 31 / .5); box-shadow: 0 14px 36px rgb(36 22 8 / .09); } }
+.demo-input { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--theme-border); border-radius: .8rem; background: var(--theme-bg-soft); padding: .7rem .85rem; color: var(--theme-text); font-size: .875rem; outline: none; }
+.demo-input:focus { border-color: #d9691f; box-shadow: 0 0 0 3px rgb(217 105 31 / .14); }
+.demo-input::placeholder { color: var(--theme-text-light); }
+.demo-button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: .5rem; border-radius: .8rem; border: 1px solid transparent; padding: .65rem 1rem; font-size: .8rem; line-height: 1.4; font-weight: 700; transition: background .15s, opacity .15s; cursor: pointer; text-align: center; }
+.demo-button:focus-visible, .demo-card a:focus-visible { outline: 3px solid #d9691f; outline-offset: 3px; }
+.demo-button:disabled { opacity: .45; cursor: not-allowed; }
+.demo-button-primary { background: #d9691f; color: white; }
+.demo-button-primary:hover:not(:disabled) { background: #b95314; }
+.demo-button-secondary { border-color: var(--theme-border); background: var(--theme-card); color: var(--theme-text); }
+.demo-button-secondary:hover:not(:disabled) { background: var(--theme-card-hover); }
+.demo-button-danger { background: rgb(225 29 72 / .1); color: #be123c; border-color: rgb(225 29 72 / .2); }
+[data-theme="dark"] .demo-button-danger { color: #fda4af; }
+[data-theme="dark"] [role="alert"] { color: #fda4af; }
+[data-theme="dark"] [role="status"].text-emerald-700 { color: #6ee7b7; }
+.demo-notice { display: flex; align-items: flex-start; gap: .6rem; border: 1px solid var(--theme-border); border-radius: .8rem; background: var(--theme-card-hover); color: var(--theme-text-muted); padding: .8rem 1rem; font-size: .75rem; line-height: 1.6; }
+.demo-dialog { width: min(94vw, 620px); max-height: 88dvh; overflow-y: auto; border: 1px solid var(--theme-border); border-radius: 1.5rem; background: var(--theme-card); color: var(--theme-text); margin: auto; padding: 0; box-shadow: 0 24px 80px rgb(0 0 0 / .25); }
+.demo-dialog::backdrop { background: rgb(18 13 8 / .65); backdrop-filter: blur(4px); }
+.demo-table { width: 100%; min-width: 680px; border-collapse: collapse; text-align: left; font-size: .8rem; }
+.demo-table th { padding: 1rem 1.25rem; background: var(--theme-bg-soft); border-bottom: 1px solid var(--theme-border); font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; color: var(--theme-text-muted); }
+.demo-table td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--theme-border); vertical-align: middle; }
+.demo-table tbody tr:last-child td { border-bottom: 0; }
+.demo-table tbody tr:hover { background: var(--theme-bg-soft); }
+@media (max-width: 639px) {
+  .demo-table, .demo-table tbody, .demo-table tr, .demo-table td { display: block; width: 100%; min-width: 0; }
+  .demo-table thead { display: none; }
+  .demo-table tbody tr { padding: 1rem; border-bottom: 1px solid var(--theme-border); }
+  .demo-table tbody tr:last-child { border-bottom: 0; }
+  .demo-table td { padding: .5rem 0; border: 0; overflow-wrap: anywhere; }
+  .demo-table td:first-child { padding-top: 0; }
+  .demo-table td[data-label]::before { content: attr(data-label); display: block; margin-bottom: .35rem; color: var(--theme-text-light); font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+  .demo-table td:last-child { padding-bottom: 0; }
+}
+.demo-label { display: grid; gap: .45rem; font-size: .8rem; font-weight: 600; color: var(--theme-text-muted); }
+@media print { header, nav, footer, .demo-notice, .no-print { display: none !important; } .demo-card { break-inside: avoid; box-shadow: none; } body { background: white !important; color: black !important; } }
+@media print { .ticket-header { background: white !important; color: #111 !important; border-bottom: 1px solid #ddd; } .ticket-header p { color: #333 !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }

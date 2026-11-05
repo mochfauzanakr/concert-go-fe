@@ -15,7 +15,7 @@ export default defineConfig({
   reporter: "list",
   outputDir: ".next/demo-test-results",
   use: {
-    baseURL: process.env.DEMO_BASE_URL || "http://127.0.0.1:3200",
+    baseURL: process.env.DEMO_BASE_URL || "http://localhost:3100",
     viewport: { width: 1440, height: 960 },
     reducedMotion: "reduce",
     trace: "retain-on-failure",

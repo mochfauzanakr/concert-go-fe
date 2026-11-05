@@ -25,8 +25,8 @@ function fixture() {
         module: ts.ModuleKind.CommonJS,
       },
     }).outputText;
-    const module = { exports: {} };
-    cache.set(full, module);
+    const loadedModule = { exports: {} };
+    cache.set(full, loadedModule);
     vm.runInContext(`(function(require,module,exports){${source}\n})`, context)(
       (name) => {
         if (name.startsWith("@/")) return load(name.slice(2) + ".ts");
@@ -34,10 +34,10 @@ function fixture() {
           return load(path.resolve(path.dirname(full), name + ".ts"));
         return require(name);
       },
-      module,
-      module.exports,
+      loadedModule,
+      loadedModule.exports,
     );
-    return module.exports;
+    return loadedModule.exports;
   }
   return {
     store: load("lib/demo/store.ts").useDemoStore,

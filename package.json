@@ -8,6 +8,7 @@
     "start": "next start --port 3100",
     "preview": "npm run build && npm run start",
     "test:auth": "node --test tests/auth-contract.test.cjs",
+    "test:integration": "node --test tests/integration/*.test.cjs",
     "test:demo": "node --test tests/demo/*.test.cjs",
     "test:e2e": "playwright test",
     "lint": "eslint"

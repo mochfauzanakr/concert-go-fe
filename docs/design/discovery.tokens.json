@@ -1,0 +1,53 @@
+{
+  "name": "ConcertGo / Discovery Review 03",
+  "status": "proposal",
+  "color": {
+    "ink": "#1b2025",
+    "muted": "#58616b",
+    "canvas": "#f7f8f9",
+    "surface": "#ffffff",
+    "accent": "#b9431c",
+    "accentHover": "#963414",
+    "border": "#dce0e4",
+    "soft": "#f1f3f5",
+    "focus": "#2e62c6",
+    "success": "#236843"
+  },
+  "font": {
+    "family": "Geist Sans, Arial, sans-serif",
+    "body": { "size": 16, "lineHeight": 24 },
+    "bodyCompact": { "size": 14, "lineHeight": 22 },
+    "h1Desktop": { "size": 40, "lineHeight": 44, "weight": 720 },
+    "h1Mobile": { "size": 30, "lineHeight": 36, "weight": 720 },
+    "h2Desktop": { "size": 25, "lineHeight": 31, "weight": 700 },
+    "h2Mobile": { "size": 22, "lineHeight": 28, "weight": 700 },
+    "cardTitleDesktop": { "size": 17, "lineHeight": 24, "weight": 650 },
+    "cardTitleMobile": { "size": 15, "lineHeight": 21, "weight": 650 }
+  },
+  "space": [4, 8, 12, 16, 20, 24, 32, 40, 48, 64],
+  "radius": { "control": 6, "card": 8, "feature": 10 },
+  "layout": {
+    "containerMax": 1200,
+    "gutterDesktop": 24,
+    "gutterMobile": 16,
+    "mobileMax": 767,
+    "tabletMax": 1100,
+    "landingColumnsDesktop": 4,
+    "catalogColumnsDesktop": 3,
+    "catalogColumnsTablet": 2,
+    "cardColumnsMobile": 2,
+    "catalogSidebar": 218,
+    "detailSidebar": 360,
+    "posterAspect": "4:5",
+    "featuredArtAspect": "760:360"
+  },
+  "interaction": {
+    "controlMinHeight": 44,
+    "focusWidth": 3,
+    "focusOffset": 4,
+    "hoverMs": 150,
+    "autoCarousel": false,
+    "scrollRevealRequiredForContent": false,
+    "mobileTicketBarSafeArea": true
+  }
+}

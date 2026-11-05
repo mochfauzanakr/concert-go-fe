@@ -1,4 +1,5 @@
 "use client";
+import { copy as t } from "@/lib/copy";
 
 /**
  * ConcertGo — Unified Top Navigation Bar
@@ -12,7 +13,7 @@
  *   [🎟️ E-Tiket Saya]
  *   [❤️ Wishlist Acara Favorit]
  *   [⏰ Ringkasan Tiket Mendatang]
- *   [👤 Profil & Pengaturan Tema]
+ *   [👤 Profil & Pengaturan]
  *   [⚙️ Pengaturan & Keamanan]
  *   [💬 Beri Masukan / Feedback]
  *   [🚪 Keluar dari Akun]
@@ -24,12 +25,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "@/hooks/useTranslation";
 import { useUserProfile } from "@/lib/userProfile";
 import { clearSessionProfile } from "@/lib/session";
 import { authService } from "@/services/auth.service";
-import { Home, Ticket, Heart, Clock, User, Settings, LogOut, Bell, ShoppingBag } from "lucide-react";
+import {
+  Home,
+  Ticket,
+  Heart,
+  Clock,
+  User,
+  Settings,
+  LogOut,
+  Bell,
+  ShoppingBag,
+} from "lucide-react";
 import { useDemoReady, useDemoStore } from "@/lib/demo/store";
+import { useDemoProfiles } from "@/lib/demo/profiles";
+import { useSessionState } from "@/lib/session-state";
 
 export type ActiveNavPage =
   | "beranda"
@@ -49,14 +61,18 @@ export default function UserNavbar({
   activePage,
   extraRightAction,
 }: UserNavbarProps) {
-  const { t } = useTranslation();
   const pathname = usePathname();
-  const { profile, updateProfile } = useUserProfile();
+  const accountProfile = useUserProfile((state) => state.profile);
+  const demo = useSessionState((state) => state.demo);
+  const demoProfile = useDemoProfiles((state) => state.user);
+  const profile = demo ? { ...accountProfile, name: demoProfile.name, email: demoProfile.email, avatar: demoProfile.avatarUrl ?? null, initial: demoProfile.name.charAt(0).toUpperCase(), badge: "Pengguna demo" } : accountProfile;
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const demoReady = useDemoReady();
   const notices = useDemoStore((state) => state.notifications);
-  const unread = demoReady ? notices.filter((notice) => !notice.read).length : 0;
+  const unread = demoReady
+    ? notices.filter((notice) => !notice.read).length
+    : 0;
 
   // Otomatis deteksi active page jika tidak di-pass eksplisit
   const currentActive: ActiveNavPage =
@@ -64,32 +80,18 @@ export default function UserNavbar({
     (pathname?.includes("/detail-tiket-beli")
       ? "detail-tiket"
       : pathname?.startsWith("/user/tickets")
-      ? "tickets"
-      : pathname?.startsWith("/user/wishlist")
-      ? "wishlist"
-      : pathname?.startsWith("/user/settings")
-      ? "settings"
-      : pathname?.startsWith("/user/profile")
-      ? "profile"
-      : pathname?.startsWith("/user/feedback")
-      ? "feedback"
-      : "beranda");
+        ? "tickets"
+        : pathname?.startsWith("/user/wishlist")
+          ? "wishlist"
+          : pathname?.startsWith("/user/settings")
+            ? "settings"
+            : pathname?.startsWith("/user/profile")
+              ? "profile"
+              : pathname?.startsWith("/user/feedback")
+                ? "feedback"
+                : "beranda");
 
   useEffect(() => {
-    // Sync profile from API on mount
-    if (localStorage.getItem("refreshToken")) authService.getMe().then((data) => {
-      if (data) {
-        updateProfile({
-          name: data.name,
-          email: data.email,
-          username: data.email.split('@')[0],
-          ...(profile.birthdate === "1996-11-03" ? { birthdate: "" } : {}),
-        });
-      }
-    }).catch((err) => {
-      console.error("Failed to sync user profile", err);
-    });
-
     function handleClickOutside(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
@@ -107,7 +109,13 @@ export default function UserNavbar({
           href="/user/homepage"
           className="group flex items-center gap-2.5 transition-transform hover:scale-105"
         >
-          <Image src="/image/Logo.png" alt="ConcertGo" width={32} height={32} className="h-8 w-auto" />
+          <Image
+            src="/image/Logo.png"
+            alt="ConcertGo"
+            width={32}
+            height={32}
+            className="h-8 w-auto"
+          />
           <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-theme-text">
             <span>Concert</span>
             <span className="text-[#d9691f]">Go</span>
@@ -116,8 +124,25 @@ export default function UserNavbar({
 
         {/* Sisi Kanan: Aksi Tambahan (opsional) & Profile Dropdown */}
         <div className="flex items-center gap-3">
-          <Link href="/user/orders" aria-label="Pesanan saya" className="flex h-10 w-10 items-center justify-center rounded-full border border-theme-border bg-theme-card text-theme-text-muted hover:text-theme-accent"><ShoppingBag size={18} /></Link>
-          <Link href="/user/notifications" aria-label={`Notifikasi, ${unread} belum dibaca`} className="relative flex h-10 w-10 items-center justify-center rounded-full border border-theme-border bg-theme-card text-theme-text-muted hover:text-theme-accent"><Bell size={18} />{unread > 0 && <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-theme-accent px-1 text-[9px] font-bold text-white">{unread > 9 ? "9+" : unread}</span>}</Link>
+          <Link
+            href="/user/orders"
+            aria-label="Pesanan saya"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-theme-border bg-theme-card text-theme-text-muted hover:text-theme-accent"
+          >
+            <ShoppingBag size={18} />
+          </Link>
+          <Link
+            href="/user/notifications"
+            aria-label={`Notifikasi, ${unread} belum dibaca`}
+            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-theme-border bg-theme-card text-theme-text-muted hover:text-theme-accent"
+          >
+            <Bell size={18} />
+            {unread > 0 && (
+              <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-theme-accent px-1 text-[9px] font-bold text-white">
+                {unread > 9 ? "9+" : unread}
+              </span>
+            )}
+          </Link>
           {extraRightAction}
 
           {/* User Profile Dropdown Button */}
@@ -129,7 +154,13 @@ export default function UserNavbar({
             >
               <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-xs font-bold text-white shadow-xs">
                 {profile.avatar ? (
-                  <Image src={profile.avatar} alt={profile.name} width={32} height={32} className="h-full w-full object-cover" />
+                  <Image
+                    src={profile.avatar}
+                    alt={profile.name}
+                    width={32}
+                    height={32}
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   profile.initial
                 )}
@@ -139,7 +170,7 @@ export default function UserNavbar({
                   {profile.name ? profile.name.split(" ")[0] : "Akun"}
                 </p>
                 <span className="text-[10px] font-semibold text-[#d9691f] leading-none">
-                  {profile.badge || "Member"}
+                  {profile.badge || "Pengguna"}
                 </span>
               </div>
               <span
@@ -174,17 +205,27 @@ export default function UserNavbar({
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-tr from-[#d9691f] to-amber-500 text-sm font-bold text-white shadow-xs">
                         {profile.avatar ? (
-                          <Image src={profile.avatar} alt={profile.name} width={44} height={44} className="h-full w-full object-cover" />
+                          <Image
+                            src={profile.avatar}
+                            alt={profile.name}
+                            width={44}
+                            height={44}
+                            className="h-full w-full object-cover"
+                          />
                         ) : (
                           profile.initial
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-bold text-theme-text">{profile.name}</p>
-                        <p className="truncate text-xs text-theme-text-light">{profile.email}</p>
+                        <p className="truncate text-sm font-bold text-theme-text">
+                          {profile.name}
+                        </p>
+                        <p className="truncate text-xs text-theme-text-light">
+                          {profile.email}
+                        </p>
                         <div className="mt-1 flex items-center gap-2">
                           <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-[#d9691f]">
-                            {profile.badge || "Member"}
+                            {profile.badge || "Pengguna"}
                           </span>
                           {currentActive === "profile" && (
                             <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
@@ -239,15 +280,18 @@ export default function UserNavbar({
                       href="/user/tickets"
                       onClick={() => setOpen(false)}
                       className={`flex items-center justify-between rounded-xl px-3 py-2 transition-colors ${
-                        currentActive === "tickets" || currentActive === "detail-tiket"
+                        currentActive === "tickets" ||
+                        currentActive === "detail-tiket"
                           ? "bg-theme-card text-[#d9691f] font-bold border border-theme-border shadow-2xs"
                           : "hover:bg-theme-card hover:text-[#d9691f]"
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <Ticket size={15} /> {t.navbar.my_tickets || "E-Tiket Saya"}
+                        <Ticket size={15} />{" "}
+                        {t.navbar.my_tickets || "E-Tiket Saya"}
                       </span>
-                      {currentActive === "tickets" || currentActive === "detail-tiket" ? (
+                      {currentActive === "tickets" ||
+                      currentActive === "detail-tiket" ? (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
                           📍 {t.navbar.active_now || "Sedang Dibuka"}
                         </span>
@@ -269,7 +313,8 @@ export default function UserNavbar({
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <Heart size={15} /> {t.navbar.wishlist || "Wishlist Acara Favorit"}
+                        <Heart size={15} />{" "}
+                        {t.navbar.wishlist || "Wishlist Acara Favorit"}
                       </span>
                       {currentActive === "wishlist" ? (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
@@ -288,7 +333,8 @@ export default function UserNavbar({
                       onClick={() => setOpen(false)}
                       className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors hover:bg-theme-card hover:text-[#d9691f]"
                     >
-                      <Clock size={15} /> {t.navbar.upcoming_tickets || "Ringkasan Tiket Mendatang"}
+                      <Clock size={15} />{" "}
+                      {t.navbar.upcoming_tickets || "Ringkasan Tiket Mendatang"}
                     </Link>
                   </nav>
 
@@ -299,7 +345,7 @@ export default function UserNavbar({
                     </span>
                   </div>
                   <nav className="mt-1 space-y-1 text-xs font-semibold text-theme-text-muted">
-                    {/* Profil & Pengaturan Tema */}
+                    {/* Profil & Pengaturan */}
                     <Link
                       href="/user/profile"
                       onClick={() => setOpen(false)}
@@ -310,7 +356,8 @@ export default function UserNavbar({
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <User size={15} /> {t.navbar.profile || "Profil & Pengaturan Tema"}
+                        <User size={15} />{" "}
+                        {t.navbar.profile || "Profil & Pengaturan"}
                       </span>
                       {currentActive === "profile" && (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
@@ -330,7 +377,8 @@ export default function UserNavbar({
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
-                        <Settings size={15} /> {t.navbar.security || "Pengaturan & Keamanan"}
+                        <Settings size={15} />{" "}
+                        {t.navbar.security || "Pengaturan & Keamanan"}
                       </span>
                       {currentActive === "settings" && (
                         <span className="rounded-full bg-[#d9691f] px-2 py-0.5 text-[9px] font-bold text-white">
@@ -338,8 +386,6 @@ export default function UserNavbar({
                         </span>
                       )}
                     </Link>
-
-
                   </nav>
 
                   {/* Logout */}
@@ -349,13 +395,18 @@ export default function UserNavbar({
                       onClick={async (event) => {
                         event.preventDefault();
                         clearSessionProfile();
-                        try { await authService.logout(); }
-                        catch (error) { console.error("Logout API failed", error); }
-                        finally { window.location.assign("/sign-in"); }
+                        try {
+                          await authService.logout();
+                        } catch (error) {
+                          console.error("Logout API failed", error);
+                        } finally {
+                          window.location.assign("/sign-in");
+                        }
                       }}
                       className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-red-600 transition-colors hover:bg-red-50"
                     >
-                      <LogOut size={15} /> {t.navbar.logout || "Keluar dari Akun"}
+                      <LogOut size={15} />{" "}
+                      {t.navbar.logout || "Keluar dari Akun"}
                     </Link>
                   </div>
                 </motion.div>

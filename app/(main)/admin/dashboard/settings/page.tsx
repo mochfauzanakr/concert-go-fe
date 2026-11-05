@@ -59,7 +59,7 @@ export default function PengaturanAdminPage() {
       >
         <div>
           <h2 className="text-xl font-bold font-[var(--font-display,serif)] text-theme-text">Pengaturan Keamanan Akun</h2>
-          <p className="text-sm text-theme-text-light mt-1">Kelola informasi akun, kata sandi, tema antarmuka, dan bahasa untuk akun {profile.role}.</p>
+          <p className="text-sm text-theme-text-light mt-1">Kelola informasi akun dan kata sandi untuk akun {profile.role}.</p>
         </div>
       </motion.div>
 

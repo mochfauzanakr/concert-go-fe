@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { type UserProfile, compressImageFile } from "@/lib/userProfile";
-import { Palette, Upload, Camera, Ticket, Sparkles, Trophy } from "lucide-react";
+import { Palette, Upload, Camera } from "lucide-react";
 
 export function ProfileHeroCard({
   profile,
@@ -161,51 +161,5 @@ export function ProfileHeroCard({
         </div>
       </div>
     </section>
-  );
-}
-
-export function StatsAndLoyaltyRow() {
-  const stats = [
-    {
-      label: "E-Tiket Terverifikasi",
-      value: "3 Tiket",
-      sub: "2 Aktif, 1 Menunggu Bayar",
-      icon: <Ticket className="w-6 h-6" />,
-      color: "bg-orange-100 text-[#d9691f]",
-    },
-    {
-      label: "Konser Telah Dihadiri",
-      value: "8 Acara",
-      sub: "Festival & Tur Musik",
-      icon: <Sparkles className="w-6 h-6" />,
-      color: "bg-amber-100 text-amber-800",
-    },
-    {
-      label: "Poin Loyalitas Goers",
-      value: "2.450 Poin",
-      sub: "Tier: VIP Gold Member",
-      icon: <Trophy className="w-6 h-6" />,
-      color: "bg-emerald-100 text-emerald-800",
-    },
-  ];
-
-  return (
-    <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-      {stats.map((s) => (
-        <div
-          key={s.label}
-          className="flex items-center gap-4 rounded-3xl border border-theme-border bg-theme-card p-5 shadow-xs transition-transform hover:-translate-y-1"
-        >
-          <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${s.color}`}>
-            {s.icon}
-          </span>
-          <div>
-            <p className="font-[var(--font-display,serif)] text-xl font-bold text-theme-text">{s.value}</p>
-            <p className="text-xs font-semibold text-theme-text">{s.label}</p>
-            <p className="text-[11px] text-theme-text-light">{s.sub}</p>
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }

@@ -11,5 +11,4 @@ export type UserProfile = {
   avatar: string | null;
   bgCover: string | null;
   favoriteGenre: string;
-  memberSince: string;
 };

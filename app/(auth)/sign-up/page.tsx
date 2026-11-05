@@ -13,7 +13,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { authService } from "@/services/auth.service";
 import { passwordError } from "@/lib/password-validation";
-import { applySessionUser, landingPathForRole } from "@/lib/session";
+import { applySessionUser, safeReturnPath } from "@/lib/session";
 
 // Extracted Components
 import { useToasts, ToastStack, type Toast } from "@/components/ui/Toast";
@@ -585,7 +585,7 @@ function VerificationStep({
       applySessionUser(session.user);
       onToast("success", "Pendaftaran berhasil! Mengalihkan ke beranda akun Anda...");
       setTimeout(() => {
-        window.location.href = landingPathForRole(session.user.roleId);
+        window.location.href = safeReturnPath(new URLSearchParams(window.location.search).get("returnTo"), session.user.roleId);
       }, 1200);
     } catch (err: any) {
       setError(err.message || "Kode verifikasi salah atau sudah kadaluarsa.");

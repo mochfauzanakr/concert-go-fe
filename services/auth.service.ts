@@ -4,25 +4,24 @@ import type { User } from "../types/user.types";
 
 type Registration = { name: string; email: string; password: string };
 
-// Disimpan di sessionStorage supaya "kirim ulang kode" tetap bisa dipakai
-// setelah halaman di-refresh (data di memori hilang saat reload).
 const PENDING_REGISTRATION_KEY = "concertgo_pending_registration";
+let pendingRegistration: Registration | null = null;
 
 function readPendingRegistration(): Registration | null {
   try {
     if (typeof sessionStorage === "undefined") return null;
-    const raw = sessionStorage.getItem(PENDING_REGISTRATION_KEY);
-    return raw ? (JSON.parse(raw) as Registration) : null;
+    sessionStorage.removeItem(PENDING_REGISTRATION_KEY);
+    return pendingRegistration;
   } catch {
     return null;
   }
 }
 
 function writePendingRegistration(value: Registration | null): void {
+  pendingRegistration = value;
   try {
     if (typeof sessionStorage === "undefined") return;
-    if (value) sessionStorage.setItem(PENDING_REGISTRATION_KEY, JSON.stringify(value));
-    else sessionStorage.removeItem(PENDING_REGISTRATION_KEY);
+    sessionStorage.removeItem(PENDING_REGISTRATION_KEY);
   } catch {
     // storage penuh atau diblokir: abaikan, ini hanya bantuan UX
   }
@@ -97,6 +96,11 @@ export const authService = {
   async completeGoogleLogin(query: string): Promise<User> {
     const response = await apiClient<AuthResponse>(`/auth/google/callback?${query}`, { authenticated: false });
     saveTokens(response.data.tokens);
-    return response.data.user;
+    const user = response.data.user || await authService.getMe();
+    if (!user?.id || !user.email || !user.name) {
+      clearSession();
+      throw new Error("Login Google tidak mengembalikan identitas akun yang valid.");
+    }
+    return user;
   },
 };

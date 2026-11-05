@@ -64,16 +64,22 @@ export const useAdminProfile = create<AdminProfileState>()(
       overridesByUser: {},
       applyUser: (user) => {
         const { profile, ownerId, overridesByUser } = get();
-        const overrides = overridesByUser[user.id] ?? {};
+        const overrides = { ...(overridesByUser[user.id] ?? {}) };
+        delete overrides.name;
+        delete overrides.email;
+        delete overrides.avatar;
+        delete overrides.role;
         const base = ownerId && ownerId === user.id ? profile : DEFAULT_ADMIN_PROFILE;
-        const name = (overrides.name ?? (user.name || "")).trim() || base.name;
+        const name = (user.name || "").trim() || DEFAULT_ADMIN_PROFILE.name;
         set({
           ownerId: user.id,
+          overridesByUser: { ...overridesByUser, [user.id]: overrides },
           profile: {
             ...base,
             ...overrides,
             name,
             email: (user.email || "").trim(),
+            avatar: user.avatarUrl ?? null,
             initial: name.charAt(0).toUpperCase() || "A",
             role: adminRoleLabel(user.roleId),
           },

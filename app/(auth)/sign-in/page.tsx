@@ -12,7 +12,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { authService } from "@/services/auth.service";
-import { applySessionUser, landingPathForRole } from "@/lib/session";
+import { applySessionUser, safeReturnPath } from "@/lib/session";
 
 // Extracted Components
 import { useToasts, ToastStack, type Toast } from "@/components/ui/Toast";
@@ -107,12 +107,9 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
     try {
       const session = await authService.login({ email: email.trim(), password });
       applySessionUser(session.user);
-      const isAdmin = Boolean(session.user.roleId && session.user.roleId !== 4);
-      onToast("success", isAdmin
-        ? "Login berhasil! Mengalihkan ke dashboard admin..."
-        : "Login berhasil! Mengalihkan ke halaman utama...");
+      onToast("success", "Login berhasil! Mengalihkan ke halaman akun...");
       setTimeout(() => {
-        window.location.href = landingPathForRole(session.user.roleId);
+        window.location.href = safeReturnPath(new URLSearchParams(window.location.search).get("returnTo"), session.user.roleId);
       }, 1200);
     } catch (error: any) {
       onToast("error", error.message || "Email atau kata sandi salah.");
@@ -122,6 +119,9 @@ function SignInCard({ onToast }: { onToast: (kind: Toast["kind"], msg: string) =
   }
 
   function handleGoogleLogin() {
+    const returnTo = new URLSearchParams(window.location.search).get("returnTo");
+    if (returnTo) sessionStorage.setItem("concertgo_auth_return", returnTo);
+    else sessionStorage.removeItem("concertgo_auth_return");
     authService.googleLogin();
   }
 
@@ -415,9 +415,10 @@ function VerificationStep({
 
     setVerifying(true);
     try {
-      await authService.verifyEmail(email, code);
+      const session = await authService.verifyEmail(email, code);
+      applySessionUser(session.user);
       onToast("success", "Verifikasi berhasil! Mengalihkan ke halaman utama...");
-      window.location.href = "/user/homepage";
+      window.location.href = safeReturnPath(new URLSearchParams(window.location.search).get("returnTo"), session.user.roleId);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kode verifikasi tidak valid.");
     } finally { setVerifying(false); }

@@ -1,5 +1,5 @@
 import { apiClient } from "./api-client";
-import { User } from "../types/user.types";
+import type { User, UserDetail, UserListItem, Role } from "../types/user.types";
 
 export interface Invite {
   id: string;
@@ -25,7 +25,34 @@ export const userService = {
       method: "POST", authenticated: false, body: JSON.stringify(data),
     })).data;
   },
-  // TODO: Tambahkan endpoint terkait user (seperti update profile) jika backend sudah sedia
+  async updateProfile(name: string, avatar?: File): Promise<UserDetail> {
+    let body: string | FormData = JSON.stringify({ name });
+    if (avatar) {
+      body = new FormData();
+      body.set("name", name);
+      body.set("avatar", avatar);
+    }
+    return (await apiClient<UserDetail>("/users/me", { method: "PUT", body })).data;
+  },
+  async roles(signal?: AbortSignal): Promise<Role[]> {
+    return (await apiClient<Role[]>("/roles", { authenticated: false, signal })).data;
+  },
+  async list(filters: { page: number; pageSize: number; search?: string; roleId?: number; status?: string }, signal?: AbortSignal) {
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(filters)) {
+      if (value !== undefined && value !== "") query.set(key, String(value));
+    }
+    return apiClient<UserListItem[]>(`/users?${query}`, { signal });
+  },
+  async detail(id: string, signal?: AbortSignal): Promise<UserDetail> {
+    return (await apiClient<UserDetail>(`/users/${encodeURIComponent(id)}`, { signal })).data;
+  },
+  async update(id: string, data: { name: string; roleId: number }): Promise<UserDetail> {
+    return (await apiClient<UserDetail>(`/users/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(data) })).data;
+  },
+  async setStatus(id: string, status: "ACTIVE" | "SUSPENDED"): Promise<UserDetail> {
+    return (await apiClient<UserDetail>(`/users/${encodeURIComponent(id)}/status`, { method: "PATCH", body: JSON.stringify({ status }) })).data;
+  },
 
   async getProfile(): Promise<User> {
     const response = await apiClient<User>("/auth/me", { method: "GET" });

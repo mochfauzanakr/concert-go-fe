@@ -80,11 +80,10 @@ export const GUEST_PROFILE: UserProfile = {
   birthdate: "",
   bio: "",
   initial: "P",
-  badge: "Member",
+  badge: "Pengguna",
   avatar: null,
   bgCover: null,
   favoriteGenre: "",
-  memberSince: "",
 };
 
 // Nama lama dipertahankan agar import yang sudah ada tetap valid.
@@ -97,6 +96,7 @@ export type SessionUser = {
   email: string;
   roleId?: number | null;
   createdAt?: string;
+  avatarUrl?: string | null;
 };
 
 /** roleId backend: 1 SUPER_ADMIN, 2 ADMIN, 3 ORGANIZER, 4 USER, 5 STAFF. */
@@ -111,7 +111,7 @@ export function roleBadge(roleId?: number | null): string {
     case 5:
       return "Staff";
     default:
-      return "Member";
+      return "Pengguna";
   }
 }
 
@@ -201,24 +201,26 @@ export const useUserProfile = create<UserProfileState>()(
       overridesByUser: {},
       applyUser: (user) => {
         const { profile, ownerId, overridesByUser } = get();
-        const overrides = overridesByUser[user.id] ?? {};
+        const overrides = { ...(overridesByUser[user.id] ?? {}) };
+        delete overrides.name;
+        delete overrides.email;
+        delete overrides.avatar;
         // User berbeda -> mulai dari profil tamu agar sisa data user sebelumnya hilang.
         const base = ownerId && ownerId === user.id ? profile : GUEST_PROFILE;
-        const name = (overrides.name ?? (user.name || "")).trim() || base.name;
+        const name = (user.name || "").trim() || GUEST_PROFILE.name;
         const email = (user.email || "").trim();
         set({
           ownerId: user.id,
+          overridesByUser: { ...overridesByUser, [user.id]: overrides },
           profile: {
             ...base,
             ...overrides,
             name,
             email,
+            avatar: user.avatarUrl ?? null,
             username: overrides.username ?? (email ? email.split("@")[0] : base.username),
             initial: name.charAt(0).toUpperCase() || "U",
             badge: roleBadge(user.roleId),
-            memberSince: user.createdAt
-              ? String(new Date(user.createdAt).getFullYear())
-              : base.memberSince,
           },
         });
       },

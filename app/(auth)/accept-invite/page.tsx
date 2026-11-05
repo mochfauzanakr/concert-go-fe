@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { userService, type Invite } from "@/services/user.service";
@@ -16,9 +16,12 @@ function AcceptInviteForm() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
+  const busy = useRef(false);
   useEffect(() => {
     let active = true;
     setLoading(true);
+    setInvite(null); setError(""); setDone(false);
+    if (!token) { setError("Tautan undangan tidak memiliki token. Buka tautan lengkap dari email undangan."); setLoading(false); return; }
     userService.validateInvite(token).then((data) => { if (active) setInvite(data); })
       .catch((err: unknown) => { if (active) setError(err instanceof Error ? err.message : "Undangan tidak valid."); })
       .finally(() => { if (active) setLoading(false); });
@@ -27,18 +30,19 @@ function AcceptInviteForm() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (saving) return;
+    if (busy.current) return;
     const data = new FormData(event.currentTarget);
     const name = String(data.get("name") || "").trim();
     const password = String(data.get("password") || "");
     const confirmPassword = String(data.get("confirmPassword") || "");
     const invalid = passwordError(password);
     if (invalid || password !== confirmPassword) { setError(invalid || "Konfirmasi kata sandi tidak cocok."); return; }
+    busy.current = true;
     setSaving(true);
     setError("");
     try { await userService.acceptInvite({ token, name, password, confirmPassword }); setDone(true); }
     catch (err) { setError(err instanceof Error ? err.message : "Aktivasi gagal."); }
-    finally { setSaving(false); }
+    finally { busy.current = false; setSaving(false); }
   }
 
   return <main className="flex min-h-screen items-center justify-center bg-theme-bg p-6 text-theme-text">
@@ -46,7 +50,7 @@ function AcceptInviteForm() {
       <h1 className="text-2xl font-bold">Aktivasi Akun ConcertGo</h1>
       {loading && <p role="status">Memeriksa undangan...</p>}
       {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
-      {done ? <><p>Akun berhasil diaktifkan. Silakan masuk.</p><Link href="/sign-in" className="inline-block underline">Masuk ke akun</Link></> : invite && <>
+      {done ? <><p>Akun berhasil diaktifkan. Silakan masuk.</p><Link href="/sign-in" className="inline-block underline">Masuk ke akun</Link></> : !loading && invite && <>
         <p className="text-sm">{invite.email} · {invite.role}</p>
         <form onSubmit={submit} className="space-y-4">
           <label className="block text-sm">Nama lengkap<input name="name" required minLength={2} maxLength={100} autoComplete="name" className="mt-1 w-full rounded-xl border p-3" /></label>

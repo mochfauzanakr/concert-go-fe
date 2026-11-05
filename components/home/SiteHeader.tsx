@@ -40,7 +40,13 @@ export function SiteHeader() {
           }}
           className="group flex items-center gap-2.5 transition-transform hover:scale-105"
         >
-          <Image src="/image/Logo.png" alt="ConcertGo" width={32} height={32} className="h-8 w-auto" />
+          <Image
+            src="/image/Logo.png"
+            alt="ConcertGo"
+            width={32}
+            height={32}
+            className="h-8 w-auto"
+          />
           <span className="font-[var(--font-display,serif)] text-xl font-bold tracking-tight text-theme-text">
             <span>Concert</span>
             <span className="text-[#d9691f]">Go</span>

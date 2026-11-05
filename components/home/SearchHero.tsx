@@ -37,7 +37,10 @@ type Suggestion = {
   event?: EventItem;
 };
 
-export function buildSuggestions(query: string, category: Category): Suggestion[] {
+export function buildSuggestions(
+  query: string,
+  category: Category,
+): Suggestion[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
 
@@ -63,7 +66,10 @@ export function buildSuggestions(query: string, category: Category): Suggestion[
 
   const poolCities = Array.from(new Set(pool.map((e) => e.city)));
   for (const c of poolCities) {
-    if (c.toLowerCase().includes(q) && !results.some((r) => r.kind === "city" && r.label === c)) {
+    if (
+      c.toLowerCase().includes(q) &&
+      !results.some((r) => r.kind === "city" && r.label === c)
+    ) {
       const count = pool.filter((e) => e.city === c).length;
       results.push({
         key: `city-${c}`,
@@ -123,7 +129,8 @@ export function SearchHero(props: {
     onSubmit,
   } = props;
 
-  const meta = CATEGORY_META[selectedCategory] ?? CATEGORY_META["Festival Musik"];
+  const meta =
+    CATEGORY_META[selectedCategory] ?? CATEGORY_META["Festival Musik"];
 
   const [isOpen, setIsOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(0);
@@ -131,7 +138,7 @@ export function SearchHero(props: {
 
   const suggestions = useMemo(
     () => buildSuggestions(query, selectedCategory),
-    [query, selectedCategory]
+    [query, selectedCategory],
   );
 
   useEffect(() => {
@@ -140,7 +147,10 @@ export function SearchHero(props: {
 
   useEffect(() => {
     function handlePointerDown(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -148,7 +158,8 @@ export function SearchHero(props: {
     return () => document.removeEventListener("mousedown", handlePointerDown);
   }, []);
 
-  const showDropdown = isOpen && query.trim().length > 0 && suggestions.length > 0;
+  const showDropdown =
+    isOpen && query.trim().length > 0 && suggestions.length > 0;
 
   const activeFilterCount = [
     genre !== "Semua Genre",
@@ -186,7 +197,9 @@ export function SearchHero(props: {
       setHighlightIndex((i) => (i + 1) % suggestions.length);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setHighlightIndex((i) => (i - 1 + suggestions.length) % suggestions.length);
+      setHighlightIndex(
+        (i) => (i - 1 + suggestions.length) % suggestions.length,
+      );
     } else if (e.key === "Enter") {
       e.preventDefault();
       applySuggestion(suggestions[highlightIndex]);
@@ -268,27 +281,47 @@ export function SearchHero(props: {
               className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-2xl border border-theme-border bg-theme-card text-left shadow-2xl"
             >
               {suggestions.map((s, i) => (
-                <li key={s.key} role="option" aria-selected={i === highlightIndex}>
+                <li
+                  key={s.key}
+                  role="option"
+                  aria-selected={i === highlightIndex}
+                >
                   <button
                     type="button"
                     onMouseDown={(e) => e.preventDefault()}
                     onMouseEnter={() => setHighlightIndex(i)}
                     onClick={() => applySuggestion(s)}
                     className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors ${
-                      i === highlightIndex ? "bg-theme-bg" : "bg-theme-card hover:bg-theme-bg/50"
+                      i === highlightIndex
+                        ? "bg-theme-bg"
+                        : "bg-theme-card hover:bg-theme-bg/50"
                     }`}
                   >
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-theme-card-hover text-theme-text-light">
-                      {s.kind === "city" ? <MapPin className="w-4 h-4" /> : s.kind === "genre" ? <Music className="w-4 h-4" /> : <Search className="w-4 h-4" />}
+                      {s.kind === "city" ? (
+                        <MapPin className="w-4 h-4" />
+                      ) : s.kind === "genre" ? (
+                        <Music className="w-4 h-4" />
+                      ) : (
+                        <Search className="w-4 h-4" />
+                      )}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-theme-text">
                         <Highlighted text={s.label} query={query} />
                       </span>
-                      {s.meta && <span className="block truncate text-xs text-theme-text-light">{s.meta}</span>}
+                      {s.meta && (
+                        <span className="block truncate text-xs text-theme-text-light">
+                          {s.meta}
+                        </span>
+                      )}
                     </span>
                     <span className="shrink-0 rounded-full bg-theme-card-hover px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-theme-text-light">
-                      {s.kind === "city" ? "Kota" : s.kind === "genre" ? "Kategori" : "Acara"}
+                      {s.kind === "city"
+                        ? "Kota"
+                        : s.kind === "genre"
+                          ? "Kategori"
+                          : "Acara"}
                     </span>
                   </button>
                 </li>
@@ -353,7 +386,9 @@ export function SearchHero(props: {
       </div>
 
       <p className="mt-3 text-xs text-theme-text-light">
-        Menampilkan <span className="font-semibold text-theme-text">{resultCount}</span> dari {totalInCategory} {meta.unit} tersedia
+        Menampilkan{" "}
+        <span className="font-semibold text-theme-text">{resultCount}</span>{" "}
+        dari {totalInCategory} {meta.unit} tersedia
       </p>
     </motion.section>
   );

@@ -174,7 +174,7 @@ export function Badge({
   );
   return (
     <span
-      className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold ${success ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300" : danger ? "border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300" : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"}`}
+      className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold ${success ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 " : danger ? "border-rose-500/20 bg-rose-500/10 text-rose-700 " : "border-amber-500/20 bg-amber-500/10 text-amber-800 "}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {children || statusLabels[value || ""] || value}
@@ -368,18 +368,18 @@ export function DemoExploreBanner() {
           </span>
         </span>
         <div className="flex flex-wrap gap-2">
-          <Link href="/user/events" className="demo-button demo-button-primary">
+          <Link href="/user/events?preview=demo" className="demo-button demo-button-primary">
             Demo user
             <ArrowRight size={14} />
           </Link>
           <Link
-            href="/admin/dashboard"
+            href="/admin/dashboard?preview=demo"
             className="demo-button demo-button-secondary"
           >
             Demo admin
           </Link>
           <Link
-            href="/staff/scanner"
+            href="/staff/scanner?preview=demo"
             className="demo-button demo-button-secondary"
           >
             Scanner STAFF

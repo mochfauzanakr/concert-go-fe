@@ -1,4 +1,6 @@
 "use client";
+import { copy as t } from "@/lib/copy";
+
 
 /**
  * ConcertGo — Beranda Pengguna (Versi Akun Login)
@@ -20,7 +22,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "@/hooks/useTranslation";
 import { useUserProfile, type UserProfile } from "@/lib/userProfile";
 import { authService } from "@/services/auth.service";
 import { clearSessionProfile } from "@/lib/session";
@@ -244,7 +245,6 @@ export const getCategoryTranslation = (label: string, t: any) => {
 };
 
 export default function UserHomePage() {
-  const { t } = useTranslation();
   const { profile } = useUserProfile();
   const [selectedCategory, setSelectedCategory] = useState<Category>("Festival Musik");
   const [query, setQuery] = useState("");
@@ -510,7 +510,6 @@ const getNavLinks = (t: any) => [
 ];
 
 function UserHeader({ profile }: { profile: UserProfile }) {
-  const { t } = useTranslation();
   const [active, setActive] = useState("Home");
 
   function handleNavClick(label: string, targetId: string) {
@@ -581,7 +580,6 @@ function UserHeader({ profile }: { profile: UserProfile }) {
 }
 
 function UserAccountMenu({ profile }: { profile: UserProfile }) {
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -613,7 +611,7 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
             {profile.name.split(" ")[0]}
           </p>
           <span className="text-[10px] font-semibold text-[#d9691f] leading-none">
-            {profile.badge || "Member"}
+            {profile.badge || "Pengguna"}
           </span>
         </div>
         <IconChevronDown className={`transition-transform duration-200 ${open ? "rotate-180 text-[#d9691f]" : "text-theme-text-light"}`} />
@@ -647,7 +645,7 @@ function UserAccountMenu({ profile }: { profile: UserProfile }) {
                 </p>
                 <p className="truncate text-xs text-theme-text-light">{profile.email}</p>
                 <span className="mt-1 inline-block rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-[#d9691f]">
-                  {profile.badge || "Member"}
+                  {profile.badge || "Pengguna"}
                 </span>
               </div>
             </div>
@@ -772,7 +770,6 @@ function WelcomeStrip({
   myTickets: MyTicket[];
   profile: UserProfile;
 }) {
-  const { t } = useTranslation();
   const activeTicketsCount = myTickets.filter((t) => t.status === "Aktif").length;
   const pendingCount = myTickets.filter((t) => t.status === "Menunggu Pembayaran").length;
   const hasCustomBg = Boolean(profile.bgCover);
@@ -835,15 +832,15 @@ function WelcomeStrip({
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-[#d9691f] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
-                  {profile.badge || "Member"}
+                  {profile.badge || "Pengguna"}
                 </span>
                 {hasCustomBg ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-theme-card/20 backdrop-blur px-2.5 py-0.5 text-[10px] font-semibold text-amber-200 border border-theme-card/20">
-                    ✨ {t.home.theme_active}
+                    ✨ Latar profil aktif
                   </span>
                 ) : (
                   <span className="text-xs text-theme-text-light font-medium">
-                    {profile.memberSince ? `Member sejak ${profile.memberSince}` : ""}
+                    Akun pengguna
                   </span>
                 )}
               </div>
@@ -899,7 +896,6 @@ function WelcomeStrip({
 /* ------------------------------------------------------------------ */
 
 function MyTicketsSection({ myTickets }: { myTickets: MyTicket[] }) {
-  const { t } = useTranslation();
   return (
     <section id="tickets" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-8">
       <div className="mb-6 flex flex-col justify-between gap-1 sm:flex-row sm:items-end">
@@ -1001,7 +997,6 @@ function CategoryRail({
   active: Category;
   onSelect: (cat: Category) => void;
 }) {
-  const { t } = useTranslation();
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
@@ -1146,7 +1141,6 @@ function SearchHero(props: {
     totalInCategory,
     onSubmit,
   } = props;
-  const { t } = useTranslation();
 
   const meta = getCategoryMeta(t, selectedCategory);
   const firstName = profile?.name?.trim() ? profile.name.trim().split(" ")[0] : "Sobat";

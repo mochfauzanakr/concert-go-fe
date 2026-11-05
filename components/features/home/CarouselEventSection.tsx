@@ -1,5 +1,5 @@
 "use client";
-import { useTranslation } from "@/hooks/useTranslation";
+import { copy as t } from "@/lib/copy";
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -94,7 +94,10 @@ export default function CarouselEventSection({
             title="Halaman Sebelumnya"
             className="group absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 flex h-9.5 w-9.5 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-theme-border bg-theme-card/95 text-theme-text shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:border-[#d9691f] hover:bg-[#d9691f] hover:text-white active:scale-95 cursor-pointer"
           >
-            <ChevronLeft size={20} className="transition-transform group-hover:-translate-x-0.5" />
+            <ChevronLeft
+              size={20}
+              className="transition-transform group-hover:-translate-x-0.5"
+            />
           </button>
         )}
 
@@ -107,7 +110,10 @@ export default function CarouselEventSection({
             title="Halaman Selanjutnya"
             className="group absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 flex h-9.5 w-9.5 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-theme-border bg-theme-card/95 text-theme-text shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:border-[#d9691f] hover:bg-[#d9691f] hover:text-white active:scale-95 cursor-pointer"
           >
-            <ChevronRight size={20} className="transition-transform group-hover:translate-x-0.5" />
+            <ChevronRight
+              size={20}
+              className="transition-transform group-hover:translate-x-0.5"
+            />
           </button>
         )}
 
@@ -180,7 +186,6 @@ function EventCard({
   onOpenDetail: () => void;
   onBuy: () => void;
 }) {
-  const { t, language } = useTranslation();
   return (
     <motion.article
       initial={{ opacity: 0, y: 25 }}
@@ -205,8 +210,12 @@ function EventCard({
         {/* Top Badges & Calendar Widget */}
         <div className="absolute top-3 inset-x-3 flex items-start justify-between">
           <div className="flex items-center gap-1.5 rounded-xl bg-black/55 px-2.5 py-1 text-center font-mono backdrop-blur-md border border-theme-card/10">
-            <span className="text-sm font-black text-white">{event.dayMonth.day}</span>
-            <span className="text-[10px] font-bold text-[#d9a26a] uppercase">{event.dayMonth.month}</span>
+            <span className="text-sm font-black text-white">
+              {event.dayMonth.day}
+            </span>
+            <span className="text-[10px] font-bold text-[#d9a26a] uppercase">
+              {event.dayMonth.month}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -238,7 +247,7 @@ function EventCard({
             {event.genre}
           </span>
           <span className="text-[10px] text-white/90 font-medium bg-black/40 px-2 py-0.5 rounded-full backdrop-blur-md">
-            {language === "en" ? event.interestedCount.replace("peminat", "interested") : event.interestedCount}
+            {event.interestedCount}
           </span>
         </div>
       </div>
@@ -255,7 +264,7 @@ function EventCard({
             </p>
           </div>
           <p className="mt-2 text-xs leading-relaxed text-theme-text-muted line-clamp-2">
-            {language === "en" ? `Enjoy the official and best ${event.title} experience with ${event.artist}. Get your official tickets without queues with instant verification.` : event.blurb}
+            {event.blurb}
           </p>
         </div>
 
@@ -277,9 +286,15 @@ function EventCard({
         {/* Status Kuota Tiket */}
         <div className="space-y-1 pt-1">
           <div className="flex justify-between text-[10px] font-medium text-theme-text-light">
-            <span>{language === "en" ? "Ticket Quota" : "Kuota Tiket"}</span>
-            <span className={event.soldPercentage > 85 ? "text-red-600 font-bold" : "text-theme-text"}>
-              {event.soldPercentage}% {language === "en" ? "Sold" : "Terjual"}
+            <span>{"Kuota Tiket"}</span>
+            <span
+              className={
+                event.soldPercentage > 85
+                  ? "text-red-600 font-bold"
+                  : "text-theme-text"
+              }
+            >
+              {event.soldPercentage}% {"Terjual"}
             </span>
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-theme-border">
@@ -295,8 +310,12 @@ function EventCard({
         {/* Action Bottom */}
         <div className="mt-2 flex items-center justify-between border-t border-theme-border pt-3">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-theme-text-light">{t.home.start_from}</p>
-            <p className="text-sm font-bold text-theme-text">{formatIDR(event.priceFrom)}</p>
+            <p className="text-[10px] uppercase tracking-wider text-theme-text-light">
+              {t.home.start_from}
+            </p>
+            <p className="text-sm font-bold text-theme-text">
+              {formatIDR(event.priceFrom)}
+            </p>
           </div>
 
           <div className="flex items-center gap-1.5">
@@ -312,7 +331,9 @@ function EventCard({
               whileTap={{ scale: 0.95 }}
               onClick={onBuy}
               className="rounded-full bg-theme-button px-3.5 py-1.5 text-xs font-semibold text-[#f6efe1] shadow-xs transition-colors hover:bg-[#d9691f] cursor-pointer"
-            >{language === "en" ? "Order" : "Pesan"}</motion.button>
+            >
+              {"Pesan"}
+            </motion.button>
           </div>
         </div>
       </div>

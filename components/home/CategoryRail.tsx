@@ -24,7 +24,9 @@ export function CategoryRail({
               whileTap={{ scale: 0.95 }}
               onClick={() => onSelect(c.label)}
               className={`group flex flex-col items-center gap-1.5 sm:gap-2 rounded-2xl p-2 sm:p-2.5 transition-all focus:outline-hidden cursor-pointer ${
-                isSelected ? "bg-theme-card shadow-md shadow-black/10 ring-2 ring-[#d9691f]/35" : "hover:bg-theme-card/40"
+                isSelected
+                  ? "bg-theme-card shadow-md shadow-black/10 ring-2 ring-[#d9691f]/35"
+                  : "hover:bg-theme-card/40"
               }`}
             >
               <span
@@ -38,7 +40,9 @@ export function CategoryRail({
               </span>
               <span
                 className={`text-[11px] sm:text-[12px] font-medium leading-tight whitespace-nowrap transition-colors ${
-                  isSelected ? "font-bold text-[#d9691f]" : "text-theme-text-muted"
+                  isSelected
+                    ? "font-bold text-[#d9691f]"
+                    : "text-theme-text-muted"
                 }`}
               >
                 {c.label}

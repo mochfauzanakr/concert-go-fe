@@ -9,12 +9,15 @@ import {
   Palette,
   Mic,
   MapPin,
-  Music
+  Music,
 } from "lucide-react";
 
 export const CATEGORIES: { label: Category; icon: JSX.Element }[] = [
   { label: "Festival Musik", icon: <Sparkles className="w-5 h-5" /> },
-  { label: "Hiburan & Pertunjukan", icon: <VenetianMask className="w-5 h-5" /> },
+  {
+    label: "Hiburan & Pertunjukan",
+    icon: <VenetianMask className="w-5 h-5" />,
+  },
   { label: "Wisata & Outdoor", icon: <Compass className="w-5 h-5" /> },
   { label: "Olahraga & E-Sport", icon: <Sun className="w-5 h-5" /> },
   { label: "Amal & Charity", icon: <Heart className="w-5 h-5" /> },
@@ -29,14 +32,16 @@ export const HERO_SLIDES = [
     id: "hero-1",
     eventId: "senja-orchestra",
     title: "Senja Symphony & Orchestra Fest 2026",
-    subtitle: "Harmoni 60 Musisi Orkestra & Kolaborasi Vokalis Pilihan Nusantara",
+    subtitle:
+      "Harmoni 60 Musisi Orkestra & Kolaborasi Vokalis Pilihan Nusantara",
     artist: "Kala Senja feat. Jakarta City Strings",
     venue: "Istora Senayan, Jakarta",
     date: "12 Sep 2026",
     time: "19:00 WIB",
     tag: "PANGGUNG UTAMA · BEST SELLER",
     price: 250000,
-    image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?q=80&w=1600&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?q=80&w=1600&auto=format&fit=crop",
     gradient: "from-[#3a1c0f]/90 via-[#241209]/80 to-[#120a05]/95",
   },
   {
@@ -50,21 +55,24 @@ export const HERO_SLIDES = [
     time: "15:00 WITA",
     tag: "FESTIVAL RESMI · EARLY BIRD",
     price: 180000,
-    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1600&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1600&auto=format&fit=crop",
     gradient: "from-[#1b2d28]/90 via-[#0f1f1a]/85 to-[#0a1210]/95",
   },
   {
     id: "hero-3",
     eventId: "neon-dangdut",
     title: "Neon Koplo & Pop Carnival Vol. 4",
-    subtitle: "Goyang Berkelas Tanpa Henti dengan Tata Cahaya Laser Spektakuler",
+    subtitle:
+      "Goyang Berkelas Tanpa Henti dengan Tata Cahaya Laser Spektakuler",
     artist: "Rafi & The Koplo Machine feat. Star Guests",
     venue: "Eldorado Dome, Bandung",
     date: "10 Okt 2026",
     time: "20:00 WIB",
     tag: "TRENDING #1 · HAMPIR HABIS",
     price: 100000,
-    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1600&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1600&auto=format&fit=crop",
     gradient: "from-[#2f1938]/90 via-[#1e0f24]/85 to-[#0d0710]/95",
   },
 ];
@@ -86,7 +94,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Festival Musik Favoritmu.",
     subtitle:
       "Rasakan gemuruh panggung akbar, line-up musisi legendaris, sunset stage, dan nuansa festival tak terlupakan dengan tiket resmi.",
-    placeholder: "Cari nama festival, line-up artis, panggung, atau kota (contoh: Synchronize, Bali, Senayan)...",
+    placeholder:
+      "Cari nama festival, line-up artis, panggung, atau kota (contoh: Synchronize, Bali, Senayan)...",
     unit: "festival musik",
   },
   "Hiburan & Pertunjukan": {
@@ -94,7 +103,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Hiburan & Pertunjukan Favoritmu.",
     subtitle:
       "Saksikan musikal berkelas, sirkus akrobatik cahaya internasional, dan pertunjukan ilusi spektakuler langsung dari kursi terbaik.",
-    placeholder: "Cari judul musikal, atraksi sirkus, teater, gedung (contoh: Laskar Pelangi, ICE BSD, Teater Jakarta)...",
+    placeholder:
+      "Cari judul musikal, atraksi sirkus, teater, gedung (contoh: Laskar Pelangi, ICE BSD, Teater Jakarta)...",
     unit: "pertunjukan",
   },
   "Wisata & Outdoor": {
@@ -102,7 +112,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Wisata & Outdoor Favoritmu.",
     subtitle:
       "Temukan tiket open trip eksklusif, sunrise camp di pegunungan berkabut, festival alam bebas, dan eksplorasi alam nusantara.",
-    placeholder: "Cari destinasi wisata, camping ground, gunung, atau kota (contoh: Bromo, Dieng, Rinjani)...",
+    placeholder:
+      "Cari destinasi wisata, camping ground, gunung, atau kota (contoh: Bromo, Dieng, Rinjani)...",
     unit: "kegiatan wisata",
   },
   "Olahraga & E-Sport": {
@@ -110,7 +121,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Olahraga & E-Sport Favoritmu.",
     subtitle:
       "Beli tiket resmi pertandingan sepak bola liga teratas, badminton super series, dan grand final turnamen e-sport bergengsi.",
-    placeholder: "Cari tim favorit, game e-sport, turnamen, stadion (contoh: MPL, Persija, GBK, Senayan)...",
+    placeholder:
+      "Cari tim favorit, game e-sport, turnamen, stadion (contoh: MPL, Persija, GBK, Senayan)...",
     unit: "tiket pertandingan",
   },
   "Amal & Charity": {
@@ -118,7 +130,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Acara Amal & Charity.",
     subtitle:
       "Menikmati pertunjukan seni sambil berdonasi untuk kemanusiaan, anak pesisir, dan kelestarian alam nusantara dengan laporan transparan.",
-    placeholder: "Cari konser amal, nama gerakan, yayasan, atau kota (contoh: Harmoni Peduli, Mangrove, Jakarta)...",
+    placeholder:
+      "Cari konser amal, nama gerakan, yayasan, atau kota (contoh: Harmoni Peduli, Mangrove, Jakarta)...",
     unit: "acara amal",
   },
   "Seni & Budaya": {
@@ -126,7 +139,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Seni & Budaya Favoritmu.",
     subtitle:
       "Apresiasi pameran instalasi seni kontemporer, wayang orang megah berbalut aransemen modern, dan tarian kolosal bersejarah.",
-    placeholder: "Cari pameran seni rupa, wayang, sendratari, galeri (contoh: Galeri Nasional, TIM, Solo, Jogja)...",
+    placeholder:
+      "Cari pameran seni rupa, wayang, sendratari, galeri (contoh: Galeri Nasional, TIM, Solo, Jogja)...",
     unit: "pagelaran seni",
   },
   "Stand-up Comedy": {
@@ -134,7 +148,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Stand-up Comedy Favoritmu.",
     subtitle:
       "Tawa lepas bersama tur solo spesial dan pertunjukan materi baru para komika terlucu tanah air dalam teater eksklusif.",
-    placeholder: "Cari nama komika, judul tur spesial, gedung teater (contoh: Raditya Dika, Usmar Ismail, TIM)...",
+    placeholder:
+      "Cari nama komika, judul tur spesial, gedung teater (contoh: Raditya Dika, Usmar Ismail, TIM)...",
     unit: "show komedi",
   },
   "Atraksi & Wahana": {
@@ -142,7 +157,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Atraksi & Wahana Favoritmu.",
     subtitle:
       "Akses cepat tanpa antre loket untuk theme park terbesar, waterpark tropis, dan wahana petualangan seru untuk liburan tak terlupakan.",
-    placeholder: "Cari nama wahana, waterpark, theme park (contoh: Dufan Ancol, Waterbom Bali, Trans Studio)...",
+    placeholder:
+      "Cari nama wahana, waterpark, theme park (contoh: Dufan Ancol, Waterbom Bali, Trans Studio)...",
     unit: "wahana rekreasi",
   },
   "Musik & Konser": {
@@ -150,7 +166,8 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
     title: "Cari Konser Favoritmu.",
     subtitle:
       "Jelajahi konser artis favoritmu dan dapatkan tiket resmi dengan kemudahan pembayaran instan tanpa perlu antre tiket fisik.",
-    placeholder: "Cari artis, venue, atau kota (contoh: Jakarta, Tulus, Senayan)...",
+    placeholder:
+      "Cari artis, venue, atau kota (contoh: Jakarta, Tulus, Senayan)...",
     unit: "konser",
   },
 };
@@ -201,7 +218,11 @@ export const TESTIMONIALS = [
 ];
 
 export function formatIDR(n: number) {
-  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(n);
 }
 
 export function parseEventDate(dateStr: string): number {
@@ -209,7 +230,18 @@ export function parseEventDate(dateStr: string): number {
   if (parts.length < 3) return 0;
   const day = parseInt(parts[0], 10);
   const months: Record<string, number> = {
-    Jan: 0, Feb: 1, Mar: 2, Apr: 3, Mei: 4, Jun: 5, Jul: 6, Agu: 7, Sep: 8, Okt: 9, Nov: 10, Des: 11,
+    Jan: 0,
+    Feb: 1,
+    Mar: 2,
+    Apr: 3,
+    Mei: 4,
+    Jun: 5,
+    Jul: 6,
+    Agu: 7,
+    Sep: 8,
+    Okt: 9,
+    Nov: 10,
+    Des: 11,
   };
   const month = months[parts[1]];
   const year = parseInt(parts[2], 10);

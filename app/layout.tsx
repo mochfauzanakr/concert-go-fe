@@ -19,35 +19,21 @@ export const metadata: Metadata = {
     template: "%s | ConcertGo",
     default: "ConcertGo - Platform Pembelian Tiket Resmi",
   },
-  description: "Beli tiket konser musik, festival, dan acara hiburan lainnya dengan mudah dan aman tanpa calo.",
+  description:
+    "Beli tiket konser musik, festival, dan acara hiburan lainnya dengan mudah dan aman tanpa calo.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
-      lang="en"
+      lang="id"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var localTheme = localStorage.getItem('concertgo-theme');
-                  var theme = localTheme || 'light';
-                  if (theme === 'dark') {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                  } else {
-                    document.documentElement.setAttribute('data-theme', 'light');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-      </head>
       <body className="min-h-full flex flex-col">
         <SessionSync />
         <DemoStorageSync />

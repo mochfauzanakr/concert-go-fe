@@ -1,4 +1,3 @@
-import { useTranslation } from "@/hooks/useTranslation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -172,7 +171,6 @@ function EventCard({
   onOpenDetail: () => void;
   onBuy: () => void;
 }) {
-  const { language } = useTranslation();
   return (
     <motion.article
       initial={{ opacity: 0, y: 25 }}
@@ -197,8 +195,12 @@ function EventCard({
         {/* Top Badges & Calendar Widget */}
         <div className="absolute top-3 inset-x-3 flex items-start justify-between">
           <div className="flex items-center gap-1.5 rounded-xl bg-black/55 px-2.5 py-1 text-center font-mono backdrop-blur-md border border-theme-card/10">
-            <span className="text-sm font-black text-white">{event.dayMonth.day}</span>
-            <span className="text-[10px] font-bold text-[#d9a26a] uppercase">{event.dayMonth.month}</span>
+            <span className="text-sm font-black text-white">
+              {event.dayMonth.day}
+            </span>
+            <span className="text-[10px] font-bold text-[#d9a26a] uppercase">
+              {event.dayMonth.month}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -231,7 +233,7 @@ function EventCard({
             {event.genre}
           </span>
           <span className="text-[10px] text-white/90 font-medium bg-black/40 px-2 py-0.5 rounded-full backdrop-blur-md">
-            {language === "en" ? event.interestedCount.replace("peminat", "interested") : event.interestedCount}
+            {event.interestedCount}
           </span>
         </div>
       </div>
@@ -239,7 +241,11 @@ function EventCard({
       {/* Card Body & Info */}
       <div className="flex flex-1 flex-col justify-between gap-3 p-5">
         <div>
-          <button type="button" className="cursor-pointer text-left focus:outline-hidden" onClick={onOpenDetail}>
+          <button
+            type="button"
+            className="cursor-pointer text-left focus:outline-hidden"
+            onClick={onOpenDetail}
+          >
             <h3 className="font-[var(--font-display,serif)] text-lg font-bold leading-snug text-theme-text hover:text-[#d9691f] transition-colors line-clamp-1">
               {event.title}
             </h3>
@@ -248,7 +254,7 @@ function EventCard({
             </p>
           </button>
           <p className="mt-2 text-xs leading-relaxed text-theme-text-muted line-clamp-2">
-            {language === "en" ? `Enjoy the official and best ${event.title} experience with ${event.artist}. Get your official tickets without queues with instant verification.` : event.blurb}
+            {event.blurb}
           </p>
         </div>
 
@@ -270,9 +276,15 @@ function EventCard({
         {/* Status Penjualan Bar */}
         <div className="space-y-1 pt-1">
           <div className="flex justify-between text-[10px] font-medium text-theme-text-light">
-            <span>{language === "en" ? "Ticket Quota" : "Kuota Tiket"}</span>
-            <span className={event.soldPercentage > 85 ? "text-red-600 font-bold" : "text-theme-text"}>
-              {event.soldPercentage}% {language === "en" ? "Sold" : "Terjual"}
+            <span>{"Kuota Tiket"}</span>
+            <span
+              className={
+                event.soldPercentage > 85
+                  ? "text-red-600 font-bold"
+                  : "text-theme-text"
+              }
+            >
+              {event.soldPercentage}% {"Terjual"}
             </span>
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-theme-border">
@@ -288,8 +300,12 @@ function EventCard({
         {/* Action Bottom */}
         <div className="mt-2 flex items-center justify-between border-t border-theme-border pt-3">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-theme-text-light">{language === "en" ? "START FROM" : "MULAI DARI"}</p>
-            <p className="text-sm font-bold text-theme-text">{formatIDR(event.priceFrom)}</p>
+            <p className="text-[10px] uppercase tracking-wider text-theme-text-light">
+              {"MULAI DARI"}
+            </p>
+            <p className="text-sm font-bold text-theme-text">
+              {formatIDR(event.priceFrom)}
+            </p>
           </div>
 
           <div className="flex items-center gap-1.5">
@@ -307,7 +323,9 @@ function EventCard({
               whileTap={{ scale: 0.95 }}
               onClick={onBuy}
               className="rounded-full bg-theme-button px-3.5 py-1.5 text-xs font-semibold text-[#f6efe1] shadow-xs transition-colors hover:bg-[#d9691f]"
-            >{language === "en" ? "Order" : "Pesan"}</motion.button>
+            >
+              {"Pesan"}
+            </motion.button>
           </div>
         </div>
       </div>

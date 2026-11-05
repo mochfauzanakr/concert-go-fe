@@ -1,13 +1,18 @@
+import { copy as t } from "@/lib/copy";
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "@/hooks/useTranslation";
 import { TESTIMONIALS, formatIDR } from "./HomeData";
 import { type EventItem } from "@/lib/eventsData";
-import { ShieldCheck, CreditCard, RefreshCw, Headphones, Lock } from "lucide-react";
+import {
+  ShieldCheck,
+  CreditCard,
+  RefreshCw,
+  Headphones,
+  Lock,
+} from "lucide-react";
 
 export function AnnouncementBanner() {
-  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [copied, setCopied] = useState(false);
 
@@ -85,7 +90,9 @@ export function AnnouncementBanner() {
           <button
             type="button"
             aria-label="Sebelumnya"
-            onClick={() => setIndex((i) => (i - 1 + promos.length) % promos.length)}
+            onClick={() =>
+              setIndex((i) => (i - 1 + promos.length) % promos.length)
+            }
             className="flex h-9 w-9 items-center justify-center rounded-full bg-theme-card/20 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-theme-card/30"
           >
             ‹
@@ -105,44 +112,58 @@ export function AnnouncementBanner() {
 }
 
 export function TestimonialMarquee() {
-  const { t } = useTranslation();
-  const palette = ["bg-[#e0a340] text-theme-text", "bg-[#2a1a0d] text-white/95"];
+  const palette = [
+    "bg-[#e0a340] text-theme-text",
+    "bg-[#2a1a0d] text-white/95",
+  ];
 
   const getTestimonials = (t: any) => [
     {
       name: "Dinda Ayu",
       role: t.home.testi_r_1 || "Mahasiswi · Jakarta",
-      quote: t.home.testi_q_1 || "Beli tiket cuma butuh dua menit, e-tiket resmi langsung masuk email dan halaman Tiket Saya. Nggak perlu cemas kena calo tiket palsu lagi!",
+      quote:
+        t.home.testi_q_1 ||
+        "Beli tiket cuma butuh dua menit, e-tiket resmi langsung masuk email dan halaman Tiket Saya. Nggak perlu cemas kena calo tiket palsu lagi!",
       rating: 5,
     },
     {
       name: "Reza Pratama",
       role: t.home.testi_r_2 || "Karyawan Swasta · Bandung",
-      quote: t.home.testi_q_2 || "Waktu ada konser diundur jadwalnya, proses refund ditangani sigap dan uang kembali utuh dalam hitungan hari. Jempolan!",
+      quote:
+        t.home.testi_q_2 ||
+        "Waktu ada konser diundur jadwalnya, proses refund ditangani sigap dan uang kembali utuh dalam hitungan hari. Jempolan!",
       rating: 5,
     },
     {
       name: "Amel Santoso",
       role: t.home.testi_r_3 || "Content Creator · Bali",
-      quote: t.home.testi_q_3 || "Suka banget sama fitur filter dan kurasi konsernya. Notifikasi pengingat sebelum hari H ngebantu banget pas jadwal padat.",
+      quote:
+        t.home.testi_q_3 ||
+        "Suka banget sama fitur filter dan kurasi konsernya. Notifikasi pengingat sebelum hari H ngebantu banget pas jadwal padat.",
       rating: 5,
     },
     {
       name: "Bram Tantular",
       role: t.home.testi_r_4 || "Musisi Indie · Yogyakarta",
-      quote: t.home.testi_q_4 || "Sebagai musisi, saya apresiasi sistem ticketing ConcertGo yang ramah fans. Harga transparan tanpa biaya tersembunyi.",
+      quote:
+        t.home.testi_q_4 ||
+        "Sebagai musisi, saya apresiasi sistem ticketing ConcertGo yang ramah fans. Harga transparan tanpa biaya tersembunyi.",
       rating: 5,
     },
     {
       name: "Naya Karisma",
       role: t.home.testi_r_5 || "Pecinta Konser · Solo",
-      quote: t.home.testi_q_5 || "Desain aplikasinya estetik dan navigasinya mulus banget. Checkout tiket pas lagi di jalan pun tetap lancar jaya.",
+      quote:
+        t.home.testi_q_5 ||
+        "Desain aplikasinya estetik dan navigasinya mulus banget. Checkout tiket pas lagi di jalan pun tetap lancar jaya.",
       rating: 5,
     },
     {
       name: "Fajar Wicaksono",
       role: t.home.testi_r_6 || "Fotografer Event · Surabaya",
-      quote: t.home.testi_q_6 || "Informasi denah venue dan gate masuk sangat akurat. Bikin penonton tertib dan pengalaman menonton jadi maksimal.",
+      quote:
+        t.home.testi_q_6 ||
+        "Informasi denah venue dan gate masuk sangat akurat. Bikin penonton tertib dan pengalaman menonton jadi maksimal.",
       rating: 5,
     },
   ];
@@ -166,10 +187,15 @@ export function TestimonialMarquee() {
       </div>
 
       {rows.map((row, rowIdx) => (
-        <div key={rowIdx} className="group mb-4 overflow-hidden relative w-full">
+        <div
+          key={rowIdx}
+          className="group mb-4 overflow-hidden relative w-full"
+        >
           <div
             className={`flex w-max gap-4 px-6 ${
-              row.direction === "left" ? "animate-[marquee-left_45s_linear_infinite]" : "animate-[marquee-right_45s_linear_infinite]"
+              row.direction === "left"
+                ? "animate-[marquee-left_45s_linear_infinite]"
+                : "animate-[marquee-right_45s_linear_infinite]"
             } hover:[animation-play-state:paused]`}
             style={
               {
@@ -178,27 +204,36 @@ export function TestimonialMarquee() {
             }
           >
             {Array.from({ length: REPEATS }).flatMap((_, rep) =>
-              row.items.map((item, i) => { const idx = TESTIMONIALS.findIndex(x => x.name === item.name); const tQuote = (t.home as any)[`testi_q_${idx+1}`] || item.quote; const tRole = (t.home as any)[`testi_r_${idx+1}`] || item.role; return (
-                <motion.div
-                  whileHover={{ y: -4, scale: 1.02 }}
-                  key={`${item.name}-${rep}-${i}`}
-                  className={`w-72 shrink-0 rounded-3xl p-6 shadow-sm transition-shadow ${palette[(i + rowIdx) % 2]}`}
-                >
-                  <div className="flex text-amber-500 gap-1 text-xs mb-2">
-                    {"★".repeat(item.rating)}
-                  </div>
-                  <p className="text-sm leading-relaxed">&ldquo;{tQuote}&rdquo;</p>
-                  <div className="mt-4 flex items-center gap-3 text-sm border-t border-current/10 pt-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/10 font-bold text-xs">
-                      {item.name[0]}
-                    </span>
-                    <div>
-                      <p className="font-bold leading-none">{item.name}</p>
-                      <p className="text-xs opacity-75 mt-0.5">{tRole}</p>
+              row.items.map((item, i) => {
+                const idx = TESTIMONIALS.findIndex((x) => x.name === item.name);
+                const tQuote =
+                  (t.home as any)[`testi_q_${idx + 1}`] || item.quote;
+                const tRole =
+                  (t.home as any)[`testi_r_${idx + 1}`] || item.role;
+                return (
+                  <motion.div
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    key={`${item.name}-${rep}-${i}`}
+                    className={`w-72 shrink-0 rounded-3xl p-6 shadow-sm transition-shadow ${palette[(i + rowIdx) % 2]}`}
+                  >
+                    <div className="flex text-amber-500 gap-1 text-xs mb-2">
+                      {"★".repeat(item.rating)}
                     </div>
-                  </div>
-                </motion.div>
-                ); })
+                    <p className="text-sm leading-relaxed">
+                      &ldquo;{tQuote}&rdquo;
+                    </p>
+                    <div className="mt-4 flex items-center gap-3 text-sm border-t border-current/10 pt-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/10 font-bold text-xs">
+                        {item.name[0]}
+                      </span>
+                      <div>
+                        <p className="font-bold leading-none">{item.name}</p>
+                        <p className="text-xs opacity-75 mt-0.5">{tRole}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              }),
             )}
           </div>
         </div>
@@ -235,9 +270,11 @@ const getWhyPoints = (t: any) => [
 ];
 
 export function WhyConcertGo() {
-  const { t } = useTranslation();
   return (
-    <section id="keunggulan" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-14">
+    <section
+      id="keunggulan"
+      className="mx-auto max-w-7xl scroll-mt-24 px-6 py-14"
+    >
       <div className="text-center max-w-2xl mx-auto mb-12">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#d9691f]">
           {t.home.why_badge}
@@ -268,10 +305,14 @@ export function WhyConcertGo() {
               <h3 className="mt-4 font-[var(--font-display,serif)] text-lg font-bold text-theme-text">
                 {p.title}
               </h3>
-              <p className="mt-2 text-xs leading-relaxed text-theme-text-muted">{p.desc}</p>
+              <p className="mt-2 text-xs leading-relaxed text-theme-text-muted">
+                {p.desc}
+              </p>
             </div>
             <div className="mt-5 border-t border-theme-border pt-3">
-              <span className="text-[11px] font-semibold text-[#d9691f]">{p.stat}</span>
+              <span className="text-[11px] font-semibold text-[#d9691f]">
+                {p.stat}
+              </span>
             </div>
           </motion.div>
         ))}
@@ -281,7 +322,6 @@ export function WhyConcertGo() {
 }
 
 export function GuestRegistrationCTA() {
-  const { t } = useTranslation();
   return (
     <section className="mx-auto max-w-7xl px-6 py-12">
       <motion.div
@@ -334,7 +374,6 @@ export function LoginPromptModal({
   event: EventItem;
   onClose: () => void;
 }) {
-  const { t } = useTranslation();
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -371,15 +410,20 @@ export function LoginPromptModal({
         </h3>
         <p className="mt-2 text-xs leading-relaxed text-theme-text-muted">
           {t.home.login_desc1}{" "}
-          <strong className="text-theme-text">{event.title}</strong> {t.home.login_at} {event.venue}.
+          <strong className="text-theme-text">{event.title}</strong>{" "}
+          {t.home.login_at} {event.venue}.
         </p>
 
         <div className="my-4 rounded-2xl bg-theme-card-hover p-3 text-xs flex justify-between items-center">
           <div>
             <p className="font-semibold text-theme-text">{event.title}</p>
-            <p className="text-theme-text-light">{event.city} · {event.date}</p>
+            <p className="text-theme-text-light">
+              {event.city} · {event.date}
+            </p>
           </div>
-          <span className="font-bold text-[#d9691f]">{formatIDR(event.priceFrom)}</span>
+          <span className="font-bold text-[#d9691f]">
+            {formatIDR(event.priceFrom)}
+          </span>
         </div>
 
         <div className="flex flex-col gap-2.5">

@@ -1,4 +1,3 @@
-import { useTranslation } from "@/hooks/useTranslation";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,9 +15,12 @@ export function EventDetailModal({
   onClose: () => void;
   onBuyClick: (event: EventItem) => void;
 }) {
-  const { language } = useTranslation();
-  const [selectedTier, setSelectedTier] = useState<TicketTier>(event.ticketTiers[0]);
-  const [activeTab, setActiveTab] = useState<"tiket" | "lineup" | "rundown" | "lokasi">("tiket");
+  const [selectedTier, setSelectedTier] = useState<TicketTier>(
+    event.ticketTiers[0],
+  );
+  const [activeTab, setActiveTab] = useState<
+    "tiket" | "lineup" | "rundown" | "lokasi"
+  >("tiket");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
@@ -51,7 +53,12 @@ export function EventDetailModal({
 
         {/* Cover Poster Banner */}
         <div className="relative h-64 w-full overflow-hidden bg-black md:h-72">
-          <Image src={event.image} alt={event.title} fill className="object-cover" />
+          <Image
+            src={event.image}
+            alt={event.title}
+            fill
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#f6efe1] via-black/40 to-black/60" />
 
           {/* Banner Badges */}
@@ -77,20 +84,32 @@ export function EventDetailModal({
         {/* Event Quick Meta Bar */}
         <div className="mx-6 mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-theme-border bg-theme-card-hover/70 p-4 text-xs md:grid-cols-4 md:text-sm">
           <div>
-            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">Tanggal</p>
+            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">
+              Tanggal
+            </p>
             <p className="font-bold text-theme-text mt-0.5">{event.date}</p>
           </div>
           <div>
-            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">Waktu</p>
+            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">
+              Waktu
+            </p>
             <p className="font-bold text-theme-text mt-0.5">{event.time}</p>
           </div>
           <div>
-            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">Venue</p>
-            <p className="font-bold text-theme-text mt-0.5 truncate">{event.venue}</p>
+            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">
+              Venue
+            </p>
+            <p className="font-bold text-theme-text mt-0.5 truncate">
+              {event.venue}
+            </p>
           </div>
           <div>
-            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">Status Tiket</p>
-            <p className="font-bold text-[#d9691f] mt-0.5">{event.soldPercentage}% {language === "en" ? "Sold" : "Terjual"}</p>
+            <p className="text-theme-text-light text-[11px] uppercase tracking-wider font-semibold">
+              Status Tiket
+            </p>
+            <p className="font-bold text-[#d9691f] mt-0.5">
+              {event.soldPercentage}% {"Terjual"}
+            </p>
           </div>
         </div>
 
@@ -107,7 +126,9 @@ export function EventDetailModal({
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`pb-3 relative transition-colors ${
-                activeTab === tab.id ? "text-[#d9691f]" : "text-theme-text-muted hover:text-theme-text"
+                activeTab === tab.id
+                  ? "text-[#d9691f]"
+                  : "text-theme-text-muted hover:text-theme-text"
               }`}
             >
               {tab.label}
@@ -126,7 +147,8 @@ export function EventDetailModal({
           {activeTab === "tiket" && (
             <div className="space-y-4">
               <p className="text-xs text-theme-text-muted">
-                Pilih kategori tiket yang ingin kamu pesan. Setiap akun maksimal membeli 4 tiket resmi.
+                Pilih kategori tiket yang ingin kamu pesan. Setiap akun maksimal
+                membeli 4 tiket resmi.
               </p>
 
               <div className="space-y-3">
@@ -148,20 +170,22 @@ export function EventDetailModal({
                         isSoldOut
                           ? "opacity-50 cursor-not-allowed bg-neutral-200 border-neutral-300"
                           : isSelected
-                          ? "border-[#d9691f] bg-theme-card ring-2 ring-[#d9691f]/30 shadow-md cursor-pointer"
-                          : "border-theme-border bg-theme-card/70 hover:bg-theme-card cursor-pointer"
+                            ? "border-[#d9691f] bg-theme-card ring-2 ring-[#d9691f]/30 shadow-md cursor-pointer"
+                            : "border-theme-border bg-theme-card/70 hover:bg-theme-card cursor-pointer"
                       }`}
                     >
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm text-theme-text">{tier.name}</span>
+                          <span className="font-bold text-sm text-theme-text">
+                            {tier.name}
+                          </span>
                           <span
                             className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                               tier.status === "Habis"
                                 ? "bg-red-100 text-red-700"
                                 : tier.status === "Sisa Sedikit"
-                                ? "bg-amber-100 text-amber-800"
-                                : "bg-emerald-100 text-emerald-800"
+                                  ? "bg-amber-100 text-amber-800"
+                                  : "bg-emerald-100 text-emerald-800"
                             }`}
                           >
                             {tier.status}
@@ -177,8 +201,12 @@ export function EventDetailModal({
                       </div>
 
                       <div className="sm:text-right shrink-0">
-                        <p className="text-base font-bold text-[#d9691f]">{formatIDR(tier.price)}</p>
-                        <span className="text-[11px] text-theme-text-light">per tiket</span>
+                        <p className="text-base font-bold text-[#d9691f]">
+                          {formatIDR(tier.price)}
+                        </p>
+                        <span className="text-[11px] text-theme-text-light">
+                          per tiket
+                        </span>
                       </div>
                     </div>
                   );
@@ -210,7 +238,9 @@ export function EventDetailModal({
 
           {activeTab === "lineup" && (
             <div className="space-y-4">
-              <h4 className="font-bold text-sm text-theme-text">Deretan Musisi & Bintang Tamu</h4>
+              <h4 className="font-bold text-sm text-theme-text">
+                Deretan Musisi & Bintang Tamu
+              </h4>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {event.lineup.map((artistName) => (
                   <div
@@ -220,31 +250,43 @@ export function EventDetailModal({
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-theme-card-hover text-lg font-bold text-[#d9691f]">
                       {artistName[0]}
                     </div>
-                    <p className="mt-2 text-xs font-bold text-theme-text line-clamp-1">{artistName}</p>
-                    <span className="text-[10px] text-theme-text-light">Confirmed Performer</span>
+                    <p className="mt-2 text-xs font-bold text-theme-text line-clamp-1">
+                      {artistName}
+                    </p>
+                    <span className="text-[10px] text-theme-text-light">
+                      Confirmed Performer
+                    </span>
                   </div>
                 ))}
               </div>
               <p className="mt-3 text-xs text-theme-text-muted leading-relaxed">
-                *Lineup dapat bertambah seiring pengumuman fase lanjutan dari promotor resmi.
+                *Lineup dapat bertambah seiring pengumuman fase lanjutan dari
+                promotor resmi.
               </p>
             </div>
           )}
 
           {activeTab === "rundown" && (
             <div className="space-y-3">
-              <h4 className="font-bold text-sm text-theme-text">Rundown Jadwal Acara</h4>
+              <h4 className="font-bold text-sm text-theme-text">
+                Rundown Jadwal Acara
+              </h4>
               <div className="space-y-2 border-l-2 border-[#d9691f] pl-4 ml-2">
                 {event.rundown.map((item, i) => (
                   <div key={i} className="relative py-1">
                     <span className="absolute -left-[21px] top-2 h-2.5 w-2.5 rounded-full bg-[#d9691f]" />
-                    <span className="text-xs font-bold text-[#d9691f]">{item.time}</span>
-                    <p className="text-xs font-medium text-theme-text">{item.act}</p>
+                    <span className="text-xs font-bold text-[#d9691f]">
+                      {item.time}
+                    </span>
+                    <p className="text-xs font-medium text-theme-text">
+                      {item.act}
+                    </p>
                   </div>
                 ))}
               </div>
               <p className="text-[11px] text-theme-text-light mt-2">
-                *Waktu dapat disesuaikan dengan kondisi di lapangan oleh pihak penyelenggara.
+                *Waktu dapat disesuaikan dengan kondisi di lapangan oleh pihak
+                penyelenggara.
               </p>
             </div>
           )}
@@ -252,36 +294,47 @@ export function EventDetailModal({
           {activeTab === "lokasi" && (
             <div className="space-y-4">
               <div>
-                <h4 className="font-bold text-sm text-theme-text">Lokasi Venue Acara</h4>
-                <p className="text-xs font-medium text-theme-text mt-1">{event.venue}</p>
+                <h4 className="font-bold text-sm text-theme-text">
+                  Lokasi Venue Acara
+                </h4>
+                <p className="text-xs font-medium text-theme-text mt-1">
+                  {event.venue}
+                </p>
                 <p className="text-xs text-theme-text-muted">{event.address}</p>
 
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    `${event.venue}, ${event.city}`
+                    `${event.venue}, ${event.city}`,
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-theme-border bg-theme-card px-4 py-1.5 text-xs font-semibold text-theme-text hover:bg-theme-card-hover transition-colors"
                 >
-                  <MapPin className="w-3.5 h-3.5" /> Buka Petunjuk di Google Maps
+                  <MapPin className="w-3.5 h-3.5" /> Buka Petunjuk di Google
+                  Maps
                 </a>
               </div>
 
               <div className="border-t border-theme-border pt-4">
-                <h4 className="font-bold text-sm text-theme-text">Aturan & Ketentuan Penonton</h4>
+                <h4 className="font-bold text-sm text-theme-text">
+                  Aturan & Ketentuan Penonton
+                </h4>
                 <ul className="mt-2 space-y-1.5 text-xs text-theme-text-muted">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#d9691f]">•</span> E-tiket resmi wajib ditunjukkan untuk penukaran gelang wristband.
+                    <span className="text-[#d9691f]">•</span> E-tiket resmi
+                    wajib ditunjukkan untuk penukaran gelang wristband.
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#d9691f]">•</span> Dilarang membawa kamera profesional (DSLR/Mirrorless) tanpa ID pers resmi.
+                    <span className="text-[#d9691f]">•</span> Dilarang membawa
+                    kamera profesional (DSLR/Mirrorless) tanpa ID pers resmi.
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#d9691f]">•</span> Dilarang membawa makanan dan minuman kemasan dari luar arena konser.
+                    <span className="text-[#d9691f]">•</span> Dilarang membawa
+                    makanan dan minuman kemasan dari luar arena konser.
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#d9691f]">•</span> Anak di bawah usia 12 tahun wajib didampingi oleh orang tua/wali dewasa.
+                    <span className="text-[#d9691f]">•</span> Anak di bawah usia
+                    12 tahun wajib didampingi oleh orang tua/wali dewasa.
                   </li>
                 </ul>
               </div>
@@ -289,13 +342,22 @@ export function EventDetailModal({
           )}
         </div>
 
-        <Link href={`/user/events/${event.id}`} className="block border-t border-theme-border p-4 text-center text-sm font-bold text-theme-accent">Lihat halaman detail lengkap & pemesanan demo →</Link>
+        <Link
+          href={`/user/events/${event.id}`}
+          className="block border-t border-theme-border p-4 text-center text-sm font-bold text-theme-accent"
+        >
+          Lihat halaman detail lengkap & pemesanan demo →
+        </Link>
         {/* Bottom Booking Sticky Bar */}
         <div className="sticky bottom-0 z-20 flex items-center justify-between border-t border-theme-border bg-theme-bg/98 px-6 py-4 backdrop-blur-md">
           <div>
-            <span className="text-[10px] uppercase font-semibold text-theme-text-light">Kategori Dipilih</span>
+            <span className="text-[10px] uppercase font-semibold text-theme-text-light">
+              Kategori Dipilih
+            </span>
             <p className="text-sm font-bold text-theme-text">
-              {selectedTier ? `${selectedTier.name} — ${formatIDR(selectedTier.price)}` : formatIDR(event.priceFrom)}
+              {selectedTier
+                ? `${selectedTier.name} — ${formatIDR(selectedTier.price)}`
+                : formatIDR(event.priceFrom)}
             </p>
           </div>
 

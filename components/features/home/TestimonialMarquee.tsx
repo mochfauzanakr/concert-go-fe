@@ -1,5 +1,5 @@
 "use client";
-import { useTranslation } from "@/hooks/useTranslation";
+import { copy as t } from "@/lib/copy";
 
 import { motion } from "framer-motion";
 import type { CSSProperties } from "react";
@@ -50,8 +50,10 @@ const TESTIMONIALS = [
 ];
 
 export default function TestimonialMarquee() {
-  const { t } = useTranslation();
-  const palette = ["bg-[#e0a340] text-theme-text", "bg-[#2a1a0d] text-[#f6efe1]"];
+  const palette = [
+    "bg-[#e0a340] text-theme-text",
+    "bg-[#2a1a0d] text-[#f6efe1]",
+  ];
   const REPEATS = 4;
   const translatePercent = 100 / REPEATS;
 
@@ -67,7 +69,8 @@ export default function TestimonialMarquee() {
           {t.home.testi_title || "Kata Mereka yang Sudah Menonton"}
         </h2>
         <p className="mt-1 text-xs text-theme-text-muted md:text-sm">
-          {t.home.testi_desc || "Pengalaman nyata dari ribuan concert-goers yang memesan tiket resmi via ConcertGo."}
+          {t.home.testi_desc ||
+            "Pengalaman nyata dari ribuan concert-goers yang memesan tiket resmi via ConcertGo."}
         </p>
       </div>
 
@@ -84,27 +87,36 @@ export default function TestimonialMarquee() {
             }
           >
             {Array.from({ length: REPEATS }).flatMap((_, rep) =>
-              row.items.map((item, i) => { const idx = TESTIMONIALS.findIndex(x => x.name === item.name); const tQuote = (t.home as any)[`testi_q_${idx+1}`] || item.quote; const tRole = (t.home as any)[`testi_r_${idx+1}`] || item.role; return (
-                <motion.div
-                  whileHover={{ y: -4, scale: 1.02 }}
-                  key={`${item.name}-${rep}-${i}`}
-                  className={`w-72 shrink-0 rounded-3xl p-6 shadow-sm transition-shadow ${palette[(i + rowIdx) % 2]}`}
-                >
-                  <div className="flex text-amber-500 gap-1 text-xs mb-2">
-                    {"★".repeat(item.rating)}
-                  </div>
-                  <p className="text-sm leading-relaxed">&ldquo;{tQuote}&rdquo;</p>
-                  <div className="mt-4 flex items-center gap-3 text-sm border-t border-current/10 pt-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/10 font-bold text-xs">
-                      {item.name[0]}
-                    </span>
-                    <div>
-                      <p className="font-bold leading-none">{item.name}</p>
-                      <p className="text-xs opacity-75 mt-0.5">{tRole}</p>
+              row.items.map((item, i) => {
+                const idx = TESTIMONIALS.findIndex((x) => x.name === item.name);
+                const tQuote =
+                  (t.home as any)[`testi_q_${idx + 1}`] || item.quote;
+                const tRole =
+                  (t.home as any)[`testi_r_${idx + 1}`] || item.role;
+                return (
+                  <motion.div
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    key={`${item.name}-${rep}-${i}`}
+                    className={`w-72 shrink-0 rounded-3xl p-6 shadow-sm transition-shadow ${palette[(i + rowIdx) % 2]}`}
+                  >
+                    <div className="flex text-amber-500 gap-1 text-xs mb-2">
+                      {"★".repeat(item.rating)}
                     </div>
-                  </div>
-                </motion.div>
-              ); })
+                    <p className="text-sm leading-relaxed">
+                      &ldquo;{tQuote}&rdquo;
+                    </p>
+                    <div className="mt-4 flex items-center gap-3 text-sm border-t border-current/10 pt-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/10 font-bold text-xs">
+                        {item.name[0]}
+                      </span>
+                      <div>
+                        <p className="font-bold leading-none">{item.name}</p>
+                        <p className="text-xs opacity-75 mt-0.5">{tRole}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              }),
             )}
           </div>
         </div>

@@ -1,11 +1,10 @@
 "use client";
-import { useTranslation } from "@/hooks/useTranslation";
+import { copy as t } from "@/lib/copy";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AnnouncementBanner() {
-  const { t, language } = useTranslation();
   const [index, setIndex] = useState(0);
   const [copied, setCopied] = useState(false);
 
@@ -70,10 +69,12 @@ export default function AnnouncementBanner() {
             >
               <span>{currentPromo.code}</span>
               <span className="text-[10px] text-[#d9691f]">
-                {copied ? (language === "en" ? "✓ Copied!" : "✓ Tersalin!") : (language === "en" ? "Copy Code" : "Salin Kode")}
+                {copied ? "✓ Tersalin!" : "Salin Kode"}
               </span>
             </button>
-            <span className="text-xs text-white/70">{language === "en" ? "Click the code to copy to clipboard" : "Klik kode untuk menyalin ke clipboard"}</span>
+            <span className="text-xs text-white/70">
+              {"Klik kode untuk menyalin ke clipboard"}
+            </span>
           </div>
         </div>
 
@@ -81,7 +82,9 @@ export default function AnnouncementBanner() {
         <div className="absolute right-6 bottom-6 flex items-center gap-2 z-10">
           <button
             aria-label="Sebelumnya"
-            onClick={() => setIndex((i) => (i - 1 + promos.length) % promos.length)}
+            onClick={() =>
+              setIndex((i) => (i - 1 + promos.length) % promos.length)
+            }
             className="flex h-9 w-9 items-center justify-center rounded-full bg-theme-card/20 text-white backdrop-blur-sm transition-all hover:scale-110 hover:bg-theme-card/30 cursor-pointer"
           >
             ‹

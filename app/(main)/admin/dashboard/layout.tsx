@@ -7,11 +7,16 @@ import { useAdminProfile } from "@/lib/adminProfile";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminTopbar } from "@/components/admin/AdminTopbar";
 import { useDemoReady, useDemoStore } from "@/lib/demo/store";
+import { useDemoProfiles } from "@/lib/demo/profiles";
+import { useSessionState } from "@/lib/session-state";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const { profile } = useAdminProfile();
+  const demo = useSessionState((state) => state.demo);
+  const demoProfile = useDemoProfiles((state) => state.admin);
+  const visibleProfile = demo ? { ...profile, name: demoProfile.name, email: demoProfile.email, avatar: demoProfile.avatarUrl ?? null, initial: demoProfile.name.charAt(0).toUpperCase() } : profile;
 
   // Dummy data count for demonstration
   const demoReady = useDemoReady();
@@ -51,7 +56,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Konten Utama */}
       <div className="flex min-h-screen min-w-0 flex-1 flex-col lg:pl-72">
         <AdminTopbar
-          profile={profile}
+          profile={visibleProfile}
           onOpenSidebar={() => setSidebarOpen(true)}
           pendingVerifCount={pendingVerifCount}
           pendingApprovalCount={pendingApprovalCount}

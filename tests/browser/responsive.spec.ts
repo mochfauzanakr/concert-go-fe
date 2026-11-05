@@ -77,13 +77,5 @@ for (const width of [1440, 390, 360]) {
         page.getByRole("heading", { name: "Undangan pengguna", exact: true }),
       ).toBeVisible();
     }
-    await page.evaluate(() =>
-      document.documentElement.setAttribute("data-theme", "dark"),
-    );
-    await page.screenshot({
-      path: testInfo.outputPath(`${width}-dark.png`),
-      fullPage: true,
-      animations: "disabled",
-    });
   });
 }

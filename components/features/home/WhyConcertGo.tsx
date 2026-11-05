@@ -1,5 +1,5 @@
 "use client";
-import { useTranslation } from "@/hooks/useTranslation";
+import { copy as t } from "@/lib/copy";
 
 import { motion } from "framer-motion";
 import { ShieldCheck, CreditCard, RefreshCw, Headphones } from "lucide-react";
@@ -32,9 +32,11 @@ const WHY_POINTS = [
 ];
 
 export default function WhyConcertGo() {
-  const { t } = useTranslation();
   return (
-    <section id="keunggulan" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-14">
+    <section
+      id="keunggulan"
+      className="mx-auto max-w-7xl scroll-mt-24 px-6 py-14"
+    >
       <div className="text-center max-w-2xl mx-auto mb-12">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#d9691f]">
           {t.home.feat_tag || "Keamanan & Kemudahan"}
@@ -43,7 +45,8 @@ export default function WhyConcertGo() {
           {t.home.why_title || "Kenapa Memilih ConcertGo?"}
         </h2>
         <p className="mt-2 text-sm text-theme-text-muted">
-          {t.home.feat_desc || "Kami menghubungkan ribuan penikmat musik dengan panggung idola secara transparan, aman, dan tanpa biaya tersembunyi."}
+          {t.home.feat_desc ||
+            "Kami menghubungkan ribuan penikmat musik dengan panggung idola secara transparan, aman, dan tanpa biaya tersembunyi."}
         </p>
       </div>
 
@@ -53,26 +56,26 @@ export default function WhyConcertGo() {
             title: t.home.feat_1_title || WHY_POINTS[0].title,
             desc: t.home.feat_1_desc || WHY_POINTS[0].desc,
             icon: WHY_POINTS[0].icon,
-            stat: WHY_POINTS[0].stat
+            stat: WHY_POINTS[0].stat,
           },
           {
             title: t.home.feat_2_title || WHY_POINTS[1].title,
             desc: t.home.feat_2_desc || WHY_POINTS[1].desc,
             icon: WHY_POINTS[1].icon,
-            stat: WHY_POINTS[1].stat
+            stat: WHY_POINTS[1].stat,
           },
           {
             title: t.home.feat_3_title || WHY_POINTS[2].title,
             desc: t.home.feat_3_desc || WHY_POINTS[2].desc,
             icon: WHY_POINTS[2].icon,
-            stat: WHY_POINTS[2].stat
+            stat: WHY_POINTS[2].stat,
           },
           {
             title: t.home.feat_4_title || WHY_POINTS[3].title,
             desc: t.home.feat_4_desc || WHY_POINTS[3].desc,
             icon: WHY_POINTS[3].icon,
-            stat: WHY_POINTS[3].stat
-          }
+            stat: WHY_POINTS[3].stat,
+          },
         ].map((p, idx) => (
           <motion.div
             key={p.title}
@@ -90,10 +93,14 @@ export default function WhyConcertGo() {
               <h3 className="mt-4 font-[var(--font-display,serif)] text-lg font-bold text-theme-text">
                 {p.title}
               </h3>
-              <p className="mt-2 text-xs leading-relaxed text-theme-text-muted">{p.desc}</p>
+              <p className="mt-2 text-xs leading-relaxed text-theme-text-muted">
+                {p.desc}
+              </p>
             </div>
             <div className="mt-5 border-t border-theme-border pt-3">
-              <span className="text-[11px] font-semibold text-[#d9691f]">{p.stat}</span>
+              <span className="text-[11px] font-semibold text-[#d9691f]">
+                {p.stat}
+              </span>
             </div>
           </motion.div>
         ))}

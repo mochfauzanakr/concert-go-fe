@@ -1,4 +1,4 @@
-import { useTranslation } from "@/hooks/useTranslation";
+import { copy as t } from "@/lib/copy";
 import { useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,7 +15,6 @@ export function HeroCarousel({
   setIndex: React.Dispatch<React.SetStateAction<number>>;
   onOpenDetail: (event: EventItem) => void;
 }) {
-  const { t, language } = useTranslation();
   const currentSlide = HERO_SLIDES[index % HERO_SLIDES.length];
 
   useEffect(() => {
@@ -25,7 +24,8 @@ export function HeroCarousel({
     return () => clearInterval(timer);
   }, [setIndex]);
 
-  const activeEvent = EVENTS.find((e) => e.id === currentSlide.eventId) ?? EVENTS[0];
+  const activeEvent =
+    EVENTS.find((e) => e.id === currentSlide.eventId) ?? EVENTS[0];
 
   return (
     <section className="mx-auto max-w-7xl px-6 pt-8 pb-4">
@@ -47,7 +47,9 @@ export function HeroCarousel({
                 fill
                 className="object-cover"
               />
-              <div className={`absolute inset-0 bg-gradient-to-r ${currentSlide.gradient}`} />
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${currentSlide.gradient}`}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
             </motion.div>
           </AnimatePresence>
@@ -84,7 +86,8 @@ export function HeroCarousel({
                     <MapPin className="w-3.5 h-3.5" /> {currentSlide.venue}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" /> {currentSlide.date} · {currentSlide.time}
+                    <Clock className="w-3.5 h-3.5" /> {currentSlide.date} ·{" "}
+                    {currentSlide.time}
                   </span>
                 </div>
               </motion.div>
@@ -97,7 +100,11 @@ export function HeroCarousel({
               <button
                 type="button"
                 aria-label="Sebelumnya"
-                onClick={() => setIndex((i) => (i - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+                onClick={() =>
+                  setIndex(
+                    (i) => (i - 1 + HERO_SLIDES.length) % HERO_SLIDES.length,
+                  )
+                }
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-all hover:scale-110 hover:bg-black/60 active:scale-95"
               >
                 ‹
@@ -119,7 +126,9 @@ export function HeroCarousel({
                     onClick={() => setIndex(i)}
                     aria-label={`Slide ${i + 1}`}
                     className={`h-2 rounded-full transition-all duration-300 ${
-                      i === index % HERO_SLIDES.length ? "w-8 bg-[#d9691f]" : "w-2 bg-theme-card/40 hover:bg-theme-card/60"
+                      i === index % HERO_SLIDES.length
+                        ? "w-8 bg-[#d9691f]"
+                        : "w-2 bg-theme-card/40 hover:bg-theme-card/60"
                     }`}
                   />
                 ))}
@@ -146,7 +155,7 @@ export function HeroCarousel({
           >
             <Image
               src={EVENTS[2].image}
-              alt={language === "en" ? "Surabaya Rock Revival" : EVENTS[2].title}
+              alt={EVENTS[2].title}
               fill
               className="object-cover opacity-35 transition-transform duration-500 group-hover:scale-105"
             />
@@ -157,12 +166,18 @@ export function HeroCarousel({
                 <span className="rounded-full bg-[#d9691f] px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
                   🔥 {t.home.trending_title}
                 </span>
-                <span className="text-xs font-bold text-[#f6efe1]">Rp 150.000</span>
+                <span className="text-xs font-bold text-[#f6efe1]">
+                  Rp 150.000
+                </span>
               </div>
               <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold">
-                {language === "en" ? "Surabaya Rock Revival" : EVENTS[2].title}
+                {EVENTS[2].title}
               </h3>
-              <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">{language === "en" ? "A serene atmosphere in an old building accompanied by romantic jazz arrangements from capital musicians." : "Suasana syahdu gedung tua ditemani aransemen jazz romantis musisi ibukota."}</p>
+              <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">
+                {
+                  "Suasana syahdu gedung tua ditemani aransemen jazz romantis musisi ibukota."
+                }
+              </p>
             </div>
 
             <div className="relative z-10 mt-4 flex items-center justify-between pt-2 border-t border-theme-card/20 text-xs text-[#c4b59d]">
@@ -184,7 +199,7 @@ export function HeroCarousel({
           >
             <Image
               src={EVENTS[7].image}
-              alt={language === "en" ? "Neon Dangdut Koplo Party" : EVENTS[7].title}
+              alt={EVENTS[7].title}
               fill
               className="object-cover opacity-35 transition-transform duration-500 group-hover:scale-105"
             />
@@ -195,13 +210,16 @@ export function HeroCarousel({
                 <span className="rounded-full bg-amber-600 px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
                   ⚡ Flash Sale H-30
                 </span>
-                <span className="text-xs font-mono text-amber-300">{t.home.save_25}</span>
+                <span className="text-xs font-mono text-amber-300">
+                  {t.home.save_25}
+                </span>
               </div>
               <h3 className="mt-3 font-[var(--font-display,serif)] text-lg font-bold">
-                {language === "en" ? "Neon Dangdut Koplo Party" : EVENTS[7].title}
+                {EVENTS[7].title}
               </h3>
               <p className="mt-1 text-xs text-[#c4b59d] line-clamp-2">
-                Konser akustik intim 200 penonton di Rooftop Kopi Manja dengan pemandangan lampu malam kota.
+                Konser akustik intim 200 penonton di Rooftop Kopi Manja dengan
+                pemandangan lampu malam kota.
               </p>
             </div>
 

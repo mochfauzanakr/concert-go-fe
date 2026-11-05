@@ -1,5 +1,12 @@
 Lihat [daftar perubahan FE](docs/FRONTEND_FEATURES.md) dan [aturan satu fitur satu commit](CONTRIBUTING.md).
 
+Scope tampilan terbaru: [pertahankan desain sebelumnya, perapian kecil](docs/UI_SCOPE_CORRECTION.md).
+
+Perbaikan `dev/auth`: [hasil tahap 1 dan rencana berikutnya](docs/STAGE_1_RESULT_AND_NEXT_STEPS.md).
+Integrasi akun: [hasil tahap 2 dan rencana tahap 3–6](docs/STAGE_2_RESULT_AND_NEXT_STEPS.md).
+Review visual: [hasil tahap 3 dan rencana tahap 4–6](docs/STAGE_3_RESULT_AND_NEXT_STEPS.md).
+Prototipe responsive dapat dibuka di `/design/discovery` (tab Landing, Katalog, Detail, Komponen).
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -8,6 +15,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 The admin, user, and STAFF features work with local demo data and do not require or modify
 the Go backend. Open `/` and use the Demo user, Demo admin, or Scanner STAFF buttons.
+These buttons explicitly open `?preview=demo`. Account workspaces otherwise require a
+verified session and the appropriate role; demo preview does not grant backend access.
 
 | Area | Routes and supported actions |
 | --- | --- |
@@ -52,6 +61,7 @@ to use the workspace-local browser cache). With the frontend running, set
 `DEMO_BASE_URL=http://localhost:3100` and run `npm run test:e2e`.
 The suite covers complete workflows, persistence, viewport widths 360/390/1440,
 mobile navigation, screenshots, and JavaScript runtime errors.
+The interface uses Indonesian copy and the default appearance; language/theme selectors are not included.
 
 ### Connect to the existing backend
 
@@ -81,9 +91,10 @@ Registration calls `/auth/register`, then `/auth/verify-otp` with `{email, otp}`
 no dedicated resend endpoint, so resending repeats registration with the pending form values held
 only in memory. After a page reload, fill in registration again to request a new code. Password
 recovery uses the existing backend endpoints; email delivery follows its existing SMTP configuration.
-`/invite-user` now opens the frontend demo invitation flow. `/accept-invite?token=...` handles local
-demo tokens; other tokens retain the existing backend activation flow. The original invitation email
-contains a relative path; open that path on the frontend origin.
+`/invite-user` uses the backend invitation flow for authenticated ADMIN, SUPER_ADMIN, and
+ORGANIZER accounts; explicit demo preview retains the browser-local flow.
+`/accept-invite?token=...` validates and activates backend invitations, while `demo-` tokens
+retain their local preview behavior. Backend `dev/org-management` sends absolute frontend links.
 
 Google login follows the backend's existing redirect configuration. `/auth/callback` can complete
 login when that configuration already sends the authorization code and state to this frontend page.

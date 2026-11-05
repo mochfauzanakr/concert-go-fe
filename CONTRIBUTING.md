@@ -30,7 +30,7 @@ npm run build
 ```
 
 Jalankan `npm run test:e2e` dengan frontend aktif; atur `DEMO_BASE_URL` jika port
-berbeda dari 3200. Periksa tampilan desktop, HP, tema gelap, dialog, dan navigasi.
+berbeda dari 3200. Periksa tampilan desktop, HP, dialog, dan navigasi.
 Fitur baru menggunakan data demo lokal sampai integrasi backend disepakati.
 
 Push hanya branch frontend yang dikerjakan. Jangan menyertakan perubahan backend,
